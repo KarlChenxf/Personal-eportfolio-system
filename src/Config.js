@@ -1,0 +1,1 @@
+export const API_END_POINT = "http://ec2-52-207-253-172.compute-1.amazonaws.com/api";
