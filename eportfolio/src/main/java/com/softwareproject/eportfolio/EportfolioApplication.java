@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-14 23:11:53
- * @LastEditTime: 2020-03-15 00:14:57
+ * @LastEditTime: 2020-03-15 00:51:08
  */
 package com.softwareproject.eportfolio;
 
@@ -29,9 +29,8 @@ public class EportfolioApplication implements ApplicationRunner{
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		UserDO admin = new UserDO();
-		admin.setEmail("email");
-		String test = PasswordEncoding.md5("123456");
-		System.out.println(test);
+		admin.setEmail("admin");
+		String test = PasswordEncoding.md5("123");
 		admin.setPassword(test);
 		userDAO.save(admin);
 	}	
