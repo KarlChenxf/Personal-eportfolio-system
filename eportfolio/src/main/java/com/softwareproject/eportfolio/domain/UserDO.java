@@ -15,7 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-14 21:59:50
- * @LastEditTime: 2020-03-14 23:21:50
+ * @LastEditTime: 2020-03-15 00:05:49
  */
 @Entity(name = "user")
 public class UserDO{
@@ -28,7 +28,7 @@ public class UserDO{
     private String userName;
     @Column(nullable = false)
     private String email;
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 33)
     private String password;
 
 	public UUID getId() {

@@ -3,9 +3,11 @@ package com.softwareproject.eportfolio.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
 import com.softwareproject.eportfolio.domain.UserDO;
 import com.softwareproject.eportfolio.service.UserService;
 import com.softwareproject.eportfolio.util.PassToken;
+import com.softwareproject.eportfolio.util.PasswordEncoding;
 import com.softwareproject.eportfolio.util.UserLoginToken;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 /*
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-14 22:48:26
- * @LastEditTime: 2020-03-14 23:41:24
+ * @LastEditTime: 2020-03-15 00:26:19
  */
 @RestController
 @RequestMapping("user")
@@ -27,24 +30,43 @@ public class UserController{
     @Autowired
     UserService userService;
 
+    @PassToken
     @PostMapping("/login")
     public Object login(@RequestBody UserDO user){
-        Map<String, String> jsonObject=new HashMap<>();
+        JSONObject loginResponse = new JSONObject();
         UserDO userForBase=userService.findByEmail(user.getEmail());
         if(userForBase==null){
-            jsonObject.put("message","登录失败,用户不存在");
-            return jsonObject;
+            loginResponse.put("status", "fail");
+            loginResponse.put("message","User does not exist");
+            return loginResponse;
         }else {
-            if (!userForBase.getPassword().equals(user.getPassword())){
-                jsonObject.put("message","登录失败,密码错误");
-                return jsonObject;
+            String passwordMD5 = "";
+            try {
+                passwordMD5 = PasswordEncoding.md5(user.getPassword());
+            } catch (Exception e) {
+                loginResponse.put("status", "fail");
+                loginResponse.put("message", "Fail to encode password");
+                return loginResponse;
+            }
+            if (!userForBase.getPassword().equals(passwordMD5)){
+                loginResponse.put("status", "fail");
+                loginResponse.put("message","Wrong password");
+                return loginResponse;
             }else {
                 String token = userService.getTokenByLogin(userForBase);
-                jsonObject.put("token", token);
-                jsonObject.put("user", userForBase.getId().toString());
-                return jsonObject;
+                loginResponse.put("status", "success");
+                loginResponse.put("token", token);
+                loginResponse.put("user", userForBase);
+                return loginResponse;
             }
         }
+    }
+
+    @PassToken
+    @PostMapping("/signup")
+    public Object signup(@RequestBody UserDO user){
+        JSONObject signupResponse = new JSONObject();
+        return null;
     }
 
     @PassToken

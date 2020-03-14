@@ -2,12 +2,13 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-14 23:11:53
- * @LastEditTime: 2020-03-14 23:34:40
+ * @LastEditTime: 2020-03-15 00:14:57
  */
 package com.softwareproject.eportfolio;
 
 import com.softwareproject.eportfolio.dao.UserDAO;
 import com.softwareproject.eportfolio.domain.UserDO;
+import com.softwareproject.eportfolio.util.PasswordEncoding;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -29,8 +30,10 @@ public class EportfolioApplication implements ApplicationRunner{
 	public void run(ApplicationArguments args) throws Exception {
 		UserDO admin = new UserDO();
 		admin.setEmail("email");
-		admin.setPassword("123");
+		String test = PasswordEncoding.md5("123456");
+		System.out.println(test);
+		admin.setPassword(test);
 		userDAO.save(admin);
-	}
+	}	
 
 }
