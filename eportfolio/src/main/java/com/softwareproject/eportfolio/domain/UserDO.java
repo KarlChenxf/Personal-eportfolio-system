@@ -10,12 +10,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 /*
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-14 21:59:50
- * @LastEditTime: 2020-03-15 00:49:36
+ * @LastEditTime: 2020-03-16 22:02:46
  */
 @Entity(name = "user")
 public class UserDO{
@@ -23,6 +24,7 @@ public class UserDO{
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Type(type = "org.hibernate.type.UUIDCharType")
     private UUID id;
 
     private String userName;

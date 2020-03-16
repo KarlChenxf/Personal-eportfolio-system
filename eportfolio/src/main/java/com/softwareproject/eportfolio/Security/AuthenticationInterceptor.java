@@ -2,11 +2,12 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-14 22:32:04
- * @LastEditTime: 2020-03-14 22:32:05
+ * @LastEditTime: 2020-03-16 22:07:29
  */
 package com.softwareproject.eportfolio.Security;
 
 import java.lang.reflect.Method;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,18 +58,19 @@ public class AuthenticationInterceptor implements HandlerInterceptor{
             if (userLoginToken.required()) {
                 // 执行认证
                 if (token == null) {
-                    throw new RuntimeException("无token，请重新登录");
+                    throw new RuntimeException("token is missing, login first");
                 }
                 // 获取 token 中的 user id
-                String userId;
+                UUID userId;
                 try {
-                    userId = JWT.decode(token).getAudience().get(0);
+                    String id = JWT.decode(token).getAudience().get(0);
+                    userId = UUID.fromString(id);
                 } catch (JWTDecodeException j) {
                     throw new RuntimeException("401");
                 }
-                UserDO user = userService.findUserById(userId);
+                UserDO user = userService.findById(userId);
                 if (user == null) {
-                    throw new RuntimeException("用户不存在，请重新登录");
+                    throw new RuntimeException("user does not exists");
                 }
                 // 验证 token
                 JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();

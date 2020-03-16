@@ -2,11 +2,16 @@ package com.softwareproject.eportfolio.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.fastjson.JSONObject;
+import com.auth0.jwt.JWT;
 import com.softwareproject.eportfolio.dao.UserDAO;
 import com.softwareproject.eportfolio.domain.UserDO;
 import com.softwareproject.eportfolio.service.UserService;
+import com.softwareproject.eportfolio.util.APIResponse;
 import com.softwareproject.eportfolio.util.PassToken;
 import com.softwareproject.eportfolio.util.PasswordEncoding;
 import com.softwareproject.eportfolio.util.UserLoginToken;
@@ -34,34 +39,40 @@ public class UserController {
     @Autowired
     UserDAO userDAO;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @PassToken
     @PostMapping("/login")
     public Object login(@RequestBody UserDO user) {
-        JSONObject loginResponse = new JSONObject();
+        APIResponse res = new APIResponse();
         UserDO userForBase = userService.findByEmail(user.getEmail());
         if (userForBase == null) {
-            loginResponse.put("status", "fail");
-            loginResponse.put("message", "User does not exist");
-            return loginResponse;
+            return res
+                .put("status", "fail")
+                .put("message", "User does not exist")
+                .export();
         } else {
             String passwordMD5 = "";
             try {
                 passwordMD5 = PasswordEncoding.md5(user.getPassword());
             } catch (Exception e) {
-                loginResponse.put("status", "fail");
-                loginResponse.put("message", "Fail to encode password");
-                return loginResponse;
+                return res
+                    .put("status", "fail")
+                    .put("message", "Fail to encode password")
+                    .export();
             }
             if (!userForBase.getPassword().equals(passwordMD5)) {
-                loginResponse.put("status", "fail");
-                loginResponse.put("message", "Wrong password");
-                return loginResponse;
+                return res
+                    .put("status", "fail")
+                    .put("message", "Wrong password")
+                    .export();
             } else {
-                String token = userService.getTokenByLogin(userForBase);
-                loginResponse.put("status", "success");
-                loginResponse.put("token", token);
-                loginResponse.put("user", userForBase);
-                return loginResponse;
+                return res
+                    .put("status", "success")
+                    .put("token", userService.getTokenByLogin(userForBase))
+                    .put("user", userForBase)
+                    .export();
             }
         }
     }
@@ -69,32 +80,63 @@ public class UserController {
     @PassToken
     @PostMapping("/signup")
     public Object signup(@RequestBody UserDO user) {
-        JSONObject signupResponse = new JSONObject();
+        APIResponse res = new APIResponse();
         UserDO existingUser = userService.findByEmail(user.getEmail());
-        if (existingUser != null){
-            signupResponse.put("status", "fail");
-            signupResponse.put("message", "Email already exists");
-            return signupResponse;
+        if (existingUser != null) {
+            return res
+                .put("status", "fail")
+                .put("message", "Email already exists")
+                .export();
         } else if (user.getEmail() != null && user.getPassword() != null) {
             try {
                 user.setPassword(PasswordEncoding.md5(user.getPassword()));
             } catch (Exception e) {
-                signupResponse.put("status", "fail");
-                signupResponse.put("message", "Fail to encode password");
-                return signupResponse;
+                return res
+                .put("status", "fail")
+                .put("message", "Fail to encode password")
+                .export();
             }
             userDAO.save(user);
             UserDO userForBase = userService.findByEmail(user.getEmail());
             String token = userService.getTokenByLogin(userForBase);
-            signupResponse.put("status", "success");
-            signupResponse.put("token", token);
-            signupResponse.put("user", userForBase);
-            return signupResponse;
-
+            return res
+                .put("status", "success").put("token", token).put("user", userForBase)
+                .export();
         } else {
-            signupResponse.put("status", "fail");
-            signupResponse.put("message", "Email and password should not be empty");
-            return signupResponse;
+            return res
+                .put("status", "fail")
+                .put("message", "Email and password should not be empty")
+                .export();
+        }
+    }
+
+    @UserLoginToken
+    @PostMapping("/changepassword")
+    public Object changePassword(@RequestBody UserDO user) {
+        APIResponse res = new APIResponse();
+        String userId = JWT.decode(request.getHeader("token")).getAudience().get(0);
+        UserDO userToChange = userService.findByEmail(user.getEmail());
+        if (!userId.equals(userToChange.getId().toString())) {
+            return res
+                .put("status", "fail")
+                .put("message", "Wrong user")
+                .export();
+        } else {
+            try {
+                userToChange.setPassword(PasswordEncoding.md5(user.getPassword()));
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                return res
+                    .put("status", "fail")
+                    .put("message", "Fail to encode password")
+                    .export();
+            }
+            userDAO.save(userToChange);
+            return res
+                .put("status", "success")
+                .put("user", userToChange)
+                .put("token", userService.getTokenByLogin(userToChange))
+                .export();
         }
     }
 
