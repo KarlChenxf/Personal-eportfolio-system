@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-18 23:29:03
- * @LastEditTime: 2020-03-19 01:04:50
+ * @LastEditTime: 2020-03-19 22:36:30
  */
 package com.softwareproject.eportfolio.controller;
 
@@ -51,7 +51,7 @@ public class ProfileController{
     ModelMapper modelMapper = new ModelMapper();
 
     @UserLoginToken
-    @PutMapping("/add")
+    @PostMapping("/add")
     public Object addProfile(@RequestBody JSONObject body){
         APIResponse res = new APIResponse();
         UserDO user = userService.findById(UUID.fromString(body.getString("userid")));
@@ -75,7 +75,7 @@ public class ProfileController{
     }
 
     @UserLoginToken
-    @PostMapping("/update")
+    @PutMapping("/update")
     public Object updateProfile(@RequestBody JSONObject body){
         APIResponse res = new APIResponse();
         ProfileDO profile = profileDAO.findProfileById(body.getLong("id"));
