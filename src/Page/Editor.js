@@ -19,6 +19,8 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fade from '@material-ui/core/Fade';
 import MenuIcon from '@material-ui/icons/Menu';
+import Typography from '@material-ui/core/Typography';
+
 
 /*function Copyright() {
     return (
@@ -139,7 +141,10 @@ class Dashboard extends React.Component {
                     <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                         <MenuIcon aria-controls="fade-menu" aria-haspopup="true" onClick={this.handleClick} />
                     </IconButton>
-                    
+                    <Typography variant="h5" className={classes.title}>
+                    Welcome,user
+                    </Typography>
+                    <Button href="./" color="inherit" horizontal='right'>Log out</Button>
                     <Menu
                     id="fade-menu"
                     keepMounted
@@ -152,7 +157,16 @@ class Dashboard extends React.Component {
                     <MenuItem title="Add Raw HTML" onClick={()=>{this.newComponent("")}}>HTML</MenuItem>
                     {/* Add Personal Info */}
                     <MenuItem onClick={()=>this.newComponent('<PersonalInfo/>')}>Personal Information</MenuItem>
-                    <MenuItem onClick={this.handleClose}>Textfield</MenuItem>
+                    {/* Add TextArea */}
+                    <MenuItem onClick={()=>this.newComponent('<TextArea/>')}>Text Area</MenuItem>
+                    {/* Add Photos */}
+                    <MenuItem onClick={this.handleClose}>Photos</MenuItem>
+                    {/* Add Videos */}
+                    <MenuItem onClick={this.handleClose}>Videos</MenuItem>
+                    {/* Add Audios */}
+                    <MenuItem onClick={this.handleClose}>Audios</MenuItem>
+                    {/* Add Files */}
+                    <MenuItem onClick={this.handleClose}>Files</MenuItem>
                     </Menu>
 
                         
