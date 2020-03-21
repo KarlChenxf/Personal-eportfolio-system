@@ -1,12 +1,21 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import HTMLReactParser from 'html-react-parser';
+import PersonalInfo from '../Page/Component/PersonalInfo.js'
 
 export function parse(html) {
-    // The replace callback allows you to swap an element with another React element.
-    return HTMLReactParser(html, {
-      replace: function(domNode) {
-        console.dir(domNode, { depth: null });
+  console.log(html);
+  // The replace callback allows you to swap an element with another React element.
+  return HTMLReactParser(html, {
+    replace: ({ attribs, name }) => {
+      attribs = attribs || {};
+      if (name) {
+        switch (name.toLowerCase()) {
+          case 'personalinfo':
+            return <PersonalInfo {...attribs} />;
+          default:
+            break;
+        }
       }
-    });
+    },
+  });
 }
