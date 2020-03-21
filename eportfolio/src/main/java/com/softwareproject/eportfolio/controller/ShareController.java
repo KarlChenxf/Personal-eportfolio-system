@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-19 01:40:06
- * @LastEditTime: 2020-03-19 01:58:57
+ * @LastEditTime: 2020-03-21 23:52:08
  */
 package com.softwareproject.eportfolio.controller;
 
@@ -24,6 +24,7 @@ import com.softwareproject.eportfolio.util.UserLoginToken;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @RestController
 @RequestMapping("share")
+@CrossOrigin(origins = "*")
 public class ShareController{
 
     @Autowired
