@@ -15,6 +15,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { parse } from '../Util/HtmlToReact.js'
 import ComponentEditor from './Component/ComponentEditor.js'
 
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Fade from '@material-ui/core/Fade';
+import MenuIcon from '@material-ui/icons/Menu';
+
 /*function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
@@ -83,6 +88,7 @@ class Dashboard extends React.Component {
 
         this.state = {
             content: [],
+            open: Boolean(null),
         };
     }
 
@@ -113,6 +119,14 @@ class Dashboard extends React.Component {
         this.setState({ content: newContent });
     }
 
+    handleClick = event =>{
+        this.setState({open: event.currentTarget});
+    }
+
+    handleClose = event =>{
+        this.setState({open: null});
+    }
+
     render() {
         const { classes } = this.props;
 
@@ -122,14 +136,26 @@ class Dashboard extends React.Component {
                 {/* Appbar */}
                 <AppBar position="absolute" className={classes.appBar}>
                     <Toolbar className={classes.toolbar}>
-                        {/* Add Raw HTML */}
-                        <Tooltip title="Add Raw HTML">
-                            <Button color="inherit" onClick={()=>this.newComponent("")}>&lt;/></Button>
-                        </Tooltip>
-                        {/* Add Personal Info */}
-                        <Tooltip title="Add Personal Info">
-                            <Button color="inherit" onClick={()=>this.newComponent('<PersonalInfo/>')}>PI</Button>
-                        </Tooltip>
+                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                        <MenuIcon aria-controls="fade-menu" aria-haspopup="true" onClick={this.handleClick} />
+                    </IconButton>
+                    
+                    <Menu
+                    id="fade-menu"
+                    keepMounted
+                    anchorEl={this.state.open}
+                    open={this.state.open}
+                    onClose={this.handleClose}
+                    TransitionComponent={Fade}
+                    >
+                    {/* Add Raw HTML */}
+                    <MenuItem title="Add Raw HTML" onClick={()=>{this.newComponent("")}}>HTML</MenuItem>
+                    {/* Add Personal Info */}
+                    <MenuItem onClick={()=>this.newComponent('<PersonalInfo/>')}>Personal Information</MenuItem>
+                    <MenuItem onClick={this.handleClose}>Textfield</MenuItem>
+                    </Menu>
+
+                        
                     </Toolbar>
                 </AppBar>
                 {/* Content */}
