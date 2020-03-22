@@ -72,12 +72,12 @@ class Login extends React.Component {
 
   login(event) {
     let credentials = {
-			Email: this.state.email,
-			Password: this.state.password
+			email: this.state.email,
+			password: this.state.password
     }
     
 		// Check authentication with the server
-		fetch(API_END_POINT + "/signin", {
+		fetch(API_END_POINT + "/user/login", {
 			body: JSON.stringify(credentials), // must match 'Content-Type' header
 			cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
 			credentials: 'same-origin', // including cookie //include, same-origin, *omit
@@ -96,13 +96,16 @@ class Login extends React.Component {
 					if (response.ok) {
 						response.json().then(data => {
 							//console.log(data);
-							// Authenticate the user
+              localStorage.setItem('LoginToken', data.token)// store user token
 							//if (data.message.indexOf("Success")>=0) {
                 // Send them to the dashboard
-                if(data.content && data.content.Admin)
+                /*if(data.content && data.content.Admin)
                   this.props.history.replace("/admin/dashboard");
                 else
-                  this.props.history.replace("/client/profile");
+                  this.props.history.replace("/client/profile");*/
+                if(data.status === "success"){
+                  this.props.history.replace("/editor")//Jump to editor page
+                }
 							//}
 							//else {
               //  console.log(data);
@@ -129,7 +132,7 @@ class Login extends React.Component {
       event.preventDefault();
   }
   
-  handleChange = event => {
+  handleChange =(event) => {
     this.setState({
         [event.target.name]: event.target.value, // update the changed value
     });

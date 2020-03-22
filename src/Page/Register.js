@@ -69,14 +69,14 @@ class Register extends React.Component {
   register(event) {
 
     let credentials = {
-      FirstName: this.state.fname,
-      LastName: this.state.lname,
-			Email: this.state.email,
-			Password: this.state.password
+      firstName: this.state.fname,
+      lastName: this.state.lname,
+			email: this.state.email,
+			password: this.state.password
     }
     
 		// Check authentication with the server
-		fetch(API_END_POINT + "/signup", {
+		fetch(API_END_POINT + "/user/signup", {
 			body: JSON.stringify(credentials), // must match 'Content-Type' header
 			cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
 			credentials: 'include', // include, same-origin, *omit
@@ -94,8 +94,8 @@ class Register extends React.Component {
 					if (response.ok) {
 						response.json().then(data => {
 							//console.log(data);
-							// Authenticate the user
-							if (data.message.indexOf("Success")>=0) {
+							localStorage.setItem('RegisterToken', data.token)// save token in local storage
+							if (data.status === "success") {
 								// Send them to the profile
                 this.props.history.replace("/");
 							}

@@ -22,6 +22,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 
 
+
 /*function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
@@ -87,6 +88,7 @@ class Dashboard extends React.Component {
 
     constructor(props) {
         super(props);
+        console.log(props);
 
         this.state = {
             content: [],
@@ -160,9 +162,9 @@ class Dashboard extends React.Component {
                     {/* Add TextArea */}
                     <MenuItem onClick={()=>this.newComponent('<TextArea/>')}>Text Area</MenuItem>
                     {/* Add Photos */}
-                    <MenuItem onClick={this.handleClose}>Photos</MenuItem>
+                    <MenuItem onClick={()=>this.newComponent('<PicDisplay/>')}>Pictures</MenuItem>
                     {/* Add Videos */}
-                    <MenuItem onClick={this.handleClose}>Videos</MenuItem>
+                    <MenuItem onClick={()=>this.newComponent('<VideoDisplay/>')}>Videos</MenuItem>
                     {/* Add Audios */}
                     <MenuItem onClick={this.handleClose}>Audios</MenuItem>
                     {/* Add Files */}
