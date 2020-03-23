@@ -26,6 +26,7 @@ class PicEditor extends React.Component {
               attribs = attribs || {};
               if (name && name.toLowerCase() === 'picurl') {
                 this.state = attribs;
+                console.log("pic_attribs: ", attribs);
               }
             },
           });
@@ -39,7 +40,7 @@ class PicEditor extends React.Component {
     }
 
     getHtmlString() {
-        return `<PicURL name='${this.state.pname||''}'/>`
+        return `<PicDisplay name='${this.state.pname||''}'/>`
     }
 
     render() {
@@ -49,7 +50,7 @@ class PicEditor extends React.Component {
                 <MuiDialogContent>
                     <TextField fullWidth
                         id="outlined-basic"
-                        placeholder="PicURL"
+                        placeholder="PicDisplay"
                         variant="outlined"
                         name="pname"
                         value={this.state.pname}

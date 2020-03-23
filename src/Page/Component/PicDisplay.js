@@ -34,23 +34,11 @@ class PicDisplay extends React.Component {
         const {classes} = this.props;
 
         return (
-            <Card className={classes.root}>
-            <CardActionArea>
-              <CardMedia className={classes.media}
-                component="img"
-                alt="Contemplative Reptile"
-                height="140"
-                width="150"
-                image={this.props.name}
-                title="This is the title."
-              />
-              <CardContent>
-                <Typography variant="body2" color="textSecondary" component="p">
-                  This is the text.
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-          </Card>
+          <Grid container justify="left" className={classes.root}>
+          <img src={this.props.name} alt="pic" className={classes.root}/>
+          </Grid>
+          
+        
         )
     }
 }

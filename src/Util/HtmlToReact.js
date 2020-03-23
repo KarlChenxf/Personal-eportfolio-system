@@ -14,11 +14,11 @@ export function parse(html) {
         switch (name.toLowerCase()) {
           case 'personalinfo':
             return <PersonalInfo {...attribs} />;
-          case 'videourl':
-            console.log("vedio");
+          case 'videodisplay':
+            //console.log("vedio");
             return <VideoDisplay {...attribs} />;
-          case 'picurl':
-            console.log("pic");
+          case 'picdisplay':
+            //console.log("pic");
             return <PicDisplay {...attribs} />;
           default:
             break;

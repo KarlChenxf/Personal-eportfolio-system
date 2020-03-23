@@ -24,7 +24,7 @@ class VideoEditor extends React.Component {
             replace: ({ attribs, name }) => {
               console.log({ attribs, name });
               attribs = attribs || {};
-              if (name && name.toLowerCase() === 'videourl') {
+              if (name && name.toLowerCase() === 'videodisplay') {
                 this.state = attribs;
               }
             },
@@ -37,9 +37,9 @@ class VideoEditor extends React.Component {
             [event.target.name]: event.target.value, // update the changed value
         });
     }
-
+    
     getHtmlString() {
-        return `<VideoURL name='${this.state.name||''}'/>`
+        return `<VideoDisplay name='${this.state.vname||''}'/>`
     }
 
     render() {
@@ -49,10 +49,10 @@ class VideoEditor extends React.Component {
                 <MuiDialogContent>
                     <TextField fullWidth
                         id="outlined-basic"
-                        placeholder="VideoURL"
+                        placeholder="VideoDisplay"
                         variant="outlined"
-                        name="name"
-                        value={this.state.name}
+                        name="vname"
+                        value={this.state.vname}
                         onChange={this.handleChange} />
                 </MuiDialogContent>
                 <MuiDialogActions>
