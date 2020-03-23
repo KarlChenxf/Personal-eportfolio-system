@@ -158,13 +158,13 @@ class Dashboard extends React.Component {
                     {/* Add Raw HTML */}
                     <MenuItem title="Add Raw HTML" onClick={()=>{this.newComponent("")}}>HTML</MenuItem>
                     {/* Add Personal Info */}
-                    <MenuItem onClick={()=>this.newComponent('<PersonalInfo/>')}>Personal Information</MenuItem>
+                    <MenuItem onClick={()=>{this.newComponent('<PersonalInfo/>');this.handleClose()}}>Personal Information</MenuItem>
                     {/* Add TextArea */}
-                    <MenuItem onClick={()=>this.newComponent('<TextArea/>')}>Text Area</MenuItem>
+                    <MenuItem onClick={()=>{this.newComponent('<TextArea/>');this.handleClose()}}>Text Area</MenuItem>
                     {/* Add Photos */}
-                    <MenuItem onClick={()=>this.newComponent('<PicDisplay/>')}>Pictures</MenuItem>
+                    <MenuItem onClick={()=>{this.newComponent('<PicDisplay/>');this.handleClose()}}>Pictures</MenuItem>
                     {/* Add Videos */}
-                    <MenuItem onClick={()=>this.newComponent('<VideoDisplay/>')}>Videos</MenuItem>
+                    <MenuItem onClick={()=>{this.newComponent('<VideoDisplay/>');this.handleClose()}}>Videos</MenuItem>
                     {/* Add Audios */}
                     <MenuItem onClick={this.handleClose}>Audios</MenuItem>
                     {/* Add Files */}
