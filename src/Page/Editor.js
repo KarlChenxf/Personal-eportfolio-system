@@ -140,13 +140,20 @@ class Dashboard extends React.Component {
                 {/* Appbar */}
                 <AppBar position="absolute" className={classes.appBar}>
                     <Toolbar className={classes.toolbar}>
-                    <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                        <MenuIcon aria-controls="fade-menu" aria-haspopup="true" onClick={this.handleClick} />
-                    </IconButton>
-                    <Typography variant="h5" className={classes.title}>
-                    Welcome,user
-                    </Typography>
-                    <Button href="./" color="inherit" horizontal='right'>Log out</Button>
+                    <Grid
+                    container
+                    direction="row"
+                    justify="space-between"
+                    alignItems="center"
+                    >
+                        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                            <MenuIcon aria-controls="fade-menu" aria-haspopup="true" onClick={this.handleClick} />
+                        </IconButton>
+                        <Typography variant="h6" className={classes.title}>
+                        Welcome,user
+                        </Typography>
+                        <Button href="./" color="inherit" horizontal='right'>Log out</Button>
+                    </Grid>
                     <Menu
                     id="fade-menu"
                     keepMounted
