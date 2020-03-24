@@ -92,7 +92,8 @@ class Dashboard extends React.Component {
 
         this.state = {
             content: [],
-            open: Boolean(null),
+            anchorEl: null,
+            setAnchorEl: null,
         };
     }
 
@@ -124,11 +125,11 @@ class Dashboard extends React.Component {
     }
 
     handleClick = event =>{
-        this.setState({open: event.currentTarget});
+        this.setState({anchorEl: event.currentTarget});
     }
 
     handleClose = event =>{
-        this.setState({open: null});
+        this.setState({anchorEl: null});
     }
 
     render() {
@@ -146,8 +147,8 @@ class Dashboard extends React.Component {
                     justify="space-between"
                     alignItems="center"
                     >
-                        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-                            <MenuIcon aria-controls="fade-menu" aria-haspopup="true" onClick={this.handleClick} />
+                        <IconButton edge="start" className={classes.menuButton} onClick={this.handleClick} color="inherit" aria-label="menu">
+                            <MenuIcon aria-controls="fade-menu" aria-haspopup="true" />
                         </IconButton>
                         <Typography variant="h6" className={classes.title}>
                         Welcome,user
@@ -157,13 +158,13 @@ class Dashboard extends React.Component {
                     <Menu
                     id="fade-menu"
                     keepMounted
-                    anchorEl={this.state.open}
-                    open={this.state.open}
+                    anchorEl={this.state.anchorEl}
+                    open={Boolean(this.state.anchorEl)}
                     onClose={this.handleClose}
                     TransitionComponent={Fade}
                     >
                     {/* Add Raw HTML */}
-                    <MenuItem title="Add Raw HTML" onClick={()=>{this.newComponent("")}}>HTML</MenuItem>
+                    <MenuItem title="Add Raw HTML" onClick={()=>{this.newComponent("");this.handleClose()}}>HTML</MenuItem>
                     {/* Add Personal Info */}
                     <MenuItem onClick={()=>{this.newComponent('<PersonalInfo/>');this.handleClose()}}>Personal Information</MenuItem>
                     {/* Add TextArea */}
