@@ -21,7 +21,7 @@ import org.hibernate.annotations.Type;
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-14 21:59:50
- * @LastEditTime: 2020-03-19 00:42:41
+ * @LastEditTime: 2020-03-24 16:15:26
  */
 @Entity(name = "user")
 public class UserDO{
@@ -31,7 +31,9 @@ public class UserDO{
         @Type(type = "org.hibernate.type.UUIDCharType")
         private UUID id;
 
-        private String userName;
+        
+        private String firstName;
+        private String lastName;
         @Column(nullable = false)
         private String email;
         @Column(nullable = false, length = 33)
@@ -54,9 +56,7 @@ public class UserDO{
         public String getEmail() {
                 return email;
         }
-        public void setUserName(String userName) {
-                this.userName = userName;
-        }
+
         public void setEmail(String email) {
                 this.email = email;
         }
@@ -65,5 +65,21 @@ public class UserDO{
         }
         public List<ProfileDO> getProfiles(){
                 return this.profiles;
+        }
+
+        public String getFirstName() {
+                return this.firstName;
+        }
+
+        public void setFirstName(String firstName) {
+                this.firstName = firstName;
+        }
+
+        public String getLastName() {
+                return this.lastName;
+        }
+
+        public void setLastName(String lastName) {
+                this.lastName = lastName;
         }
 }
