@@ -93,7 +93,12 @@ class Dashboard extends React.Component {
         this.state = {
             content: [],
             open: Boolean(null),
+            //name: [],
         };
+        /*const { data } = this.props.location;
+        this.state.name = {data};
+        console.log("statename: ",this.state.name);
+        console.log("data: ",data);*/
     }
 
     newComponent = (html) => {
@@ -133,6 +138,11 @@ class Dashboard extends React.Component {
 
     render() {
         const { classes } = this.props;
+        //const { data } = this.props.location;
+        //const {data} = this.state.name;
+        //console.log("props: ",this.props);
+        //console.log("data: ",data);
+        //console.log("classes: ",classes);
 
         return (
             <div className={classes.root}>
@@ -144,7 +154,7 @@ class Dashboard extends React.Component {
                         <MenuIcon aria-controls="fade-menu" aria-haspopup="true" onClick={this.handleClick} />
                     </IconButton>
                     <Typography variant="h5" className={classes.title}>
-                    Welcome,user
+                    Welcome, {localStorage.getItem("UserName")}
                     </Typography>
                     <Button href="./" color="inherit" horizontal='right'>Log out</Button>
                     <Menu

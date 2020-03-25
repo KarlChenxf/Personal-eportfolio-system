@@ -92,11 +92,17 @@ class Login extends React.Component {
 		})
 			.then(
 				(response) => {
-          //console.log(response);
+          //console.log("response: ",response);
 					if (response.ok) {
 						response.json().then(data => {
 							//console.log(data);
               localStorage.setItem('LoginToken', data.token)// store user token
+              localStorage.setItem('UserName', data.user.firstName + ' ' + data.user.lastName)
+              /*console.log("array user: ",Object.entries(data.user))
+              this.props.history.push({
+                pathname: '/editor',
+                data: Object.entries(data.user), // your data from array of objects to array
+              })*/
 							//if (data.message.indexOf("Success")>=0) {
                 // Send them to the dashboard
                 /*if(data.content && data.content.Admin)
