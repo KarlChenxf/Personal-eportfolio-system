@@ -20,20 +20,9 @@ class PersonalInfoEditor extends React.Component {
         super(props);
 
         this.state = {
-            avatar: null,
-            name: "",
+            avatar: props.avatar || "",
+            name: props.name || "",
         };
-
-        HTMLReactParser(this.props.html, {
-            replace: ({ attribs, name }) => {
-              console.log({ attribs, name });
-              attribs = attribs || {};
-              if (name && name.toLowerCase() === 'personalinfo') {
-                this.state = attribs;
-              }
-            },
-          });
-
     }
 
     handleChange = event => {
@@ -42,8 +31,11 @@ class PersonalInfoEditor extends React.Component {
         });
     }
 
-    getHtmlString() {
-        return `<PersonalInfo avatar='${this.state.avatar||''}' name='${this.state.name||''}'/>`
+    getProps() {
+        return {
+            avatar: this.state.avatar,
+            name: this.state.name,
+        };
     }
 
     render() {
@@ -52,14 +44,14 @@ class PersonalInfoEditor extends React.Component {
             <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"}>
                 <MuiDialogContent>
                     <TextField fullWidth
-                        id="outlined-basic"
+                        id="avatar"
                         placeholder="Avatar URL"
                         variant="outlined"
                         name="avatar"
                         value={this.state.avatar}
                         onChange={this.handleChange} />
                     <TextField fullWidth
-                        id="outlined-basic"
+                        id="name"
                         placeholder="Name"
                         variant="outlined"
                         name="name"
@@ -67,7 +59,7 @@ class PersonalInfoEditor extends React.Component {
                         onChange={this.handleChange} />
                 </MuiDialogContent>
                 <MuiDialogActions>
-                    <Button autoFocus onClick={() => {this.props.saveComponent(this.getHtmlString())}} color="primary">
+                    <Button autoFocus onClick={() => {this.props.saveComponent(this.getProps())}} color="primary">
                         Save
                     </Button>
                 </MuiDialogActions>
