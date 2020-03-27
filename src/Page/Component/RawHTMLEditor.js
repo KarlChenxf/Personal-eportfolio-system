@@ -11,7 +11,7 @@ class RawHTMLEditor extends React.Component {
         super(props);
 
         this.state = {
-            html: this.props.html,
+            html: this.props.html || "",
         };
     }
 
@@ -21,12 +21,18 @@ class RawHTMLEditor extends React.Component {
         });
     }
 
+    getProps() {
+        return {
+            html: this.state.html,
+        };
+    }
+
     render() {
         return (
             <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"}>
                 <MuiDialogContent>
                     <TextField fullWidth
-                        id="outlined-basic"
+                        id="html"
                         placeholder="Put raw html here and click ADD."
                         variant="outlined"
                         name="html"
@@ -34,7 +40,7 @@ class RawHTMLEditor extends React.Component {
                         onChange={this.handleChange} />
                 </MuiDialogContent>
                 <MuiDialogActions>
-                    <Button autoFocus onClick={() => this.props.saveComponent(this.state.html)} color="primary">
+                    <Button autoFocus onClick={() => this.props.saveComponent(this.getProps())} color="primary">
                         Save
                     </Button>
                 </MuiDialogActions>
