@@ -4,18 +4,11 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
-import HTMLReactParser from 'html-react-parser';
-import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 
-const styles = makeStyles(theme => ({
-    root: {
-      '& .MuiTextField-root': {
-        margin: theme.spacing(3),
-        width: '45ch',
-      },
-    },
-  }));
+const styles = (theme => ({
+
+}));
 
 class TextAreaEditor extends React.Component {
 
@@ -23,32 +16,21 @@ class TextAreaEditor extends React.Component {
         super(props);
 
         this.state = {
-            text: this.props.html,
+            textarea: props.textarea || "",
         };
 
-
-        HTMLReactParser(this.props.html, {
-            replace: ({ attribs, name }) => {
-              console.log({ attribs, name });
-              attribs = attribs || {};
-              if (name && name.toLowerCase() === 'textarea') {
-                this.state = attribs;
-              }
-            },
-          });
     }
 
-
-
+    getProps() {
+        return {
+            textarea: this.state.textarea,
+        };
+    }
 
     handleChange = event => {
         this.setState({
             [event.target.name]: event.target.value, // update the changed value
         });
-    }
-
-    getHtmlString() {
-        return `<TextArea text='${this.state.text||''}'/>`
     }
 
 
@@ -60,15 +42,14 @@ class TextAreaEditor extends React.Component {
                         id="outlined-multiline-basic"
                         placeholder="Put your text here and click save."
                         variant="outlined"
-                        label="TextArea"
                         multiline
                         rows="8"
-                        name="text"
-                        value={this.state.text}
+                        name="textarea"
+                        value={this.state.textarea}
                         onChange={this.handleChange} />
                 </MuiDialogContent>
                 <MuiDialogActions>
-                    <Button autoFocus onClick={() => this.props.saveComponent(this.state.text)} color="primary">
+                    <Button autoFocus onClick={() => {this.props.saveComponent(this.getProps())}}  color="primary">
                         Save
                     </Button>
                 </MuiDialogActions>
