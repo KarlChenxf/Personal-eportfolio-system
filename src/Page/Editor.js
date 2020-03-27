@@ -109,7 +109,6 @@ class Dashboard extends React.Component {
             anchorEl: null,
             edit: -1,
         };
-
     }
 
     componentDidMount() {
@@ -183,6 +182,11 @@ class Dashboard extends React.Component {
 
     render() {
         const { classes } = this.props;
+        //const { data } = this.props.location;
+        //const {data} = this.state.name;
+        //console.log("props: ",this.props);
+        //console.log("data: ",data);
+        //console.log("classes: ",classes);
 
         return (
             <div className={classes.root}>
