@@ -229,7 +229,7 @@ class Dashboard extends React.Component {
                             {/* Add Audios */}
                             <MenuItem onClick={this.handleClose}>Audios</MenuItem>
                             {/* Add Files */}
-                            <MenuItem onClick={this.handleClose}>Files</MenuItem>
+                            <MenuItem onClick={() => { this.newComponent(Type.FILE); this.handleClose() }}>Files</MenuItem>
                         </Menu>
                     </Toolbar>
                 </AppBar>
