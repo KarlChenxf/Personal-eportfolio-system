@@ -17,7 +17,7 @@ export function parse(html) {
       case Type.HTML:
         return HTMLReactParser(html.props.html || "");
       case Type.TEXTAREA:
-        return HTMLReactParser(html.props.textarea || "");
+        return <Textarea {...html.props} />;;
       default:
         break;
     }
