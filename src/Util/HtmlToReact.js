@@ -3,7 +3,9 @@ import HTMLReactParser from 'html-react-parser';
 import PersonalInfo from '../Page/Component/PersonalInfo.js'
 import VideoDisplay from '../Page/Component/VideoDisplay.js'
 import PicDisplay from '../Page/Component/PicDisplay.js'
+import Textarea from '../Page/Component/TextArea.js'
 import * as Type from '../Page/Component/Type.js'
+
 
 export function parse(html) {
   console.log(html);
@@ -14,6 +16,8 @@ export function parse(html) {
         return <PersonalInfo {...html.props} />;
       case Type.HTML:
         return HTMLReactParser(html.props.html || "");
+      case Type.TEXTAREA:
+        return <Textarea {...html.props} />;;
       default:
         break;
     }
@@ -28,6 +32,8 @@ export function parse(html) {
         switch (name.toLowerCase()) {
           case 'personalinfo':
             return <PersonalInfo {...attribs} />;
+          case 'textarea':
+            return <Textarea {...attribs} />;
           case 'videodisplay':
             //console.log("vedio");
             return <VideoDisplay {...attribs} />;

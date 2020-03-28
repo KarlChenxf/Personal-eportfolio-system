@@ -221,7 +221,7 @@ class Dashboard extends React.Component {
                             {/* Add Personal Info */}
                             <MenuItem onClick={() => { this.newComponent(Type.PERSONAL_INFO); this.handleClose() }}>Personal Information</MenuItem>
                             {/* Add TextArea */}
-                            <MenuItem onClick={() => { this.newComponent('<TextArea/>'); this.handleClose() }}>Text Area</MenuItem>
+                            <MenuItem onClick={() => { this.newComponent(Type.TEXTAREA); this.handleClose() }}>Text Area</MenuItem>
                             {/* Add Photos */}
                             <MenuItem onClick={() => { this.newComponent('<PicDisplay/>'); this.handleClose() }}>Pictures</MenuItem>
                             {/* Add Videos */}

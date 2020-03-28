@@ -1,8 +1,22 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 
-
+const styles = (theme => ({
+    paper: {
+        padding: theme.spacing(2),
+        //display: 'flex',
+        //overflow: 'auto',
+        //flexDirection: 'column',
+        //flex: '1 1 auto',
+        position: "relative",
+        minHeight: '64px',
+        // Fill height
+        height: '100%',
+    },
+}));
 class TextArea extends React.Component {
 
     constructor(props) {
@@ -17,14 +31,17 @@ class TextArea extends React.Component {
         const { classes } = this.props;
 
         return (
-            <Grid container justify="left">
+            <Paper className={classes.paper}>
+                <Grid container >
                     <Typography 
                     variant="h5"
-                    multiline
-                    >{this.props.html}</Typography>
-            </Grid>
+                    >{this.props.textarea}
+                    </Typography>
+                </Grid>
+            </Paper>
+            
         )
     }
 }
 
-export default (TextArea);
+export default withStyles(styles)(TextArea);
