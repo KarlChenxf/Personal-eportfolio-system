@@ -10,13 +10,14 @@ const styles = (theme => ({
         //display: 'flex',
         //overflow: 'auto',
         //flexDirection: 'column',
-        //flex: '1 1 auto',
+        flex: '1 1 auto',
         position: "relative",
         minHeight: '64px',
         // Fill height
         height: '100%',
     },
 }));
+
 class TextArea extends React.Component {
 
     constructor(props) {
@@ -31,7 +32,8 @@ class TextArea extends React.Component {
         const { classes } = this.props;
 
         return (
-            <Paper className={classes.paper}>
+            <Paper className={classes.paper}
+            >
                 <Grid container >
                     <Typography 
                     variant="h5"
