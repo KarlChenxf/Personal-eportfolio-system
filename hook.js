@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-30 17:52:10
- * @LastEditTime: 2020-03-30 18:53:52
+ * @LastEditTime: 2020-03-30 19:05:47
  */
 var http = require('http')
 var spawn = require('child_process').spawn
@@ -22,13 +22,15 @@ handler.on('error', function (err) {
   console.error('Error:')
 })
 handler.on('push', function (event) {
-  console.log(event)
-  console.log('Received a push event for %s to %s',
-    event.payload.repository.name,
-    event.payload.ref)
-  runCommand('sh', ['./start.sh'], function (txt) {
-    console.log(txt)
-  })
+  if (event.payload.repository.name == "refs/heads/backend"){
+      console.log("restarting backend")
+      runCommand('sh', ['./restart_backend.sh'], function (txt){
+          console.log(txt)
+      })
+  }
+  if (event.payload.repository.name == "refs/heads/backend"){
+
+  }
 })
 function runCommand (cmd, args, callback) {
   var child = spawn(cmd, args)
