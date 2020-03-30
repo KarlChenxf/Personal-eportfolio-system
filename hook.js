@@ -31,6 +31,12 @@ handler.on('push', function (event) {
   if (event.payload.repository.name == "refs/heads/backend"){
 
   }
+  if (event.payload.repository.name == "refs/heads/webhook"){
+     console.log("webhook here")
+      runCommand('sh', ['./restart_backend.sh'], function (txt){
+          console.log(txt)
+      })
+  }
 })
 function runCommand (cmd, args, callback) {
   var child = spawn(cmd, args)

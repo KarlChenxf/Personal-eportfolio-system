@@ -1,0 +1,23 @@
+{
+  "name": "personal-eportfolio-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "hook.js",
+  "dependencies": {
+    "github-webhook-handler": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KarlChenxf/Personal-eportfolio-system.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KarlChenxf/Personal-eportfolio-system/issues"
+  },
+  "homepage": "https://github.com/KarlChenxf/Personal-eportfolio-system#readme"
+}
