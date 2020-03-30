@@ -4,6 +4,7 @@ import PersonalInfoEditor from './PersonalInfoEditor.js'
 import TextAreaEditor from './TextAreaEditor.js'
 import VideoEditor from './VideoEditor.js'
 import PicEditor from './PicEditor.js'
+import FileEditor from './FileEditor.js'
 import * as Type from './Type.js'
 
 class ComponentEditor extends React.Component {
@@ -24,6 +25,8 @@ class ComponentEditor extends React.Component {
             return <RawHTMLEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
         }else if(this.props.component.type == Type.TEXTAREA){
             return <TextAreaEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
+        }else if(this.props.component.type == Type.FILE){
+            return <FileEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
         }else if(this.props.html.startsWith('<VideoDisplay')){
             //console.log("videoeditor");
             return <VideoEditor open={this.props.open} html={this.props.html} saveComponent={this.props.saveComponent}/>;
