@@ -22,16 +22,20 @@ handler.on('error', function (err) {
   console.error('Error:')
 })
 handler.on('push', function (event) {
-  if (event.payload.repository.name == "refs/heads/backend"){
+  if (event.payload.ref == "refs/heads/backend"){
       console.log("restarting backend")
       runCommand('sh', ['./restart_backend.sh'], function (txt){
           console.log(txt)
       })
   }
-  if (event.payload.repository.name == "refs/heads/backend"){
+  if (event.payload.ref == "refs/heads/frontend"){
+      console.log("restarting frontend")
+      runCommand('sh', ['./restart_frontend.sh'], function (txt){
+          console.log(txt)
+      })
 
   }
-  if (event.payload.repository.name == "refs/heads/webhook"){
+  if (event.payload.ref == "refs/heads/webhook"){
      console.log("webhook here")
       runCommand('sh', ['./restart_backend.sh'], function (txt){
           console.log(txt)
