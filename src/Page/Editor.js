@@ -240,7 +240,7 @@ class Dashboard extends React.Component {
                         <ResponsiveReactGridLayout
                             className="layout"
                             cols={{ lg: 24, md: 24, sm: 24, xs: 4, xxs: 2 }}
-                            rowHeight={100}
+                            //rowHeight={'auto'}
                             width={300}
                             margin={[0, 0]}
                             containerPadding={[0, 0]}
