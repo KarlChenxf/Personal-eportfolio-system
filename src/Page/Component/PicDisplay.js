@@ -3,25 +3,48 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
+
 const styles = (theme => ({
-    root: {
-        maxWidth: 345,
-        width: 300,
+      root: {
+          maxWidth: 345,
+          width: 300,
       },
       media: {
-        height: '100%',
-        width: '100%',
+        //maxHeight: '100%',
+        //maxWidth: '100%',
+        position:'absolute',
+        width: 'auto',
+        height: 'auto',
+        verticalalign: 'middle',
+        //minWidth: '10%',
+        //class: 'center',
+        //overflow:'hidden',
+        //display: 'block',
+        //marginleft: 'auto',
+        //marginright: 'auto',
+
       },
       paper: {
-        padding: theme.spacing(2),
-        //display: 'flex',
+        padding: theme.spacing(0),
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         //overflow: 'auto',
         //flexDirection: 'column',
         //flex: '1 1 auto',
         position: "relative",
-        minHeight: '64px',
         // Fill height
-        height: '100%',
+        height: '100% ',
+        width:'100%',
+        //display: 'block',
+        //minHeight:'64px',
+        //minWidth: '100px',
+        //marginleft: 'auto',
+        margin: 'auto',
+        class: 'center',
+        overflow:'hidden',
+        verticalalign: 'middle',
+        textalign: 'center',
       },
 }));
 
@@ -39,11 +62,9 @@ class PicDisplay extends React.Component {
         const {classes} = this.props;
 
         return (
-          <Paper container justify="left" className={classes.paper}>
-          <img src={this.props.picurl} alt="pic" className={classes.media}/>
+          <Paper container className={classes.paper}>
+            <img src={this.props.picurl} alt="pic"className={classes.media}/>     
           </Paper>
-          
-        
         )
     }
 }
