@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "@tinymce/tinymce-react": "^3.5.0",
     "html-react-parser": "^0.10.2",
     "material-ui-popup-state": "^1.5.3",
     "react": "^16.13.0",
