@@ -18,6 +18,10 @@ export function parse(html) {
         return HTMLReactParser(html.props.html || "");
       case Type.TEXTAREA:
         return <Textarea {...html.props} />;;
+      case Type.PICDISPLAY:
+        return <PicDisplay {...html.props} />;;
+      case Type.VIDEODISPLAY:
+        return <VideoDisplay {...html.props} />;;
       default:
         break;
     }

@@ -17,20 +17,14 @@ class PicEditor extends React.Component {
         super(props);
 
         this.state = {
-            name: "",
+            picurl: props.picurl||"",
         };
+    }
 
-        HTMLReactParser(this.props.html, {
-            replace: ({ attribs, name }) => {
-              console.log({ attribs, name });
-              attribs = attribs || {};
-              if (name && name.toLowerCase() === 'picurl') {
-                this.state = attribs;
-                console.log("pic_attribs: ", attribs);
-              }
-            },
-          });
-
+    getProps() {
+        return {
+            picurl: this.state.picurl,
+        };
     }
 
     handleChange = event => {
@@ -39,25 +33,21 @@ class PicEditor extends React.Component {
         });
     }
 
-    getHtmlString() {
-        return `<PicDisplay name='${this.state.pname||''}'/>`
-    }
-
     render() {
 
         return (
             <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"}>
                 <MuiDialogContent>
                     <TextField fullWidth
-                        id="outlined-basic"
+                        id="picurl"
                         placeholder="PicDisplay"
                         variant="outlined"
-                        name="pname"
-                        value={this.state.pname}
+                        name="picurl"
+                        value={this.state.picurl}
                         onChange={this.handleChange} />
                 </MuiDialogContent>
                 <MuiDialogActions>
-                    <Button autoFocus onClick={() => {this.props.saveComponent(this.getHtmlString())}} color="primary">
+                    <Button autoFocus onClick={() => {this.props.saveComponent(this.getProps())}} color="primary">
                         Save
                     </Button>
                 </MuiDialogActions>
