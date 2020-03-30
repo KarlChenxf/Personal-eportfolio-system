@@ -18,18 +18,16 @@ class ComponentEditor extends React.Component {
         console.log(this.props);
         // Return different editor based on HTML
         // Return RawHTMLEditor if given HTML fails to match all available patterns
-        if(this.props.component.type == Type.PERSONAL_INFO){ 
+        if(this.props.component.type === Type.PERSONAL_INFO){ 
             return <PersonalInfoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
-        }else if(this.props.component.type == Type.HTML){ 
+        }else if(this.props.component.type === Type.HTML){ 
             return <RawHTMLEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
-        }else if(this.props.component.type == Type.TEXTAREA){
+        }else if(this.props.component.type === Type.TEXTAREA){
             return <TextAreaEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
-        }else if(this.props.html.startsWith('<VideoDisplay')){
-            //console.log("videoeditor");
-            return <VideoEditor open={this.props.open} html={this.props.html} saveComponent={this.props.saveComponent}/>;
-        }else if(this.props.html.startsWith('<PicDisplay')){
-            //console.log("piceditor");
-            return <PicEditor open={this.props.open} html={this.props.html} saveComponent={this.props.saveComponent}/>;
+        }else if(this.props.component.type === Type.PICDISPLAY){
+            return <PicEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
+        }else if(this.props.component.type === Type.VIDEODISPLAY){
+            return <VideoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
         }
         return null;
     }

@@ -1,11 +1,21 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import ReactPlayer from 'react-player'
+import Paper from '@material-ui/core/Paper';
 
 const styles = (theme => ({
-
+    paper: {
+        padding: theme.spacing(2),
+        //display: 'flex',
+        //overflow: 'auto',
+        //flexDirection: 'column',
+        //flex: '1 1 auto',
+        position: "relative",
+        minHeight: '64px',
+        // Fill height
+        height: '100%',
+    },
 }));
 
 class VideoDisplay extends React.Component {
@@ -23,16 +33,15 @@ class VideoDisplay extends React.Component {
         const {classes} = this.props;
 
         return (
-            <Grid container justify="left" spacing={2}>
-                <Grid key={0} item > 
+                <Paper key={0} item className={classes.paper}> 
                     <ReactPlayer
-                                className='react-player'
-                                url= {this.props.name}
-                                width='100%'
-                                height='100%'
-                                controls = {true}
-                /></Grid>
-            </Grid>
+                        className='react-player'
+                        url= {this.props.videourl}
+                        width='100%'
+                        height='100%'
+                        controls = {true}
+                    />
+                </Paper>
         )
     }
 }
