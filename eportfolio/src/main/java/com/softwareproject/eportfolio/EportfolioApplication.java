@@ -2,10 +2,11 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-14 23:11:53
- * @LastEditTime: 2020-03-16 23:04:00
+ * @LastEditTime: 2020-03-30 17:37:42
  */
 package com.softwareproject.eportfolio;
 
+import com.alibaba.fastjson.JSONObject;
 import com.softwareproject.eportfolio.dao.ProfileDAO;
 import com.softwareproject.eportfolio.dao.UserDAO;
 import com.softwareproject.eportfolio.domain.ProfileDO;
@@ -40,10 +41,17 @@ public class EportfolioApplication implements ApplicationRunner{
 		userDAO.save(admin);
 		ProfileDO profile1 = new ProfileDO();
 		profile1.setUser(admin);
-		profile1.setHTML("<div blabla></div>");
+		JSONObject testObject = new JSONObject();
+		JSONObject content = new JSONObject();
+		content.put("fefa", "feafefef");
+		testObject.put("contetnt", content);
+		testObject.put("layout", new JSONObject().put("111", "feafef"));
+		testObject.put("whatever", new JSONObject().put("111", "feafef"));
+		System.out.println(testObject.toJSONString());
+		profile1.setHTML(testObject.toJSONString());
 		profile1.setUrl("https://google.com");
 		ProfileDO profile2 = new ProfileDO();
-		profile2.setHTML("<div blabla></div>");
+		profile2.setHTML(testObject.toJSONString());
 		profile2.setUrl("https://google.com");
 		profile2.setUser(admin);
 

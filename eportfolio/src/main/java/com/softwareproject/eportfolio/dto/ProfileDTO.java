@@ -1,5 +1,6 @@
 package com.softwareproject.eportfolio.dto;
 
+import com.alibaba.fastjson.JSONObject;
 import com.softwareproject.eportfolio.domain.ProfileDO;
 
 import org.modelmapper.ModelMapper;
@@ -8,13 +9,13 @@ import org.modelmapper.ModelMapper;
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-18 23:21:35
- * @LastEditTime: 2020-03-19 00:01:03
+ * @LastEditTime: 2020-03-30 17:33:20
  */
 public class ProfileDTO{
 
     public Long id;
 
-    public String html;
+    public JSONObject html;
 
     public String url;
 
@@ -22,7 +23,7 @@ public class ProfileDTO{
 
 
     public void setHTML(String html) {
-        this.html = html;
+        this.html = JSONObject.parseObject(html);
 	}
 
 	public void setUrl(String url) {
@@ -37,7 +38,7 @@ public class ProfileDTO{
 		return this.id;
 	}
 
-	public String getHtml() {
+	public JSONObject getHtml() {
 		return this.html;
 	}
 

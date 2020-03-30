@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-18 23:29:03
- * @LastEditTime: 2020-03-21 23:51:59
+ * @LastEditTime: 2020-03-30 17:41:22
  */
 package com.softwareproject.eportfolio.controller;
 
@@ -64,7 +64,7 @@ public class ProfileController{
                 .export();
         } else {
             ProfileDO profile = new ProfileDO();
-            profile.setHTML(body.getString("html"));
+            profile.setHTML(body.getJSONObject("html").toJSONString());
             profile.setUrl(body.getString("url"));
             profile.setUser(user);
             ProfileDTO newProfile = modelMapper.map(profileDAO.save(profile), ProfileDTO.class);
@@ -87,7 +87,7 @@ public class ProfileController{
                 .put("message", "profile does not exists")
                 .export();
         }
-        profile.setHTML(body.getString("html"));
+        profile.setHTML(body.getJSONObject("html").toJSONString());
         profile.setUrl(body.getString("url"));
         ProfileDTO newProfile = modelMapper.map(profileDAO.save(profile), ProfileDTO.class);
         return res 
@@ -122,10 +122,9 @@ public class ProfileController{
                     .put("message", "user does not exist")
                     .export();
             }
-            //List<ProfileDO> targets = profileDAO.findProfileByUserid(UUID.fromString(body.getString("userid")));
             return res
                 .put("status", "success")
-                .put("profile", user.getProfiles())
+                .put("profile", user.getProfiles().stream().map(profile -> modelMapper.map(profile, ProfileDTO.class)))
                 .export();
         }
         return res;
