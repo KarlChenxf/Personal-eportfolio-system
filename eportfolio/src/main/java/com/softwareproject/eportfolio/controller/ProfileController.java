@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-18 23:29:03
- * @LastEditTime: 2020-03-31 19:59:25
+ * @LastEditTime: 2020-03-31 20:05:07
  */
 package com.softwareproject.eportfolio.controller;
 
@@ -98,8 +98,8 @@ public class ProfileController{
     }
 
     @UserLoginToken
-    @GetMapping("/get")
-    public Object getProfile(@RequestParam JSONObject body){
+    @PostMapping("/get")
+    public Object getProfile(@RequestBody JSONObject body){
         APIResponse res = new APIResponse();
         if (body.get("profileid") != null){
             ProfileDO target = profileDAO.findProfileById(body.getLong("profileid"));
