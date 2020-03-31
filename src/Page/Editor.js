@@ -5,29 +5,26 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
-import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-
-import { parse } from '../Util/HtmlToReact.js'
-import ComponentEditor from './Component/ComponentEditor.js'
-import * as Type from './Component/Type.js'
-
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fade from '@material-ui/core/Fade';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 
+import { WidthProvider, Responsive } from "react-grid-layout";
 import '../css/react-grid-layout.css'
 import '../css/react-resizable.css';
-import { WidthProvider, Responsive } from "react-grid-layout";
+
+import { parse } from '../Util/HtmlToReact.js'
+import ComponentEditor from './Component/ComponentEditor.js'
+import * as Type from './Component/Type.js'
+import { API_END_POINT } from '../Config.js';
+
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
-
-
 
 
 /*function Copyright() {
@@ -67,17 +64,6 @@ const styles = (theme => ({
         paddingTop: theme.spacing(4),
         paddingBottom: theme.spacing(4),
     },
-    paper: {
-        padding: theme.spacing(2),
-        //display: 'flex',
-        //overflow: 'auto',
-        //flexDirection: 'column',
-        //flex: '1 1 auto',
-        position: "relative",
-        minHeight: '64px',
-        // Fill height
-        height: '100%',
-    },
     actions: {
         position: "absolute",
         top: '10px',
@@ -109,10 +95,123 @@ class Dashboard extends React.Component {
             anchorEl: null,
             edit: -1,
         };
+
+        this.profileId = 1;
+    }
+
+    getProfile = () => {
+
+        const auth_token = localStorage.LoginToken;
+        //console.log(auth_token);
+
+        const content = {
+            profileid: this.profileId,
+        }
+
+        // Check authentication with the server
+        fetch(API_END_POINT + "/profile/get", {
+            body: JSON.stringify(content), // must match 'Content-Type' header
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // including cookie //include, same-origin, *omit
+            headers: {
+                'Accept': 'application/json',
+                'content-type': 'application/json',
+                'token': auth_token,
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+        })
+            .then(
+                (response) => {
+                    //console.log("response: ",response);
+                    if (response.ok) {
+                        response.json().then(data => {
+                            //console.log(data);
+                            this.setState({
+                                layouts: data.profile.html.layouts,
+                                components: data.profile.html.components,
+                            });
+                        })
+                    }
+                    else {
+                        //alert("Unable to Login.");
+                        response.json().then(error => {
+                            console.log(error);
+                        }).catch(error => {
+                            console.error(error);
+                            //alert("Network Error.");
+                        });
+                    }
+                }
+            )
+            .catch(error => {
+                console.error(error);
+                //alert("Network Error.");
+            });
+
+        //event.preventDefault();
+    }
+
+    updateProfile = () => {
+
+        const auth_token = localStorage.LoginToken;
+        //console.log(auth_token);
+
+        const content = {
+            id: this.profileId,
+            html: {
+                components: this.state.components,
+                layouts: this.state.layouts,
+            }
+        }
+
+        // Check authentication with the server
+        fetch(API_END_POINT + "/profile/update", {
+            body: JSON.stringify(content), // must match 'Content-Type' header
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // including cookie //include, same-origin, *omit
+            headers: {
+                'Accept': 'application/json',
+                'content-type': 'application/json',
+                'token': auth_token,
+            },
+            method: 'PUT', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+        })
+            .then(
+                (response) => {
+                    //console.log("response: ",response);
+                    if (response.ok) {
+                        response.json().then(data => {
+                            console.log(data);
+                        })
+                    }
+                    else {
+                        //alert("Unable to Login.");
+                        response.json().then(error => {
+                            console.log(error);
+                        }).catch(error => {
+                            console.error(error);
+                            //alert("Network Error.");
+                        });
+                    }
+                }
+            )
+            .catch(error => {
+                console.error(error);
+                //alert("Network Error.");
+            });
+
+        //event.preventDefault();
     }
 
     componentDidMount() {
         //this.newComponent("");
+        this.getProfile();
     }
 
     newComponent = (type) => {
@@ -132,13 +231,13 @@ class Dashboard extends React.Component {
         newComponents.push(component);
 
         // IMPORTANT: Deep Clone is essential!
-        let newLayouts = {
+        let newLayouts = layouts ? {
             ...layouts,
-            lg: [
+            lg: layouts.lg ? [
                 ...layouts.lg,
                 layout
-            ]
-        };
+            ] : [layout]
+        }:{lg:[layout]};
 
         this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts });
     }
@@ -149,6 +248,8 @@ class Dashboard extends React.Component {
         newComponents[index].props = props;
         //newContent[index].lastUpdate = new Date().getTime();
         this.setState({ components: newComponents, edit: -1 });
+
+        this.updateProfile();
     }
 
     editComponent = (index) => {
@@ -165,7 +266,7 @@ class Dashboard extends React.Component {
         this.setState({ anchorEl: event.currentTarget });
     }
 
-    handleClose = event => {
+    handleClose = () => {
         this.setState({ anchorEl: null });
     }
 
@@ -245,9 +346,9 @@ class Dashboard extends React.Component {
                             containerPadding={[0, 0]}
                             onLayoutChange={this.onLayoutChange}
                             onBreakpointChange={this.onBreakpointChange}
-                            layouts={this.state.layouts}>
+                            layouts={this.state.layouts || {}}>
                             {/* Components */}
-                            {this.state.components.map((component, index) =>
+                            {this.state.components ? this.state.components.map((component, index) =>
                                 <div key={component.key}>
                                     {parse(component)}
                                     {/* Actions: Edit/Remove */}
@@ -260,7 +361,7 @@ class Dashboard extends React.Component {
                                         </IconButton>
                                     </div>
                                 </div>
-                            )}
+                            ) : null}
                         </ResponsiveReactGridLayout>
                     </Container>
                 </main>

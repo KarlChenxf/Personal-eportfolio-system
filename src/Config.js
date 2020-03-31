@@ -1,1 +1,1 @@
-export const API_END_POINT = " http://3.135.244.103:9090/";
+export const API_END_POINT = "http://ec2-3-135-244-103.us-east-2.compute.amazonaws.com:9090";
