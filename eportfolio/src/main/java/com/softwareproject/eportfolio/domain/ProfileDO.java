@@ -3,6 +3,7 @@ package com.softwareproject.eportfolio.domain;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 import com.alibaba.fastjson.annotation.JSONField;
@@ -11,7 +12,7 @@ import com.alibaba.fastjson.annotation.JSONField;
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-16 22:23:04
- * @LastEditTime: 2020-03-18 23:41:31
+ * @LastEditTime: 2020-03-31 20:17:04
  */
 @Entity(name = "profile")
 public class ProfileDO{
@@ -20,6 +21,7 @@ public class ProfileDO{
     @GeneratedValue
     private Long id;
 
+    @Lob
     private String html;
 
     private String url;
