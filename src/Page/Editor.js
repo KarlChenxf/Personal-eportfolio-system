@@ -77,7 +77,6 @@ class Component {
 
     constructor(html, props) {
         this.key = Component.count;
-        //this.html = html;
         this.type = html;
         this.props = props || {};
         Component.count++;
@@ -94,6 +93,7 @@ class Dashboard extends React.Component {
             components: [],
             anchorEl: null,
             edit: -1,
+            openEditor: false,
         };
 
         this.profileId = 1;
@@ -239,21 +239,23 @@ class Dashboard extends React.Component {
             ] : [layout]
         }:{lg:[layout]};
 
-        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts });
+        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, });
     }
 
     saveComponent = (index) => (props) => {
         var newComponents = this.state.components.slice();
-        //newContent[index].html = html;
         newComponents[index].props = props;
-        //newContent[index].lastUpdate = new Date().getTime();
-        this.setState({ components: newComponents, edit: -1 });
+        this.setState({ components: newComponents, openEditor: false });
 
         this.updateProfile();
     }
 
     editComponent = (index) => {
-        this.setState({ edit: index });
+        this.setState({ edit: index, openEditor: true, });
+    }
+
+    closeEditor = (index) => {
+        this.setState({ openEditor: false });
     }
 
     removeComponent = (index) => {
@@ -366,7 +368,7 @@ class Dashboard extends React.Component {
                     </Container>
                 </main>
                 {/* Component Editor */}
-                <ComponentEditor key={this.state.edit} open={this.state.edit >= 0} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent(this.state.edit)} />
+                <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent(this.state.edit)} onClose={this.closeEditor}/>
             </div>
         );
     }

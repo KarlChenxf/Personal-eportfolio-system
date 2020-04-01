@@ -11,7 +11,7 @@ const styles = (theme => ({
         height: theme.spacing(20),
     },
     paper: {
-        padding: theme.spacing(2),
+        //padding: theme.spacing(1),
         //display: 'flex',
         //overflow: 'auto',
         //flexDirection: 'column',
@@ -34,19 +34,26 @@ class PersonalInfo extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, avatar, name, background } = this.props;
+
+        const content =
+            (<Grid container justify="flex-start" spacing={0}>
+                <Grid key={0} item>
+                    <Avatar className={classes.avatar} src={avatar}></Avatar>
+                </Grid>
+                <Grid key={1} item>
+                    <Typography variant="h5">{name}</Typography>
+                </Grid>
+            </Grid>);
 
         return (
-            <Paper className={classes.paper}>
-                <Grid container justify="flex-start" spacing={2}>
-                    <Grid key={0} item>
-                        <Avatar className={classes.avatar} src={this.props.avatar}></Avatar>
-                    </Grid>
-                    <Grid key={1} item>
-                        <Typography variant="h5">{this.props.name}</Typography>
-                    </Grid>
-                </Grid>
-            </Paper>
+            background ? <Paper className={classes.paper} style={{
+                backgroundImage: `url(${background.image})`,
+                backgroundColor: background.color,
+                border: background.border,
+            }} elevation={background.elevation} square={!background.rounded}>
+                {content}
+            </Paper> : content
         )
     }
 }

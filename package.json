@@ -12,6 +12,7 @@
     "@tinymce/tinymce-react": "^3.5.0",
     "html-react-parser": "^0.10.2",
     "material-ui-popup-state": "^1.5.3",
+    "rc-color-picker": "^1.2.6",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-grid-layout": "^0.18.3",
