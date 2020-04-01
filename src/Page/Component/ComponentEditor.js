@@ -12,15 +12,16 @@ class ComponentEditor extends React.Component {
     constructor(props) {
         super(props);
 
+        console.log("ComponentEditor constructor()")
     }
 
     render() {
+        console.log("ComponentEditor render()")
         if(!this.props.component) return null;
-        console.log(this.props);
         // Return different editor based on HTML
         // Return RawHTMLEditor if given HTML fails to match all available patterns
         if(this.props.component.type == Type.PERSONAL_INFO){ 
-            return <PersonalInfoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
+            return <PersonalInfoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
         }else if(this.props.component.type == Type.HTML){ 
             return <RawHTMLEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
         }else if(this.props.component.type == Type.TEXTAREA){
