@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-18 23:29:03
- * @LastEditTime: 2020-03-31 20:05:07
+ * @LastEditTime: 2020-04-01 16:24:36
  */
 package com.softwareproject.eportfolio.controller;
 
@@ -71,7 +71,6 @@ public class ProfileController{
             ProfileDTO newProfile = modelMapper.map(profileDAO.save(profile), ProfileDTO.class);
             return res
                 .put("status", "success")
-                .put("user", user)
                 .put("profile", newProfile)
                 .export();
         }

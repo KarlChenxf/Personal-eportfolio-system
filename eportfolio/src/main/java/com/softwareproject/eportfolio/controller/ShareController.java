@@ -2,18 +2,14 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-19 01:40:06
- * @LastEditTime: 2020-03-21 23:52:08
+ * @LastEditTime: 2020-04-01 16:49:28
  */
 package com.softwareproject.eportfolio.controller;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 
 import com.alibaba.fastjson.JSONObject;
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.softwareproject.eportfolio.dao.ProfileDAO;
 import com.softwareproject.eportfolio.domain.ProfileDO;
@@ -25,9 +21,10 @@ import com.softwareproject.eportfolio.util.UserLoginToken;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /*
@@ -46,8 +43,10 @@ public class ShareController{
 
     ModelMapper modelMapper = new ModelMapper();
 
+    private final Long DEFAULT_EXPIRE_TIME = 24*60*600000l;
+
     @UserLoginToken
-    @GetMapping("getlink")
+    @PostMapping("getlink")
     public Object getShareToken(@RequestBody JSONObject body) {
         APIResponse res = new APIResponse();
         if (body.get("profileid") != null){
@@ -58,7 +57,7 @@ public class ShareController{
                     .put("message", "profile does not exist")
                     .export();
             } else {
-                Long EXPSECOND = 24*60*60000l;
+                Long EXPSECOND = body.getLong("expire") != null ? body.getLong("expire") : DEFAULT_EXPIRE_TIME;
                 String token = "";
                 Long now = System.currentTimeMillis();
                 Long expMills = now+EXPSECOND;
@@ -67,9 +66,8 @@ public class ShareController{
                 token = JWT.create().withExpiresAt(new Date(expMills)).withAudience("team12sharelink"+target.getId()).sign(Algorithm.HMAC256("getgoodgradeplease"));
                 return res
                     .put("status", "success")
-                    .put("token", token)
-                    .put("now", new Date(now))
-                    .put("expiredate", new Date(expMills))
+                    .put("sharetoken", token)
+                    .put("expireat", new Date(expMills))
                     .export();
             }
         } else {
@@ -81,10 +79,16 @@ public class ShareController{
     }
 
     @PassToken
-    @GetMapping("getprofile")
-    public Object getMethodName(@RequestParam String token) {
+    @PostMapping("getprofile")
+    public Object getMethodName(@RequestBody JSONObject body) {
         APIResponse res = new APIResponse();
-        String profileid = JWT.decode(token).getAudience().get(0).replace("team12sharelink","");
+        if (body.get("token") == null) {
+            return res
+                .put("status", "fail")
+                .put("message", "token is missing")
+                .export();
+        }
+        String profileid = JWT.decode(body.getString("token")).getAudience().get(0).replace("team12sharelink","");
         ProfileDO target = profileDAO.findProfileById(Long.parseLong(profileid));
         if (target == null){
             return res
@@ -92,7 +96,21 @@ public class ShareController{
                 .put("message", "profile does not exist")
                 .export();
         } else {
-            ProfileDTO profileToShow = modelMapper.map(target, ProfileDTO.class);
+            ProfileDTO profileToShow = new ProfileDTO();
+            if (body.getLong("profileid") != null){
+                profileToShow = modelMapper.map(
+                    profileDAO.findProfileById(body.getLong("profileid")), 
+                    ProfileDTO.class
+                    );
+            } else {
+                profileToShow = modelMapper.map(target, ProfileDTO.class);
+            }
+            if (profileToShow == null) {
+                return res
+                    .put("status", "fail")
+                    .put("message", "profile does not exist")
+                    .export();
+            }
             return res
                 .put("status", "success")
                 .put("profile", profileToShow)
