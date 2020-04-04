@@ -97,26 +97,18 @@ class Login extends React.Component {
 						response.json().then(data => {
 							//console.log(data);
               localStorage.setItem('LoginToken', data.token)// store user token
-              localStorage.setItem('UserName', data.user.firstName + ' ' + data.user.lastName)
-              /*console.log("array user: ",Object.entries(data.user))
-              this.props.history.push({
-                pathname: '/editor',
-                data: Object.entries(data.user), // your data from array of objects to array
-              })*/
+              localStorage.setItem('UserName', data.user ? data.user.firstName + ' ' + data.user.lastName : "")
 							//if (data.message.indexOf("Success")>=0) {
                 // Send them to the dashboard
                 /*if(data.content && data.content.Admin)
                   this.props.history.replace("/admin/dashboard");
                 else
-                  this.props.history.replace("/client/profile");*/
+                  this.props.history.replace("/client/profile");}*/
                 if(data.status === "success"){
                   this.props.history.replace("/editor")//Jump to editor page
+                }else {
+                  alert(data.message);
                 }
-							//}
-							//else {
-              //  console.log(data);
-								//alert("Invalid Authentication");
-							//}
 						})
 					}
 					else {
