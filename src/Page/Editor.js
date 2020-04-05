@@ -307,7 +307,7 @@ class Dashboard extends React.Component {
                                 <MenuIcon aria-controls="fade-menu" aria-haspopup="true" />
                             </IconButton>
                             <Typography variant="h6" className={classes.title}>
-                                Welcome,user
+                                Welcome, {localStorage.getItem("UserName")}
                         </Typography>
                             <Button href="./" color="inherit" horizontal='right'>Log out</Button>
                         </Grid>
@@ -326,9 +326,9 @@ class Dashboard extends React.Component {
                             {/* Add TextArea */}
                             <MenuItem onClick={() => { this.newComponent(Type.TEXTAREA); this.handleClose() }}>Text Area</MenuItem>
                             {/* Add Photos */}
-                            <MenuItem onClick={() => { this.newComponent('<PicDisplay/>'); this.handleClose() }}>Pictures</MenuItem>
+                            <MenuItem onClick={() => { this.newComponent(Type.PICDISPLAY); this.handleClose() }}>Pictures</MenuItem>
                             {/* Add Videos */}
-                            <MenuItem onClick={() => { this.newComponent('<VideoDisplay/>'); this.handleClose() }}>Videos</MenuItem>
+                            <MenuItem onClick={() => { this.newComponent(Type.VIDEODISPLAY); this.handleClose() }}>Videos</MenuItem>
                             {/* Add Audios */}
                             <MenuItem onClick={this.handleClose}>Audios</MenuItem>
                             {/* Add Files */}
@@ -343,7 +343,8 @@ class Dashboard extends React.Component {
                         <ResponsiveReactGridLayout
                             className="layout"
                             cols={{ lg: 24, md: 24, sm: 24, xs: 4, xxs: 2 }}
-                            rowHeight={32}
+                            //rowHeight={'auto'}
+                            width={300}
                             margin={[0, 0]}
                             containerPadding={[0, 0]}
                             onLayoutChange={this.onLayoutChange}

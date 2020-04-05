@@ -21,6 +21,10 @@ export function parse(html) {
         return HTMLReactParser(html.props.textarea || "");
       case Type.FILE:
         return <File {...html.props} />;
+      case Type.PICDISPLAY:
+        return <PicDisplay {...html.props} />;;
+      case Type.VIDEODISPLAY:
+        return <VideoDisplay {...html.props} />;;
       default:
         break;
     }

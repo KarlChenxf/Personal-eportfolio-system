@@ -24,16 +24,14 @@ class ComponentEditor extends React.Component {
             return <PersonalInfoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
         }else if(this.props.component.type == Type.HTML){ 
             return <RawHTMLEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
-        }else if(this.props.component.type == Type.TEXTAREA){
+        }else if(this.props.component.type === Type.TEXTAREA){
             return <TextAreaEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
         }else if(this.props.component.type == Type.FILE){
             return <FileEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
-        }else if(this.props.html.startsWith('<VideoDisplay')){
-            //console.log("videoeditor");
-            return <VideoEditor open={this.props.open} html={this.props.html} saveComponent={this.props.saveComponent}/>;
-        }else if(this.props.html.startsWith('<PicDisplay')){
-            //console.log("piceditor");
-            return <PicEditor open={this.props.open} html={this.props.html} saveComponent={this.props.saveComponent}/>;
+        }else if(this.props.component.type === Type.PICDISPLAY){
+            return <PicEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
+        }else if(this.props.component.type === Type.VIDEODISPLAY){
+            return <VideoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
         }
         return null;
     }

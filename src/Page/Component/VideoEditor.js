@@ -17,29 +17,21 @@ class VideoEditor extends React.Component {
         super(props);
 
         this.state = {
-            name: "",
+            videourl: props.videourl || "",
         };
 
-        HTMLReactParser(this.props.html, {
-            replace: ({ attribs, name }) => {
-              console.log({ attribs, name });
-              attribs = attribs || {};
-              if (name && name.toLowerCase() === 'videodisplay') {
-                this.state = attribs;
-              }
-            },
-          });
+    }
 
+    getProps() {
+        return {
+            videourl: this.state.videourl,
+        };
     }
 
     handleChange = event => {
         this.setState({
             [event.target.name]: event.target.value, // update the changed value
         });
-    }
-    
-    getHtmlString() {
-        return `<VideoDisplay name='${this.state.vname||''}'/>`
     }
 
     render() {
@@ -48,15 +40,15 @@ class VideoEditor extends React.Component {
             <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"}>
                 <MuiDialogContent>
                     <TextField fullWidth
-                        id="outlined-basic"
+                        id="videourl"
                         placeholder="VideoDisplay"
                         variant="outlined"
-                        name="vname"
-                        value={this.state.vname}
+                        name="videourl"
+                        value={this.state.videourl}
                         onChange={this.handleChange} />
                 </MuiDialogContent>
                 <MuiDialogActions>
-                    <Button autoFocus onClick={() => {this.props.saveComponent(this.getHtmlString())}} color="primary">
+                    <Button autoFocus onClick={() => {this.props.saveComponent(this.getProps())}} color="primary">
                         Save
                     </Button>
                 </MuiDialogActions>
