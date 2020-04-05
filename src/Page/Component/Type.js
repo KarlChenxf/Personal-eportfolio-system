@@ -1,5 +1,6 @@
 export const HTML = "a";
 export const PERSONAL_INFO = "b";
 export const TEXTAREA = "c";
-export const PICDISPLAY = "d"; 
-export const VIDEODISPLAY = "e"; 
+export const FILE = "d";
+export const PICDISPLAY = "e"; 
+export const VIDEODISPLAY = "f"; 
