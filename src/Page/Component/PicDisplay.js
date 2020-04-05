@@ -1,22 +1,50 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
 
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
 
 const styles = (theme => ({
-    root: {
-        maxWidth: 345,
-        width: 300,
+      root: {
+          maxWidth: 345,
+          width: 300,
       },
       media: {
-        height: 300,
-        width: 300,
+        //maxHeight: '100%',
+        //maxWidth: '100%',
+        position:'absolute',
+        width: 'auto',
+        height: 'auto',
+        verticalalign: 'middle',
+        //minWidth: '10%',
+        //class: 'center',
+        //overflow:'hidden',
+        //display: 'block',
+        //marginleft: 'auto',
+        //marginright: 'auto',
+
+      },
+      paper: {
+        padding: theme.spacing(0),
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        //overflow: 'auto',
+        //flexDirection: 'column',
+        //flex: '1 1 auto',
+        position: "relative",
+        // Fill height
+        height: '100% ',
+        width:'100%',
+        //display: 'block',
+        //minHeight:'64px',
+        //minWidth: '100px',
+        //marginleft: 'auto',
+        margin: 'auto',
+        class: 'center',
+        overflow:'hidden',
+        verticalalign: 'middle',
+        textalign: 'center',
       },
 }));
 
@@ -34,11 +62,9 @@ class PicDisplay extends React.Component {
         const {classes} = this.props;
 
         return (
-          <Grid container justify="left" className={classes.root}>
-          <img src={this.props.name} alt="pic" className={classes.root}/>
-          </Grid>
-          
-        
+          <Paper container className={classes.paper}>
+            <img src={this.props.picurl} alt="pic"className={classes.media}/>     
+          </Paper>
         )
     }
 }
