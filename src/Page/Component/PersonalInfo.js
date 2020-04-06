@@ -11,16 +11,14 @@ const styles = (theme => ({
         height: theme.spacing(20),
     },
     paper: {
-        //padding: theme.spacing(1),
-        //display: 'flex',
-        //overflow: 'auto',
-        //flexDirection: 'column',
-        //flex: '1 1 auto',
-        position: "relative",
-        minHeight: '64px',
-        // Fill height
         height: '100%',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
     },
+    padding: {
+        padding: theme.spacing(2),
+    }
 }));
 
 class PersonalInfo extends React.Component {
@@ -34,9 +32,9 @@ class PersonalInfo extends React.Component {
     }
 
     render() {
-        const { classes, avatar, name, background } = this.props;
+        const { classes, avatar, name, layout, background } = this.props;
 
-        const content =
+        let content =
             (<Grid container justify="flex-start" spacing={0}>
                 <Grid key={0} item>
                     <Avatar className={classes.avatar} src={avatar}></Avatar>
@@ -46,9 +44,11 @@ class PersonalInfo extends React.Component {
                 </Grid>
             </Grid>);
 
+        content = layout && layout.padding ? <div className={classes.padding}>{content}</div> : content;
+
         return (
             background ? <Paper className={classes.paper} style={{
-                backgroundImage: `url(${background.image})`,
+                backgroundImage: background.image ? `url(${background.image})` : null,
                 backgroundColor: background.color,
                 border: background.border,
             }} elevation={background.elevation} square={!background.rounded}>

@@ -8,6 +8,7 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import 'rc-color-picker/assets/index.css';
 
 import BackgroundControl from './BackgroundControl.js'
+import LayoutControl from './LayoutControl.js'
 
 const styles = (theme => ({
     avatar: {
@@ -27,6 +28,7 @@ class PersonalInfoEditor extends React.Component {
             //background: props.background,
         };
 
+        this.layout = props.layout || null;
         this.background = props.background || null;
 
         console.log("PersonalInfoEditor constructor()")
@@ -42,6 +44,7 @@ class PersonalInfoEditor extends React.Component {
         return {
             avatar: this.state.avatar,
             name: this.state.name,
+            layout: this.layout,
             background: this.background,
         };
     }
@@ -56,7 +59,7 @@ class PersonalInfoEditor extends React.Component {
 
                     <TextField fullWidth
                         id="avatar"
-                        placeholder="Avatar"
+                        //placeholder="Avatar"
                         variant="outlined"
                         name="avatar"
                         label="Avatar"
@@ -65,14 +68,15 @@ class PersonalInfoEditor extends React.Component {
 
                     <TextField fullWidth
                         id="name"
-                        placeholder="Name"
+                        //placeholder="Name"
                         variant="outlined"
                         name="name"
                         label="Name"
                         value={this.state.name}
                         onChange={this.handleChange} />
 
-                    <BackgroundControl key={0} {...this.props.background} onChange={(props) => this.background = props}/>
+                    <LayoutControl {...this.props.layout} onChange={(props) => this.layout = props}/>
+                    <BackgroundControl {...this.props.background} onChange={(props) => this.background = props}/>
                 </MuiDialogContent>
                 <MuiDialogActions>
                     <Button autoFocus onClick={this.props.onClose}>

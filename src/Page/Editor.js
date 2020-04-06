@@ -131,7 +131,7 @@ class Dashboard extends React.Component {
                             //console.log(data);
                             this.setState({
                                 layouts: data.profile.html.layouts,
-                                components: data.profile.html.components,
+                                components: data.profile.html.components || [],
                             });
                         })
                     }
@@ -343,8 +343,7 @@ class Dashboard extends React.Component {
                         <ResponsiveReactGridLayout
                             className="layout"
                             cols={{ lg: 24, md: 24, sm: 24, xs: 4, xxs: 2 }}
-                            //rowHeight={'auto'}
-                            width={300}
+                            rowHeight={32}
                             margin={[0, 0]}
                             containerPadding={[0, 0]}
                             onLayoutChange={this.onLayoutChange}
