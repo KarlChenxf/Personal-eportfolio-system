@@ -11,6 +11,11 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
+import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import PublishIcon from '@material-ui/icons/Publish';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 import 'rc-color-picker/assets/index.css';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
 
@@ -22,21 +27,20 @@ const styles = (theme => ({
     gridItem: {
         display: 'inline-flex',
     },
-    gridContainer: {
-        marginTop: theme.spacing(1),
-    },
     labelPlacementStart: {
         marginLeft: 0,
-        marginTop: theme.spacing(1),
     },
     roundButton: {
-        borderRadius: 22,
+        borderRadius: '50%',
         height: 44,
         width: 44,
         minWidth: 0,
         border: '1px solid rgba(0, 0, 0, 0.23)',
         marginTop: 6,
     },
+    textField: {
+        minWidth: 210,
+    }
 }));
 
 class BackgroundControl extends React.Component {
@@ -46,14 +50,15 @@ class BackgroundControl extends React.Component {
 
         this.state = {
             background: Boolean(props.color || props.elevation || props.rounded),
-            alpha: props.color ? Math.round(parseInt(props.color.substr(7, 2),16)/2.55) : 100,
+            alpha: props.color ? Math.round(parseInt(props.color.substr(7, 2), 16) / 2.55) : 100,
             color: props.color ? props.color.substr(0, 7) : '#FFFFFF',
             colorHex: props.color ? props.color : '#FFFFFFFF',
             elevation: props.elevation || 0,
             rounded: props.rounded || false,
+            image: props.image || null,
             openColorPanel: false,
         };
-        
+
         console.log("BackgroundControl constructor()")
     }
 
@@ -66,20 +71,20 @@ class BackgroundControl extends React.Component {
     handleChange = event => {
         this.setState({
             [event.target.name]: event.target.type == 'checkbox' ? event.target.checked : event.target.value, // update the changed value
-        },() => {
-            if(this.props.onChange)
+        }, () => {
+            if (this.props.onChange)
                 this.props.onChange(this.getProps());
         });
     }
 
     handleColor = (colorObj) => {
-        const {color, alpha} = colorObj;
+        const { color, alpha } = colorObj;
         this.setState({
             alpha: alpha,
             color: color,
             colorHex: color + Math.round(255 * alpha / 100).toString(16).padStart(2, '0'),
-        },() => {
-            if(this.props.onChange)
+        }, () => {
+            if (this.props.onChange)
                 this.props.onChange(this.getProps());
         });
     }
@@ -89,6 +94,7 @@ class BackgroundControl extends React.Component {
             color: this.state.colorHex,
             elevation: this.state.elevation,
             rounded: this.state.rounded,
+            image: this.state.image,
         } : null;
     }
 
@@ -99,66 +105,92 @@ class BackgroundControl extends React.Component {
 
         return (
             <Fragment>
-                
-                <FormControlLabel
-                    classes={{ labelPlacementStart: classes.labelPlacementStart }}
-                    control={<Switch
-                        checked={this.state.background}
-                        onChange={this.handleChange}
-                        color="primary"
-                        name="background"
-                        inputProps={{ 'aria-label': 'primary checkbox' }}
-                    />}
-                    label="Background"
-                    labelPlacement="start"
-                />
-
-                {this.state.background ? <Grid container direction="row" spacing={2} className={classes.gridContainer}>
-                    <Grid item>
-                        <Tooltip title="Color">
-                            <Button variant="contained"
-                                disableElevation
-                                className={classes.roundButton}
-                                style={{
-                                    backgroundColor: this.state.colorHex,
-                                }}
-                                onClick={this.handleClose}> {/* Space here to prevent warning */}</Button>
-                        </Tooltip>
-                    </Grid>
-                    <Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title" open={this.state.openColorPanel}>
-                        <ColorPickerPanel color={this.state.color} alpha={this.state.alpha} onChange={this.handleColor} mode="RGB" />
-                    </Dialog>
-                    <Grid item>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                            <InputLabel id="elevation-label">Elevation</InputLabel>
-                            <Select
-                                labelId="elevation-label"
-                                value={this.state.elevation}
-                                onChange={this.handleChange}
-                                label="Elevation"
-                                name="elevation"
-                            >
-                                <MenuItem key={0} value={0}>
-                                    None
-                                </MenuItem>
-                                {[...Array(24)].map((e, i) => <MenuItem key={i + 1} value={i + 1}>{i + 1}</MenuItem>)}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item className={classes.gridItem}>
+                <Grid container direction="row" spacing={2}>
+                    <Grid item xs={12}>
                         <FormControlLabel
-                            control={
-                                <Checkbox
-                                    checked={this.state.rounded}
-                                    onChange={this.handleChange}
-                                    name="rounded"
-                                    color="primary"
-                                />
-                            }
-                            label="Rounded corners"
+                            classes={{ labelPlacementStart: classes.labelPlacementStart }}
+                            control={<Switch
+                                checked={this.state.background}
+                                onChange={this.handleChange}
+                                color="primary"
+                                name="background"
+                                inputProps={{ 'aria-label': 'primary checkbox' }}
+                            />}
+                            label="Background"
+                            labelPlacement="start"
                         />
                     </Grid>
-                </Grid> : null}
+                    {this.state.background ? <Fragment>
+                        <Grid item>
+                            <Tooltip title="Color">
+                                <Button variant="contained"
+                                    disableElevation
+                                    className={classes.roundButton}
+                                    style={{
+                                        backgroundColor: this.state.colorHex,
+                                    }}
+                                    onClick={this.handleClose}> {/* Space here to prevent warning */}</Button>
+                            </Tooltip>
+                        </Grid>
+                        <Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title" open={this.state.openColorPanel}>
+                            <ColorPickerPanel color={this.state.color} alpha={this.state.alpha} onChange={this.handleColor} mode="RGB" />
+                        </Dialog>
+                        <Grid item>
+                            <FormControl variant="outlined">
+                                <InputLabel htmlFor="standard-adornment-upload">Image</InputLabel>
+                                <OutlinedInput
+                                    id="standard-adornment-upload"
+                                    //type={values.showPassword ? 'text' : 'password'}
+                                    name="image"
+                                    value={this.state.image}
+                                    onChange={this.handleChange}
+                                    labelWidth={44}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                //onClick={handleClickShowPassword}
+                                                //onMouseDown={handleMouseDownPassword}
+                                            >
+                                            <PublishIcon />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                />
+                            </FormControl>
+                        </Grid>
+                        <Grid item>
+                            <FormControl variant="outlined" className={classes.formControl}>
+                                <InputLabel id="elevation-label">Elevation</InputLabel>
+                                <Select
+                                    labelId="elevation-label"
+                                    value={this.state.elevation}
+                                    onChange={this.handleChange}
+                                    label="Elevation"
+                                    name="elevation"
+                                >
+                                    <MenuItem key={0} value={0}>
+                                        None
+                                </MenuItem>
+                                    {[...Array(24)].map((e, i) => <MenuItem key={i + 1} value={i + 1}>{i + 1}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item className={classes.gridItem}>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={this.state.rounded}
+                                        onChange={this.handleChange}
+                                        name="rounded"
+                                        color="primary"
+                                    />
+                                }
+                                label="Rounded corners"
+                            />
+                        </Grid>
+                    </Fragment> : null}
+                </Grid>
             </Fragment>
         )
     }
