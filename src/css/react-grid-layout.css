@@ -3,7 +3,10 @@
   transition: height 200ms ease;
 }
 .react-grid-item {
-  transition: all 200ms ease;
+  /*
+   * animetion on layout change
+   transition: all 200ms ease;
+   */
   transition-property: left, top;
 }
 .react-grid-item.cssTransforms {
@@ -25,7 +28,8 @@
 }
 
 .react-grid-item.react-grid-placeholder {
-  background: blue;
+  background-clip: content-box;
+  background-color: blue;
   opacity: 0.2;
   transition-duration: 100ms;
   z-index: 2;
@@ -58,4 +62,57 @@
 
 .react-resizable-hide > .react-resizable-handle {
   display: none;
+}
+
+/*
+ * Adjust handle position based on spacing
+ */
+
+[spacing='8'] .react-resizable-handle {
+  bottom: 4px;
+  right: 4px;
+}
+
+[spacing='16'] .react-resizable-handle {
+  bottom: 8px;
+  right: 8px;
+}
+
+[spacing='32'] .react-resizable-handle {
+  bottom: 16px;
+  right: 16px;
+}
+
+[spacing='64'] .react-resizable-handle {
+  bottom: 32px;
+  right: 32px;
+}
+
+[spacing='128'] .react-resizable-handle {
+  bottom: 64px;
+  right: 64px;
+}
+
+/*
+ * Adjust placeholder size based on spacing
+ */
+
+[spacing='8'] .react-grid-placeholder {
+  padding: 4px;
+}
+
+[spacing='16'] .react-grid-placeholder {
+  padding: 8px;
+}
+
+[spacing='32'] .react-grid-placeholder {
+  padding: 16px;
+}
+
+[spacing='64'] .react-grid-placeholder {
+  padding: 32px;
+}
+
+[spacing='128'] .react-grid-placeholder {
+  padding: 64px;
 }
