@@ -17,18 +17,18 @@ import { Panel as ColorPickerPanel } from 'rc-color-picker';
 
 
 const styles = (theme => ({
-    marginTop: {
-        marginTop: theme.spacing(3),
+    formControl: {
+        minWidth: 150,
     },
 }));
 
-class LayoutControl extends React.Component {
+class LayoutControl extends React.PureComponent {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            padding: props.padding || false,
+            padding: props.padding || 0,
         };
 
         console.log("LayoutControl constructor()")
@@ -45,7 +45,10 @@ class LayoutControl extends React.Component {
 
     getProps = () => {
         return {
-            padding: this.state.padding,
+            target: {
+                name: this.props.name,
+                value: {padding: this.state.padding,}
+            }
         };
     }
 
@@ -56,17 +59,25 @@ class LayoutControl extends React.Component {
 
         return (
             <Fragment>
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={this.state.padding}
-                            onChange={this.handleChange}
-                            name="padding"
-                            color="primary"
-                        />
-                    }
-                    label="Padding"
-                />
+                <Grid container direction="row" spacing={2}>
+                    <Grid item xs={12}>
+                        <Typography variant="h6" component="h3">Layout</Typography>
+                    </Grid>
+                    <Grid item xs>
+                        <FormControl variant="outlined" className={classes.formControl}>
+                            <InputLabel id="padding-label">Padding</InputLabel>
+                            <Select
+                                labelId="padding-label"
+                                value={this.state.padding}
+                                onChange={this.handleChange}
+                                label="Padding"
+                                name="padding"
+                            >
+                                {[0, 8, 16, 32, 64, 128].map((e, i) => <MenuItem key={e} value={e}>{e}</MenuItem>)}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
             </Fragment>
         )
     }

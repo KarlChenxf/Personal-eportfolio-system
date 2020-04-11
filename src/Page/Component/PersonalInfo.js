@@ -44,7 +44,7 @@ class PersonalInfo extends React.Component {
                 </Grid>
             </Grid>);
 
-        content = layout && layout.padding ? <div className={classes.padding}>{content}</div> : content;
+        content = layout && layout.padding ? <div style={{padding:layout.padding}}>{content}</div> : content;
 
         return (
             background ? <Paper className={classes.paper} style={{

@@ -16,13 +16,14 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import PublishIcon from '@material-ui/icons/Publish';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Typography from '@material-ui/core/Typography';
 import 'rc-color-picker/assets/index.css';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
 
 
 const styles = (theme => ({
     formControl: {
-        minWidth: 90,
+        minWidth: 150, 
     },
     gridItem: {
         display: 'inline-flex',
@@ -43,7 +44,7 @@ const styles = (theme => ({
     }
 }));
 
-class BackgroundControl extends React.Component {
+class BackgroundControl extends React.PureComponent {
 
     constructor(props) {
         super(props);
@@ -55,7 +56,7 @@ class BackgroundControl extends React.Component {
             colorHex: props.color ? props.color : '#FFFFFFFF',
             elevation: props.elevation || 0,
             rounded: props.rounded || false,
-            image: props.image || null,
+            image: props.image || "",
             openColorPanel: false,
         };
 
@@ -90,12 +91,18 @@ class BackgroundControl extends React.Component {
     }
 
     getProps = () => {
-        return this.state.background ? {
+        const value =  this.state.background ? {
             color: this.state.colorHex,
             elevation: this.state.elevation,
             rounded: this.state.rounded,
             image: this.state.image,
         } : null;
+        return {
+            target:{
+                name: this.props.name,
+                value: value,
+            }
+        }
     }
 
     render() {
@@ -116,7 +123,7 @@ class BackgroundControl extends React.Component {
                                 name="background"
                                 inputProps={{ 'aria-label': 'primary checkbox' }}
                             />}
-                            label="Background"
+                            label={<Typography variant="h6" component="h3">Background</Typography>}
                             labelPlacement="start"
                         />
                     </Grid>

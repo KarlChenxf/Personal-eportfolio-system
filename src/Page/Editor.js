@@ -343,7 +343,7 @@ class Dashboard extends React.Component {
             backgroundColor: page.color,
         }
 
-        const spacing = page.spacing;
+        const spacing = page.spacing || 0;
 
         const spacingItem = {
             padding: spacing / 2,
@@ -351,6 +351,11 @@ class Dashboard extends React.Component {
 
         const spacingLayout = {
             margin: -spacing / 2,
+        }
+
+        const spacingAction = {
+            top: 10 + spacing / 2,
+            right: 10 + spacing / 2,
         }
 
         return (
@@ -403,7 +408,7 @@ class Dashboard extends React.Component {
                 <main className={classes.content} style={pageBackground}>
                     <div className={classes.appBarSpacer} />
                     <Container maxWidth="lg" fixed className={classes.container}>
-                        <div style={spacingLayout}>
+                        <div style={spacingLayout} spacing={page.spacing}>
                             <ResponsiveReactGridLayout
                                 key={page.spacing}
                                 className="layout"
@@ -419,7 +424,7 @@ class Dashboard extends React.Component {
                                     <div key={component.key} style={spacingItem}>
                                         {parse(component)}
                                         {/* Actions: Edit/Remove */}
-                                        <div className={classes.actions}>
+                                        <div className={classes.actions} style={spacingAction}>
                                             <IconButton size="medium" onClick={() => this.removeComponent(index)}>
                                                 <DeleteIcon fontSize="small" />
                                             </IconButton>
