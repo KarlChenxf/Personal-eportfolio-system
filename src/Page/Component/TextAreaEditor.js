@@ -56,7 +56,7 @@ class TextAreaEditor extends React.Component {
             <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"}>
                 <MuiDialogContent>
                     <Editor
-                    apiKey="5v6a0gnztcaw5vwqnqr1vtbnp0miawzd87x3kyt4h62bc8tg"
+                    //apiKey="5v6a0gnztcaw5vwqnqr1vtbnp0miawzd87x3kyt4h62bc8tg"
                     initialValue={this.state.textarea}
                     init={{
                     height: 300,

@@ -4,6 +4,7 @@ import PersonalInfo from '../Page/Component/PersonalInfo.js'
 import VideoDisplay from '../Page/Component/VideoDisplay.js'
 import PicDisplay from '../Page/Component/PicDisplay.js'
 import Textarea from '../Page/Component/TextArea.js'
+import TextDraft from '../Page/Component/TextDraft.js'
 import File from '../Page/Component/File.js'
 import * as Type from '../Page/Component/Type.js'
 
@@ -19,6 +20,8 @@ export function parse(html) {
         return HTMLReactParser(html.props.html || "");
       case Type.TEXTAREA:
         return HTMLReactParser(html.props.textarea || "");
+      case Type.TEXTDRAFT:
+        return HTMLReactParser(html.props.textDraft || "");
       case Type.FILE:
         return <File {...html.props} />;
       case Type.PICDISPLAY:
