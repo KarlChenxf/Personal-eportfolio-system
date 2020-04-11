@@ -2,6 +2,7 @@ import React from 'react';
 import RawHTMLEditor from './RawHTMLEditor.js'
 import PersonalInfoEditor from './PersonalInfoEditor.js'
 import TextAreaEditor from './TextAreaEditor.js'
+import TextDraftEditor from './TextDraftEditor.js'
 import VideoEditor from './VideoEditor.js'
 import PicEditor from './PicEditor.js'
 import FileEditor from './FileEditor.js'
@@ -26,6 +27,8 @@ class ComponentEditor extends React.Component {
             return <RawHTMLEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
         }else if(this.props.component.type === Type.TEXTAREA){
             return <TextAreaEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
+        }else if(this.props.component.type === Type.TEXTDRAFT){
+            return <TextDraftEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
         }else if(this.props.component.type == Type.FILE){
             return <FileEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
         }else if(this.props.component.type === Type.PICDISPLAY){
