@@ -11,7 +11,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
-import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import PublishIcon from '@material-ui/icons/Publish';
@@ -21,7 +20,7 @@ import 'rc-color-picker/assets/index.css';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
 
 
-const styles = (theme => ({
+const styles = (() => ({
     formControl: {
         minWidth: 150, 
     },
@@ -71,7 +70,7 @@ class BackgroundControl extends React.PureComponent {
 
     handleChange = event => {
         this.setState({
-            [event.target.name]: event.target.type == 'checkbox' ? event.target.checked : event.target.value, // update the changed value
+            [event.target.name]: event.target.type === 'checkbox' ? event.target.checked : event.target.value, // update the changed value
         }, () => {
             if (this.props.onChange)
                 this.props.onChange(this.getProps());

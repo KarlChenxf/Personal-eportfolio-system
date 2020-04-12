@@ -19,7 +19,7 @@ import { WidthProvider, Responsive } from "react-grid-layout";
 import '../css/react-grid-layout.css'
 import '../css/react-resizable.css';
 
-import { parse } from '../Util/HtmlToReact.js'
+import { ParsedComponent } from '../Util/JsonToReact.js'
 import ComponentEditor from './Component/ComponentEditor.js'
 import * as Type from './Component/Type.js'
 import { API_END_POINT } from '../Config.js';
@@ -74,17 +74,15 @@ const styles = (theme => ({
 
 class Component {
 
-    static count = 0;
-
     constructor(html, props) {
-        this.key = Component.count;
+        // We assume that user will not create over 1000 components per second
+        this.key = new Date().getTime().toString(36);
         this.type = html;
         this.props = props || {};
-        Component.count++;
     }
 }
 
-class Dashboard extends React.Component {
+class Editor extends React.Component {
 
     constructor(props) {
         super(props);
@@ -227,15 +225,17 @@ class Dashboard extends React.Component {
      **/
 
     newComponent = (type) => {
+
+        let component = new Component(type);
+
         let layout = {
-            i: Component.count.toString(),
+            i: component.key,
             x: 0, //(this.state.content.length * 2) % (this.state.cols || 12),
             y: Infinity, // puts it at the bottom
             w: Infinity,
-            h: 2,
+            h: 12,
             //minH: 2,
         }
-        let component = new Component(type);
 
         const { components, layouts } = this.state;
 
@@ -411,7 +411,6 @@ class Dashboard extends React.Component {
                         <div style={spacingLayout} spacing={page.spacing}>
                             <ResponsiveReactGridLayout
                                 key={page.spacing}
-                                className="layout"
                                 cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
                                 rowHeight={16}
                                 margin={[0, 0]}
@@ -420,10 +419,10 @@ class Dashboard extends React.Component {
                                 onBreakpointChange={this.onBreakpointChange}
                                 layouts={this.state.layouts || {}}>
                                 {/* Components */}
-                                {this.state.components ? this.state.components.map((component, index) =>
+                                {this.state.components.map((component, index) =>
                                     <div key={component.key} style={spacingItem}>
-                                        {parse(component)}
-                                        {/* Actions: Edit/Remove */}
+                                        <ParsedComponent {...component}/>
+                                        {/* Actions: Edit//Remove */}
                                         <div className={classes.actions} style={spacingAction}>
                                             <IconButton size="medium" onClick={() => this.removeComponent(index)}>
                                                 <DeleteIcon fontSize="small" />
@@ -433,17 +432,17 @@ class Dashboard extends React.Component {
                                             </IconButton>
                                         </div>
                                     </div>
-                                ) : null}
+                                )}
                             </ResponsiveReactGridLayout>
                         </div>
                     </Container>
                 </main>
                 {/* Component Editor */}
                 <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent(this.state.edit)} onClose={this.closeEditor} />
-                <PageEditor key={pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
+                <PageEditor key={"p"+pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
             </div>
         );
     }
 }
 
-export default withStyles(styles)(Dashboard);
+export default withStyles(styles)(Editor);
