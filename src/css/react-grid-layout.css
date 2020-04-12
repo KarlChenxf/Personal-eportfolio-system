@@ -3,10 +3,7 @@
   transition: height 200ms ease;
 }
 .react-grid-item {
-  /*
-   * animetion on layout change
-   transition: all 200ms ease;
-   */
+  transition: all 200ms ease;
   transition-property: left, top;
 }
 .react-grid-item.cssTransforms {
