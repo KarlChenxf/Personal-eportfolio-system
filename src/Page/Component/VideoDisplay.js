@@ -1,12 +1,11 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import ReactPlayer from 'react-player'
 import Paper from '@material-ui/core/Paper';
 
 const styles = (theme => ({
     paper: {
-        padding: theme.spacing(2),
+        padding: theme.spacing(0.6),
         //display: 'flex',
         //overflow: 'auto',
         //flexDirection: 'column',
@@ -30,19 +29,37 @@ class VideoDisplay extends React.Component {
 
     render() {
 
-        const {classes} = this.props;
+        const {classes, background} = this.props;
+        console.log("videobackground: ", background);
 
-        return (
-                <Paper key={0} item className={classes.paper}> 
-                    <ReactPlayer
-                        className='react-player'
-                        url= {this.props.videourl}
-                        width='100%'
-                        height='100%'
-                        controls = {true}
-                    />
-                </Paper>
+        const content = (
+            <Paper key={0} item className={classes.paper}> 
+            <ReactPlayer
+                className='react-player'
+                url= {this.props.videourl}
+                width='100%'
+                height='100%'
+                controls = {true}
+            />
+        </Paper>
         )
+
+        return background ? (
+            <Paper
+              className={classes.paper}
+              style={{
+                backgroundImage: `url(${background.image})`,
+                backgroundColor: background.color,
+                border: background.border,
+              }}
+              elevation={background.elevation}
+              square={!background.rounded}
+            >
+              {content}
+            </Paper>
+          ) : (
+            content
+          );
     }
 }
 

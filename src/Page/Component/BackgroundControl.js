@@ -65,7 +65,7 @@ class BackgroundControl extends React.Component {
 
     handleChange = event => {
         this.setState({
-            [event.target.name]: event.target.type == 'checkbox' ? event.target.checked : event.target.value, // update the changed value
+            [event.target.name]: event.target.type === 'checkbox' ? event.target.checked : event.target.value, // update the changed value
         },() => {
             if(this.props.onChange)
                 this.props.onChange(this.getProps());
@@ -93,7 +93,7 @@ class BackgroundControl extends React.Component {
     }
 
     render() {
-        console.log("BackgroundControl render()");
+        console.log("BackgroundContrdol render()");
 
         const { classes } = this.props;
 
