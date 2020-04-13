@@ -1,5 +1,4 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 
@@ -25,7 +24,7 @@ const styles = (theme => ({
 
       },
       paper: {
-        padding: theme.spacing(0),
+        padding: theme.spacing(0.6),
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -59,14 +58,35 @@ class PicDisplay extends React.Component {
     }
 
     render() {
-        const {classes} = this.props;
 
-        return (
-          <Paper container className={classes.paper}>
-            <img src={this.props.picurl} alt="pic"className={classes.media}/>     
+      const { classes, background } = this.props;
+      console.log("background: ", background);
+
+        const content = (
+          
+            <img src={this.props.picurl} alt="pic" className={classes.media} />
+          
+        );
+
+        return background ? (
+          <Paper
+            className={classes.paper}
+            style={{
+              backgroundImage: `url(${background.image})`,
+              backgroundColor: background.color,
+              border: background.border,
+            }}
+            elevation={background.elevation}
+            square={!background.rounded}
+          >
+            {content}
           </Paper>
-        )
+        ) : (
+          content
+        );
     }
-}
+  }
+    
+
 
 export default withStyles(styles)(PicDisplay);
