@@ -105,7 +105,7 @@ class BackgroundControl extends React.PureComponent {
     }
 
     render() {
-        console.log("BackgroundControl render()");
+        console.log("BackgroundContrdol render()");
 
         const { classes } = this.props;
 
