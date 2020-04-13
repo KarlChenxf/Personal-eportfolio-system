@@ -29,9 +29,9 @@ class ComponentEditor extends React.Component {
             case Type.FILE:
                 return <FileEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
             case Type.PICDISPLAY:
-                return <PicEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
+                return <PicEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.VIDEODISPLAY:
-                return <VideoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent}/>;
+                return <VideoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
             default:
                 return null;
         }
