@@ -19,10 +19,11 @@ import { WidthProvider, Responsive } from "react-grid-layout";
 import '../css/react-grid-layout.css'
 import '../css/react-resizable.css';
 
-import { parse } from '../Util/HtmlToReact.js'
+import { ParsedComponent } from '../Util/JsonToReact.js'
 import ComponentEditor from './Component/ComponentEditor.js'
 import * as Type from './Component/Type.js'
 import { API_END_POINT } from '../Config.js';
+import PageEditor from './Component/PageEditor';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -73,17 +74,15 @@ const styles = (theme => ({
 
 class Component {
 
-    static count = 0;
-
     constructor(html, props) {
-        this.key = Component.count;
+        // We assume that user will not create over 1000 components per second
+        this.key = new Date().getTime().toString(36);
         this.type = html;
         this.props = props || {};
-        Component.count++;
     }
 }
 
-class Dashboard extends React.Component {
+class Editor extends React.Component {
 
     constructor(props) {
         super(props);
@@ -91,9 +90,13 @@ class Dashboard extends React.Component {
         this.state = {
             layouts: { lg: [] },
             components: [],
+            page: {},
             anchorEl: null,
             edit: -1,
             openEditor: false,
+            openPageEditor: false,
+            // Update the ver number to force reconstruce the PageEditor
+            pageEditorVer: 0,
         };
 
         this.profileId = 1;
@@ -132,6 +135,8 @@ class Dashboard extends React.Component {
                             this.setState({
                                 layouts: data.profile.html.layouts,
                                 components: data.profile.html.components || [],
+                                page: data.profile.html.page || {},
+                                pageEditorVer: this.state.pageEditorVer + 1,
                             });
                         })
                     }
@@ -164,6 +169,7 @@ class Dashboard extends React.Component {
             html: {
                 components: this.state.components,
                 layouts: this.state.layouts,
+                page: this.state.page,
             }
         }
 
@@ -214,16 +220,22 @@ class Dashboard extends React.Component {
         this.getProfile();
     }
 
+    /**
+     * Component related functions
+     **/
+
     newComponent = (type) => {
+
+        let component = new Component(type);
+
         let layout = {
-            i: Component.count.toString(),
+            i: component.key,
             x: 0, //(this.state.content.length * 2) % (this.state.cols || 12),
             y: Infinity, // puts it at the bottom
             w: Infinity,
-            h: 2,
+            h: 12,
             //minH: 2,
         }
-        let component = new Component(type);
 
         const { components, layouts } = this.state;
 
@@ -237,7 +249,7 @@ class Dashboard extends React.Component {
                 ...layouts.lg,
                 layout
             ] : [layout]
-        }:{lg:[layout]};
+        } : { lg: [layout] };
 
         this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, });
     }
@@ -264,6 +276,10 @@ class Dashboard extends React.Component {
         this.setState({ components: newContent });
     }
 
+    /**
+     * Appbar/Component
+     **/
+
     handleClick = event => {
         this.setState({ anchorEl: event.currentTarget });
     }
@@ -271,6 +287,32 @@ class Dashboard extends React.Component {
     handleClose = () => {
         this.setState({ anchorEl: null });
     }
+
+    /**
+     * Appbar/Page
+     **/
+
+    showPageEditor = () => {
+        this.setState({
+            openPageEditor: true,
+            pageEditorVer: this.state.pageEditorVer + 1,
+        });
+    }
+
+    closePageEditor = () => {
+        this.setState({ openPageEditor: false });
+    }
+
+    savePageProps = (props) => {
+        this.setState({
+            page: props,
+            openPageEditor: false,
+        });
+    }
+
+    /**
+     * Layout related callbacks
+     **/
 
     onBreakpointChange = (breakpoint, cols) => {
         this.setState({
@@ -285,11 +327,36 @@ class Dashboard extends React.Component {
 
     render() {
         const { classes } = this.props;
+        const { page, pageEditorVer } = this.state;
         //const { data } = this.props.location;
         //const {data} = this.state.name;
         //console.log("props: ",this.props);
         //console.log("data: ",data);
         //console.log("classes: ",classes);
+
+        const pageBackground = {
+            backgroundImage: page.image ? `url(${page.image})` : null,
+            backgroundPosition: page.position,
+            backgroundRepeat: page.repeat,
+            backgroundSize: page.size,
+            backgroundAttachment: page.fixed ? 'fixed' : 'local',
+            backgroundColor: page.color,
+        }
+
+        const spacing = page.spacing || 0;
+
+        const spacingItem = {
+            padding: spacing / 2,
+        }
+
+        const spacingLayout = {
+            margin: -spacing / 2,
+        }
+
+        const spacingAction = {
+            top: 10 + spacing / 2,
+            right: 10 + spacing / 2,
+        }
 
         return (
             <div className={classes.root}>
@@ -306,9 +373,10 @@ class Dashboard extends React.Component {
                             <IconButton edge="start" className={classes.menuButton} onClick={this.handleClick} color="inherit" aria-label="menu">
                                 <MenuIcon aria-controls="fade-menu" aria-haspopup="true" />
                             </IconButton>
+                            <Button onClick={this.showPageEditor}>Page</Button>
                             <Typography variant="h6" className={classes.title}>
                                 Welcome, {localStorage.getItem("UserName")}
-                        </Typography>
+                            </Typography>
                             <Button href="./" color="inherit" horizontal='right'>Log out</Button>
                         </Grid>
                         <Menu
@@ -337,41 +405,44 @@ class Dashboard extends React.Component {
                     </Toolbar>
                 </AppBar>
                 {/* Content */}
-                <main className={classes.content}>
+                <main className={classes.content} style={pageBackground}>
                     <div className={classes.appBarSpacer} />
-                    <Container maxWidth="lg" className={classes.container}>
-                        <ResponsiveReactGridLayout
-                            className="layout"
-                            cols={{ lg: 24, md: 24, sm: 24, xs: 4, xxs: 2 }}
-                            rowHeight={32}
-                            margin={[0, 0]}
-                            containerPadding={[0, 0]}
-                            onLayoutChange={this.onLayoutChange}
-                            onBreakpointChange={this.onBreakpointChange}
-                            layouts={this.state.layouts || {}}>
-                            {/* Components */}
-                            {this.state.components ? this.state.components.map((component, index) =>
-                                <div key={component.key}>
-                                    {parse(component)}
-                                    {/* Actions: Edit/Remove */}
-                                    <div className={classes.actions}>
-                                        <IconButton size="medium" onClick={() => this.removeComponent(index)}>
-                                            <DeleteIcon fontSize="small" />
-                                        </IconButton>
-                                        <IconButton size="medium" color="primary" onClick={() => this.editComponent(index)}>
-                                            <EditIcon fontSize="small" />
-                                        </IconButton>
+                    <Container maxWidth="lg" fixed className={classes.container}>
+                        <div style={spacingLayout} spacing={page.spacing}>
+                            <ResponsiveReactGridLayout
+                                key={page.spacing}
+                                cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+                                rowHeight={16}
+                                margin={[0, 0]}
+                                containerPadding={[0, 0]}
+                                onLayoutChange={this.onLayoutChange}
+                                onBreakpointChange={this.onBreakpointChange}
+                                layouts={this.state.layouts || {}}>
+                                {/* Components */}
+                                {this.state.components.map((component, index) =>
+                                    <div key={component.key} style={spacingItem}>
+                                        <ParsedComponent {...component}/>
+                                        {/* Actions: Edit//Remove */}
+                                        <div className={classes.actions} style={spacingAction}>
+                                            <IconButton size="medium" onClick={() => this.removeComponent(index)}>
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton>
+                                            <IconButton size="medium" color="primary" onClick={() => this.editComponent(index)}>
+                                                <EditIcon fontSize="small" />
+                                            </IconButton>
+                                        </div>
                                     </div>
-                                </div>
-                            ) : null}
-                        </ResponsiveReactGridLayout>
+                                )}
+                            </ResponsiveReactGridLayout>
+                        </div>
                     </Container>
                 </main>
                 {/* Component Editor */}
-                <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent(this.state.edit)} onClose={this.closeEditor}/>
+                <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent(this.state.edit)} onClose={this.closeEditor} />
+                <PageEditor key={"p"+pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
             </div>
         );
     }
 }
 
-export default withStyles(styles)(Dashboard);
+export default withStyles(styles)(Editor);
