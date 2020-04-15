@@ -28,23 +28,21 @@ const styles = (theme => ({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        //overflow: 'auto',
-        //flexDirection: 'column',
-        //flex: '1 1 auto',
         position: "relative",
-        // Fill height
         height: '100% ',
         width:'100%',
-        //display: 'block',
-        //minHeight:'64px',
-        //minWidth: '100px',
-        //marginleft: 'auto',
         margin: 'auto',
         class: 'center',
-        overflow:'hidden',
         verticalalign: 'middle',
         textalign: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        overflow: 'hidden',
       },
+      padding: {
+        padding: theme.spacing(2),
+      }
 }));
 
 class PicDisplay extends React.Component {
@@ -59,31 +57,31 @@ class PicDisplay extends React.Component {
 
     render() {
 
-      const { classes, background } = this.props;
+      const { classes, background, layout} = this.props;
       console.log("background: ", background);
 
-        const content = (
+        let content = (
           
             <img src={this.props.picurl} alt="pic" className={classes.media} />
           
         );
 
-        return background ? (
-          <Paper
-            className={classes.paper}
-            style={{
-              backgroundImage: `url(${background.image})`,
+        content =
+          layout && layout.padding ? (
+            <div className={classes.padding}>{content}</div>
+          ) : (
+            content
+          );
+
+        return (
+          background ? <Paper className={classes.paper} style={{
+              backgroundImage: background.image ? `url(${background.image})` : null,
               backgroundColor: background.color,
               border: background.border,
-            }}
-            elevation={background.elevation}
-            square={!background.rounded}
-          >
-            {content}
-          </Paper>
-        ) : (
-          content
-        );
+          }} elevation={background.elevation} square={!background.rounded}>
+              {content}
+          </Paper> : <Paper className={classes.paper}> {content} </Paper>
+      )
     }
   }
     

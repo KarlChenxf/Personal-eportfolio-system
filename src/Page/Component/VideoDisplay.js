@@ -6,14 +6,13 @@ import Paper from '@material-ui/core/Paper';
 const styles = (theme => ({
     paper: {
         padding: theme.spacing(0.6),
-        //display: 'flex',
-        //overflow: 'auto',
-        //flexDirection: 'column',
-        //flex: '1 1 auto',
         position: "relative",
         minHeight: '64px',
-        // Fill height
         height: '100%',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        overflow: 'hidden',
     },
 }));
 
@@ -32,7 +31,7 @@ class VideoDisplay extends React.Component {
         const {classes, background} = this.props;
         console.log("videobackground: ", background);
 
-        const content = (
+        let content = (
             <Paper key={0} item className={classes.paper}> 
             <ReactPlayer
                 className='react-player'
@@ -44,22 +43,15 @@ class VideoDisplay extends React.Component {
         </Paper>
         )
 
-        return background ? (
-            <Paper
-              className={classes.paper}
-              style={{
-                backgroundImage: `url(${background.image})`,
-                backgroundColor: background.color,
-                border: background.border,
-              }}
-              elevation={background.elevation}
-              square={!background.rounded}
-            >
+        return (
+          background ? <Paper className={classes.paper} style={{
+              backgroundImage: background.image ? `url(${background.image})` : null,
+              backgroundColor: background.color,
+              border: background.border,
+          }} elevation={background.elevation} square={!background.rounded}>
               {content}
-            </Paper>
-          ) : (
-            content
-          );
+          </Paper> : content
+        )
     }
 }
 
