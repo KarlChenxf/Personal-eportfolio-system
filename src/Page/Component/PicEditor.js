@@ -8,6 +8,7 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import axios from 'axios';
 import 'rc-color-picker/assets/index.css';
 import BackgroundControl from './BackgroundControl.js'
+import LayoutControl from './LayoutControl.js'
 
 const styles = (theme => ({
 
@@ -23,6 +24,7 @@ class PicEditor extends React.Component {
             selectedFile: null,
             fileName: props.fileUploadHandler || "",
         };
+        this.layout = props.layout || null;
         this.background = props.background || null;
     }
 
@@ -31,6 +33,7 @@ class PicEditor extends React.Component {
             picurl: this.state.picurl,
             selectedFile: this.state.selectedFile,
             fileName: this.state.fileName,
+            layout: this.layout,
             background: this.background,
         };
     }
@@ -40,6 +43,11 @@ class PicEditor extends React.Component {
             [event.target.name]: event.target.value, // update the changed value
         });
     } 
+
+    handlePureChange = event => {
+      this[event.target.name] = event.target.value;
+  }
+
     fileSelectedHandler = event => {
       this.setState({
           selectedFile: event.target.files[0], 
@@ -81,15 +89,20 @@ class PicEditor extends React.Component {
                 value={this.state.picurl}
                 onChange={this.handleChange}
               />
+              <LayoutControl
+                {...this.props.layout}
+                name="layout"
+                onChange={this.handlePureChange}
+              />
               <BackgroundControl
-                key={0}
                 {...this.props.background}
-                onChange={(props) => (this.background = props)}
+                name="background"
+                onChange={this.handlePureChange}
               />
             </MuiDialogContent>
             <MuiDialogContent>
-              <input type="file" onChange={this.fileSelectedHandler} />
-              <button onClick={this.fileUploadHandler}>Upload</button>
+              <input autoFocus type="file" onChange={this.fileSelectedHandler} />
+              <button autoFocus onClick={this.fileUploadHandler}>Upload</button>
             </MuiDialogContent>
             <MuiDialogActions>
               <Button autoFocus onClick={this.props.onClose}>
@@ -106,7 +119,7 @@ class PicEditor extends React.Component {
               </Button>
             </MuiDialogActions>
           </Dialog>
-        )
+        );
     }
 }
 
