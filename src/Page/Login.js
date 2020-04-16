@@ -97,6 +97,8 @@ class Login extends React.Component {
 						response.json().then(data => {
 							//console.log(data);
               localStorage.setItem('LoginToken', data.token)// store user token
+              localStorage.setItem('email', data.user.email)// store user token
+              localStorage.setItem('user_id', data.user ? data.user.id : null)// store user name
               localStorage.setItem('UserName', data.user ? data.user.firstName + ' ' + data.user.lastName : "")
 							//if (data.message.indexOf("Success")>=0) {
                 // Send them to the dashboard
@@ -105,7 +107,7 @@ class Login extends React.Component {
                 else
                   this.props.history.replace("/client/profile");}*/
                 if(data.status === "success"){
-                  this.props.history.replace("/editor")//Jump to editor page
+                  this.props.history.replace("/profile")//Jump to editor page
                 }else {
                   alert(data.message);
                 }

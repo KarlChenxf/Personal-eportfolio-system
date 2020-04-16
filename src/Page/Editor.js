@@ -14,6 +14,19 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Fade from '@material-ui/core/Fade';
 import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
+import LinkIcon from '@material-ui/icons/Link';
+import TextField from '@material-ui/core/TextField';
+import SaveIcon from '@material-ui/icons/Save';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import AddIcon from '@material-ui/icons/Add';
+import LayersIcon from '@material-ui/icons/Layers';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Tooltip from '@material-ui/core/Tooltip';
+import ShareIcon from '@material-ui/icons/Share';
+
+import { BrowserRouter as Router, Route, Link as RouteLink } from "react-router-dom";
+import { withRouter } from 'react-router';
 
 import { WidthProvider, Responsive } from "react-grid-layout";
 import '../css/react-grid-layout.css'
@@ -49,6 +62,8 @@ const styles = (theme => ({
         paddingRight: 24,
     },
     appBar: {
+        color: 'rgba(0, 0, 0, 0.87)',
+        backgroundColor: '#FFF',
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
             easing: theme.transitions.easing.sharp,
@@ -69,7 +84,10 @@ const styles = (theme => ({
         position: "absolute",
         top: '10px',
         right: '10px',
-    }
+    },
+    margin: {
+        margin: theme.spacing(1),
+    },
 }));
 
 class Component {
@@ -79,6 +97,7 @@ class Component {
         this.key = new Date().getTime().toString(36);
         this.type = html;
         this.props = props || {};
+        this.link = null;
     }
 }
 
@@ -88,18 +107,74 @@ class Editor extends React.Component {
         super(props);
 
         this.state = {
+            title: "",
             layouts: { lg: [] },
             components: [],
             page: {},
+
             anchorEl: null,
             edit: -1,
             openEditor: false,
             openPageEditor: false,
             // Update the ver number to force reconstruce the PageEditor
             pageEditorVer: 0,
+            profileList: null,
+            linkAnchorEl: null,
         };
 
-        this.profileId = 1;
+        this.profileId = this.props.match.params.id;
+    }
+
+    getProfiles() {
+
+        const auth_token = localStorage.LoginToken;
+        //console.log(auth_token);
+
+        const content = {
+            userid: localStorage.user_id,
+        }
+
+        // Check authentication with the server
+        fetch(API_END_POINT + "/profile/get", {
+            body: JSON.stringify(content), // must match 'Content-Type' header
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // including cookie //include, same-origin, *omit
+            headers: {
+                'Accept': 'application/json',
+                'content-type': 'application/json',
+                'token': auth_token,
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+        })
+            .then(
+                (response) => {
+                    //console.log("response: ",response);
+                    if (response.ok) {
+                        response.json().then(data => {
+                            //console.log(data);
+                            this.setState({
+                                profileList: data.profile,
+                            })
+                        })
+                    }
+                    else {
+                        //alert("Unable to Login.");
+                        response.json().then(error => {
+                            console.log(error);
+                        }).catch(error => {
+                            console.error(error);
+                            //alert("Network Error.");
+                        });
+                    }
+                }
+            )
+            .catch(error => {
+                console.error(error);
+                //alert("Network Error.");
+            });
     }
 
     getProfile = () => {
@@ -132,9 +207,13 @@ class Editor extends React.Component {
                     if (response.ok) {
                         response.json().then(data => {
                             //console.log(data);
+                            let components = data.profile.html.components || [];
+                            // Test if components is an array
+                            if (!components.map) components = [];
                             this.setState({
+                                title: data.profile.url,
                                 layouts: data.profile.html.layouts,
-                                components: data.profile.html.components || [],
+                                components: components,
                                 page: data.profile.html.page || {},
                                 pageEditorVer: this.state.pageEditorVer + 1,
                             });
@@ -170,7 +249,8 @@ class Editor extends React.Component {
                 components: this.state.components,
                 layouts: this.state.layouts,
                 page: this.state.page,
-            }
+            },
+            url: this.state.title,
         }
 
         // Check authentication with the server
@@ -218,6 +298,7 @@ class Editor extends React.Component {
     componentDidMount() {
         //this.newComponent("");
         this.getProfile();
+        this.getProfiles();
     }
 
     /**
@@ -258,8 +339,6 @@ class Editor extends React.Component {
         var newComponents = this.state.components.slice();
         newComponents[index].props = props;
         this.setState({ components: newComponents, openEditor: false });
-
-        this.updateProfile();
     }
 
     editComponent = (index) => {
@@ -274,6 +353,20 @@ class Editor extends React.Component {
         var newContent = this.state.components.slice();
         newContent.splice(index, 1);
         this.setState({ components: newContent });
+    }
+
+    editLink = (event, index) => {
+        this.setState({ edit: index, linkAnchorEl: event.currentTarget });
+    }
+
+    saveLink = (props) => {
+        var newComponents = this.state.components.slice();
+        newComponents[this.state.edit].link = props;
+        this.setState({ components: newComponents, linkAnchorEl: null });
+    }
+
+    handleLinkMenuClose = () => {
+        this.setState({ linkAnchorEl: null });
     }
 
     /**
@@ -311,6 +404,14 @@ class Editor extends React.Component {
     }
 
     /**
+     * Appbar/Save
+     **/
+
+    save = () => {
+        this.updateProfile();
+    }
+
+    /**
      * Layout related callbacks
      **/
 
@@ -325,9 +426,15 @@ class Editor extends React.Component {
         this.setState({ layouts: layouts });
     }
 
+    handleChange = event => {
+        this.setState({
+            [event.target.name]: event.target.value, // update the changed value
+        });
+    }
+
     render() {
         const { classes } = this.props;
-        const { page, pageEditorVer } = this.state;
+        const { title, page, pageEditorVer } = this.state;
         //const { data } = this.props.location;
         //const {data} = this.state.name;
         //console.log("props: ",this.props);
@@ -370,14 +477,76 @@ class Editor extends React.Component {
                             justify="space-between"
                             alignItems="center"
                         >
-                            <IconButton edge="start" className={classes.menuButton} onClick={this.handleClick} color="inherit" aria-label="menu">
-                                <MenuIcon aria-controls="fade-menu" aria-haspopup="true" />
-                            </IconButton>
-                            <Button onClick={this.showPageEditor}>Page</Button>
-                            <Typography variant="h6" className={classes.title}>
-                                Welcome, {localStorage.getItem("UserName")}
-                            </Typography>
-                            <Button href="./" color="inherit" horizontal='right'>Log out</Button>
+                            <Grid item>
+                                <Tooltip title="Back to Home">
+                                    <IconButton component={RouteLink} to={"/profile"} color="inherit" edge="start">
+                                        <ArrowBackIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Title shown on top of browser">
+                                    <TextField
+                                        //classes={{ root: classes.title }}
+                                        style={{ verticalAlign: 'middle' }}
+                                        variant="outlined"
+                                        size="small"
+                                        placeholder="Untitled"
+                                        value={title}
+                                        name="title"
+                                        onChange={this.handleChange}
+                                    />
+                                </Tooltip>
+                                <Tooltip title="Save">
+                                    <IconButton onClick={this.save} color="primary">
+                                        <SaveIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Preview">
+                                    <IconButton component={RouteLink} to={`/preview/${this.profileId}`} target={"_blank"}>
+                                        <VisibilityIcon />
+                                    </IconButton>
+                                </Tooltip>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.margin}
+                                    startIcon={<AddIcon aria-controls="fade-menu" aria-haspopup="true" />}
+                                    disableElevation
+                                    onClick={this.handleClick}
+                                    aria-label="menu"
+                                >
+                                    Component
+                                </Button>
+                                <Button
+                                    variant="outlined"
+                                    className={classes.margin}
+                                    startIcon={<LayersIcon />}
+                                    disableElevation
+                                    onClick={this.showPageEditor}
+                                >
+                                    Layout/Background
+                                </Button>
+                            </Grid>
+                            <Grid item justify="flex-end">
+                                {/**TODO: popup share dialog*/}
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    className={classes.margin}
+                                    startIcon={<ShareIcon />}
+                                    disableElevation
+                                >
+                                    Share
+                                </Button>
+                                <Typography variant="body1" style={{ display: 'inline-flex', verticalAlign: 'middle' }}>
+                                    {localStorage.email}
+                                </Typography>
+                                {/**TODO: clear localStorage when logout*/}
+                                <Tooltip title="Logout">
+                                    <IconButton component={RouteLink} to={"/"} edge="end">
+                                        <ExitToAppIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
                         </Grid>
                         <Menu
                             id="fade-menu"
@@ -421,9 +590,15 @@ class Editor extends React.Component {
                                 {/* Components */}
                                 {this.state.components.map((component, index) =>
                                     <div key={component.key} style={spacingItem}>
-                                        <ParsedComponent {...component}/>
+                                        <ParsedComponent {...component} />
                                         {/* Actions: Edit//Remove */}
                                         <div className={classes.actions} style={spacingAction}>
+                                            <Button size="big"
+                                                startIcon={<LinkIcon/>}
+                                                onClick={(event) => this.editLink(event, index)}
+                                            >
+                                                {component.link}
+                                            </Button>
                                             <IconButton size="medium" onClick={() => this.removeComponent(index)}>
                                                 <DeleteIcon fontSize="small" />
                                             </IconButton>
@@ -439,10 +614,23 @@ class Editor extends React.Component {
                 </main>
                 {/* Component Editor */}
                 <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent(this.state.edit)} onClose={this.closeEditor} />
-                <PageEditor key={"p"+pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
+                <PageEditor key={"p" + pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
+                <Menu
+                    id="link-menu"
+                    keepMounted
+                    anchorEl={this.state.linkAnchorEl}
+                    open={Boolean(this.state.linkAnchorEl)}
+                    onClose={this.handleLinkMenuClose}
+                    TransitionComponent={Fade}
+                >
+                    {this.state.profileList ? this.state.profileList.map((v, i) => {
+                        return <MenuItem key={v.id} onClick={() => { this.saveLink(v.id); }}>{v.id + " - " + v.url}</MenuItem>
+                    }) : "Loading..."}
+                    <MenuItem key={"remove"} onClick={() => { this.saveLink(null); }}>Remove</MenuItem>
+                </Menu>
             </div>
         );
     }
 }
 
-export default withStyles(styles)(Editor);
+export default withRouter(withStyles(styles)(Editor));
