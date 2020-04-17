@@ -115,7 +115,7 @@ class Profile extends React.Component {
         const content = {
             userid: localStorage.user_id,
             html: "{}",
-            url: this.state.pname,
+            url: null,//this.state.pname,
         }
 
         // Check authentication with the server
@@ -181,7 +181,7 @@ class Profile extends React.Component {
                         </RouteLink>
                     }) : "Loading..."}
 
-                    <TextField
+                    {/*<TextField
                         variant="outlined"
                         required
                         name="pname"
@@ -190,7 +190,7 @@ class Profile extends React.Component {
                         id="pname"
                         value={this.state.pname}
                         onChange={this.handleChange}
-                    />
+                    />*/}
                     <Button
                         type="submit"
                         variant="contained"
