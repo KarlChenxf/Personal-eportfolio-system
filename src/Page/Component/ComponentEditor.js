@@ -7,7 +7,7 @@ import PicEditor from './PicEditor.js'
 import FileEditor from './FileEditor.js'
 import * as Type from './Type.js'
 
-class ComponentEditor extends React.Component {
+class ComponentEditor extends React.PureComponent {
 
     constructor(props) {
         super(props);

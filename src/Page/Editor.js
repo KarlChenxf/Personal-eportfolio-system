@@ -59,16 +59,16 @@ const styles = (theme => ({
         display: 'flex',
     },
     toolbar: {
-        paddingRight: 24,
+        //paddingRight: 24,
     },
     appBar: {
         color: 'rgba(0, 0, 0, 0.87)',
         backgroundColor: '#FFF',
-        zIndex: theme.zIndex.drawer + 1,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
+        //zIndex: theme.zIndex.drawer + 1,
+        //transition: theme.transitions.create(['width', 'margin'], {
+        //    easing: theme.transitions.easing.sharp,
+        //    duration: theme.transitions.duration.leavingScreen,
+        //}),
     },
     appBarSpacer: theme.mixins.toolbar,
     content: {
@@ -87,6 +87,18 @@ const styles = (theme => ({
     },
     margin: {
         margin: theme.spacing(1),
+    },
+    actionLinkRoot: {
+        padding: '12px 8px',
+        minWidth: '44px',
+        borderRadius: '22px'
+    },
+    actionLinkIcon: {
+        margin: 0,
+    },
+    actionLinkText: {
+        marginLeft: theme.spacing(1),
+        lineHeight: 0,
     },
 }));
 
@@ -156,7 +168,7 @@ class Editor extends React.Component {
                         response.json().then(data => {
                             //console.log(data);
                             this.setState({
-                                profileList: data.profile,
+                                profileList: data.profile.map((v) => { return { id: v.id, title: v.url || "(Untitled)" } }),
                             })
                         })
                     }
@@ -335,9 +347,9 @@ class Editor extends React.Component {
         this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, });
     }
 
-    saveComponent = (index) => (props) => {
+    saveComponent = (props) => {
         var newComponents = this.state.components.slice();
-        newComponents[index].props = props;
+        newComponents[this.state.edit].props = props;
         this.setState({ components: newComponents, openEditor: false });
     }
 
@@ -526,7 +538,7 @@ class Editor extends React.Component {
                                     Layout/Background
                                 </Button>
                             </Grid>
-                            <Grid item justify="flex-end">
+                            <Grid item>
                                 {/**TODO: popup share dialog*/}
                                 <Button
                                     variant="contained"
@@ -580,6 +592,8 @@ class Editor extends React.Component {
                         <div style={spacingLayout} spacing={page.spacing}>
                             <ResponsiveReactGridLayout
                                 key={page.spacing}
+                                //TODO: Do we need to support different resolution?
+                                breakpoints={{ lg: 0 }}
                                 cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
                                 rowHeight={16}
                                 margin={[0, 0]}
@@ -593,18 +607,27 @@ class Editor extends React.Component {
                                         <ParsedComponent {...component} />
                                         {/* Actions: Edit//Remove */}
                                         <div className={classes.actions} style={spacingAction}>
-                                            <Button size="big"
-                                                startIcon={<LinkIcon/>}
-                                                onClick={(event) => this.editLink(event, index)}
-                                            >
-                                                {component.link}
-                                            </Button>
-                                            <IconButton size="medium" onClick={() => this.removeComponent(index)}>
-                                                <DeleteIcon fontSize="small" />
-                                            </IconButton>
-                                            <IconButton size="medium" color="primary" onClick={() => this.editComponent(index)}>
-                                                <EditIcon fontSize="small" />
-                                            </IconButton>
+                                            <Tooltip title="Remove">
+                                                <IconButton size="medium" onClick={() => this.removeComponent(index)}>
+                                                    <DeleteIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Link">
+                                                <Button
+                                                    startIcon={<LinkIcon />}
+                                                    onClick={(event) => this.editLink(event, index)}
+                                                    classes={{ root: classes.actionLinkRoot, startIcon: classes.actionLinkIcon }}
+                                                >
+                                                    {component.link && this.state.profileList ? <span className={classes.actionLinkText}>
+                                                        {this.state.profileList.find(v => v.id === component.link).title}
+                                                    </span> : ""}
+                                                </Button>
+                                            </Tooltip>
+                                            <Tooltip title="Edit">
+                                                <IconButton size="medium" color="primary" onClick={() => this.editComponent(index)}>
+                                                    <EditIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
                                         </div>
                                     </div>
                                 )}
@@ -613,19 +636,23 @@ class Editor extends React.Component {
                     </Container>
                 </main>
                 {/* Component Editor */}
-                <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent(this.state.edit)} onClose={this.closeEditor} />
+                <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} />
                 <PageEditor key={"p" + pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
                 <Menu
                     id="link-menu"
                     keepMounted
+                    getContentAnchorEl={null}
+                    //FIXME: Trying to fix the position of menu, unknown reason
+                    anchorOrigin={{vertical:0,horizontal:8}}
                     anchorEl={this.state.linkAnchorEl}
                     open={Boolean(this.state.linkAnchorEl)}
                     onClose={this.handleLinkMenuClose}
                     TransitionComponent={Fade}
+                    disableScrollLock
                 >
                     {this.state.profileList ? this.state.profileList.map((v, i) => {
-                        return <MenuItem key={v.id} onClick={() => { this.saveLink(v.id); }}>{v.id + " - " + v.url}</MenuItem>
-                    }) : "Loading..."}
+                        return <MenuItem key={v.id} onClick={() => { this.saveLink(v.id); }}>{v.title}</MenuItem>
+                    }) : null}
                     <MenuItem key={"remove"} onClick={() => { this.saveLink(null); }}>Remove</MenuItem>
                 </Menu>
             </div>

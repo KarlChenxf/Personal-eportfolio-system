@@ -33,17 +33,6 @@ const styles = (theme => ({
     root: {
         display: 'flex',
     },
-    toolbar: {
-        paddingRight: 24,
-    },
-    appBar: {
-        zIndex: theme.zIndex.drawer + 1,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-        }),
-    },
-    appBarSpacer: theme.mixins.toolbar,
     content: {
         flexGrow: 1,
         height: '100vh',
@@ -53,10 +42,8 @@ const styles = (theme => ({
         paddingTop: theme.spacing(4),
         paddingBottom: theme.spacing(4),
     },
-    actions: {
-        position: "absolute",
-        top: '10px',
-        right: '10px',
+    a: {
+        textDecoration: 'none',
     }
 }));
 
@@ -194,6 +181,9 @@ class Viewer extends React.Component {
         this.token ? this.getSharedProfile() : this.getProfile();
     }
 
+    /**
+     * Refresh page when URL changed
+     **/
     componentDidUpdate(prevProps) {
         if (this.props.match.params.token !== prevProps.match.params.token || this.props.match.params.id !== prevProps.match.params.id) {
             this.token ? this.getSharedProfile() : this.getProfile();
@@ -203,13 +193,12 @@ class Viewer extends React.Component {
     /**
      * Layout related callbacks
      **/
-
-    onBreakpointChange = (breakpoint, cols) => {
+    /*onBreakpointChange = (breakpoint, cols) => {
         this.setState({
             breakpoint: breakpoint,
             cols: cols
         });
-    }
+    }*/
 
     render() {
         const { classes } = this.props;
@@ -250,18 +239,20 @@ class Viewer extends React.Component {
                         <div style={spacingLayout} spacing={page.spacing}>
                             <ResponsiveReactGridLayout
                                 key={page.spacing}
+                                //TODO: Do we need to support different resolution?
+                                breakpoints={{lg: 0}}
                                 cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
                                 rowHeight={16}
                                 margin={[0, 0]}
                                 containerPadding={[0, 0]}
-                                onBreakpointChange={this.onBreakpointChange}
+                                //onBreakpointChange={this.onBreakpointChange}
                                 layouts={this.state.layouts || {}}
                                 isDraggable={false}
                                 isResizable={false}>
                                 {/* Components */}
                                 {this.state.components.map((component) =>
                                     <div key={component.key} style={spacingItem}>
-                                        {component.link ? <RouteLink to={`./${component.link}`}>
+                                        {component.link ? <RouteLink to={`./${component.link}`} className={classes.a}>
                                             <ParsedComponent {...component} />
                                         </RouteLink> : <ParsedComponent {...component} />}
                                     </div>
