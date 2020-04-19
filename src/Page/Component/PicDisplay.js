@@ -1,40 +1,18 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import '../../css/pic-display.css'
 
 
 const styles = (theme => ({
-      root: {
-          maxWidth: 345,
-          width: 300,
-      },
-      media: {
-        //maxHeight: '100%',
-        //maxWidth: '100%',
-        position:'absolute',
-        width: 'auto',
-        height: 'auto',
-        verticalalign: 'middle',
-        //minWidth: '10%',
-        //class: 'center',
-        //overflow:'hidden',
-        //display: 'block',
-        //marginleft: 'auto',
-        //marginright: 'auto',
 
-      },
       paper: {
         padding: theme.spacing(0.6),
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center',
-        position: "relative",
         height: '100% ',
         width:'100%',
-        margin: 'auto',
         class: 'center',
-        verticalalign: 'middle',
-        textalign: 'center',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
@@ -57,13 +35,11 @@ class PicDisplay extends React.Component {
 
     render() {
 
-      const { classes, background, layout} = this.props;
-      console.log("background: ", background);
+      const { classes, background, layout } = this.props;
+      console.log("Displayfitting: ",this.props.fitting);
 
-        let content = (
-          
-            <img src={this.props.picurl} alt="pic" className={classes.media} />
-          
+        let content = (        
+            <img src={this.props.picurl} alt="pic" width = '100%' class={this.props.fitting}/>       
         );
 
         content =

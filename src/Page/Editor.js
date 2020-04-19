@@ -69,6 +69,9 @@ const styles = (theme => ({
         position: "absolute",
         top: '10px',
         right: '10px',
+    },
+    title:{
+        align: 'centre',
     }
 }));
 
@@ -99,7 +102,7 @@ class Editor extends React.Component {
             pageEditorVer: 0,
         };
 
-        this.profileId = 1;
+        this.profileId = 5;
     }
 
     getProfile = () => {
@@ -372,12 +375,14 @@ class Editor extends React.Component {
                         >
                             <IconButton edge="start" className={classes.menuButton} onClick={this.handleClick} color="inherit" aria-label="menu">
                                 <MenuIcon aria-controls="fade-menu" aria-haspopup="true" />
-                            </IconButton>
-                            <Button onClick={this.showPageEditor}>Page</Button>
+                            </IconButton>                          
                             <Typography variant="h6" className={classes.title}>
                                 Welcome, {localStorage.getItem("UserName")}
                             </Typography>
-                            <Button href="./" color="inherit" horizontal='right'>Log out</Button>
+                            <div align='right'>
+                                <Button color="inherit" horizontal='right' onClick={this.showPageEditor}>Page</Button>
+                                <Button href="./" color="inherit" horizontal='right'>Log out</Button>
+                            </div>
                         </Grid>
                         <Menu
                             id="fade-menu"
