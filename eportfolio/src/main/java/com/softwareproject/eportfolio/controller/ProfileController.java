@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-18 23:29:03
- * @LastEditTime: 2020-04-01 16:24:36
+ * @LastEditTime: 2020-04-19 20:32:09
  */
 package com.softwareproject.eportfolio.controller;
 
@@ -124,7 +124,7 @@ public class ProfileController{
             }
             return res
                 .put("status", "success")
-                .put("profile", user.getProfiles().stream().map(profile -> modelMapper.map(profile, ProfileDTO.class)))
+                .put("profile", user.getProfiles().stream().map(profile -> new APIResponse().put("id", profile.getId()).put("url", profile.getUrl()).export()))
                 .export();
         }
         return res;

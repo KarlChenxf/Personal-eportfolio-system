@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-03-14 23:11:53
- * @LastEditTime: 2020-03-30 17:37:42
+ * @LastEditTime: 2020-04-19 22:08:30
  */
 package com.softwareproject.eportfolio;
 
@@ -20,7 +20,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class EportfolioApplication implements ApplicationRunner{
+public class EportfolioApplication {
 
 	@Autowired
 	UserDAO userDAO;
@@ -32,32 +32,33 @@ public class EportfolioApplication implements ApplicationRunner{
 		SpringApplication.run(EportfolioApplication.class, args);
 	}
 
-	@Override
-	public void run(ApplicationArguments args) throws Exception {
-		UserDO admin = new UserDO();
-		admin.setEmail("admin");
-		String test = PasswordEncoding.md5("123");
-		admin.setPassword(test);
-		userDAO.save(admin);
-		ProfileDO profile1 = new ProfileDO();
-		profile1.setUser(admin);
-		JSONObject testObject = new JSONObject();
-		JSONObject content = new JSONObject();
-		content.put("fefa", "feafefef");
-		testObject.put("contetnt", content);
-		testObject.put("layout", new JSONObject().put("111", "feafef"));
-		testObject.put("whatever", new JSONObject().put("111", "feafef"));
-		System.out.println(testObject.toJSONString());
-		profile1.setHTML(testObject.toJSONString());
-		profile1.setUrl("https://google.com");
-		ProfileDO profile2 = new ProfileDO();
-		profile2.setHTML(testObject.toJSONString());
-		profile2.setUrl("https://google.com");
-		profile2.setUser(admin);
+	// @Override
+	// public void run(ApplicationArguments args) throws Exception {
+	// 	UserDO admin = new UserDO();
+	// 	admin.setEmail("admin");
+	// 	String test = PasswordEncoding.md5("123");
+	// 	admin.setPassword(test);
+	// 	userDAO.save(admin);
+	// 	ProfileDO profile1 = new ProfileDO();
+	// 	profile1.setUser(admin);
+	// 	JSONObject testObject = new JSONObject();
+	// 	JSONObject content = new JSONObject();
+	// 	content.put("fefa", "feafefef");
+	// 	testObject.put("contetnt", content);
+	// 	testObject.put("layout", new JSONObject().put("111", "feafef"));
+	// 	testObject.put("whatever", new JSONObject().put("111", "feafef"));
+	// 	System.out.println(testObject.toJSONString());
+	// 	profile1.setHTML(testObject.toJSONString());
+	// 	profile1.setUrl("https://google.com");
+	// 	ProfileDO profile2 = new ProfileDO();
+	// 	profile2.setHTML(testObject.toJSONString());
+	// 	profile2.setUrl("https://google.com");
+	// 	profile2.setUser(admin);
 
-		profileDAO.save(profile1);
-		profileDAO.save(profile2);
+	// 	profileDAO.save(profile1);
+	// 	profileDAO.save(profile2);
+
 		
-	}	
+	// }	
 
 }
