@@ -134,6 +134,7 @@ class Editor extends React.Component {
             linkAnchorEl: null,
         };
 
+
         this.profileId = this.props.match.params.id;
     }
 
