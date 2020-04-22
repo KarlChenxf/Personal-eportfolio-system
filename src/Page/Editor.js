@@ -308,10 +308,10 @@ class Editor extends React.Component {
     getSharingLink = () => {
 
         const auth_token = localStorage.LoginToken;
-
         const content = {
             profileid: this.profileId,
         }
+        
 
         // Check authentication with the server
         fetch(API_END_POINT + "/share/getlink", {
@@ -324,20 +324,22 @@ class Editor extends React.Component {
                 'token': auth_token,
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            mode: 'same-origin', // no-cors, cors, *same-origin
+            // API shows as 'GET'
+            mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow', // manual, *follow, error
             referrer: 'no-referrer', // *client, no-referrer
         })
             .then(
                 (response) => {
-                    if (response.ok) {                
+                    //console.log("response: ",response);
+                    if (response.ok) {
                         response.json().then(data => {
-                            //console.log(data);
-                            this.shareToken = data.token;
+                            const shareUrl = API_END_POINT+"/share/getprofile?token="+data.sharetoken;
+                            window.open(shareUrl);
                         })
                     }
                     else {
-                        alert("No response");
+                        //alert("Unable to Login.");
                         response.json().then(error => {
                             console.log(error);
                         }).catch(error => {
@@ -351,7 +353,6 @@ class Editor extends React.Component {
                 console.error(error);
                 //alert("Network Error.");
             });
-
         //event.preventDefault();
     }
 
@@ -458,7 +459,6 @@ class Editor extends React.Component {
 
     createSharing = () =>{
         this.getSharingLink();
-        alert(this.shareToken)
     }
 
     /* Temperly use alert because of bug
