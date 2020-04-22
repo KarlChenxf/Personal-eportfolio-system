@@ -18,7 +18,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Typography from '@material-ui/core/Typography';
 //import 'rc-color-picker/assets/index.css';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
-
+import axios from 'axios';
 
 const styles = (() => ({
     formControl: {
@@ -40,7 +40,10 @@ const styles = (() => ({
     },
     textField: {
         minWidth: 210,
-    }
+    },
+    input:{
+        display: 'none',
+      }
 }));
 
 class BackgroundControl extends React.PureComponent {
@@ -57,6 +60,9 @@ class BackgroundControl extends React.PureComponent {
             rounded: props.rounded || false,
             image: props.image || "",
             openColorPanel: false,
+            selectedFile: null,
+            fileName: props.fileUploadHandler || "",
+            uploadStatus: false,
         };
 
         console.log("BackgroundControl constructor()")
@@ -75,7 +81,40 @@ class BackgroundControl extends React.PureComponent {
             if (this.props.onChange)
                 this.props.onChange(this.getProps());
         });
+        console.log("handlechange: ",this.state);
     }
+
+    imgSelectedHandler = (event) => {
+        this.setState({
+          selectedFile: event.target.files[0],
+          fileName: event.target.files[0].name,
+        });
+        console.log("imageSelectedHandler ",event.target.files[0].name);
+      };
+    
+    
+      imgUploadHandler = () => {
+        const fd = new FormData();
+        fd.append("file", this.state.selectedFile);
+        axios
+          .post("http://3.135.244.103:9090/file/upload", fd,{headers:{'token':localStorage.LoginToken}},{
+            onUploadProgress: (ProgressEvent) => {
+              console.log(
+                "Upload Progress: " +
+                  Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)
+              );
+            },
+          })
+          .then((res) => {
+            
+            this.setState({image: res.data.awsresponse, uploadStatus: res.data.status });
+            console.log("uploadrespnse image: ",this.state.image);
+            this.props.onChange(this.getProps());
+          })
+          .catch((error)=>{
+            console.log(error);
+          });
+      };
 
     handleColor = (colorObj) => {
         const { color, alpha } = colorObj;
@@ -90,11 +129,14 @@ class BackgroundControl extends React.PureComponent {
     }
 
     getProps = () => {
+      console.log("background getProps： ",this.state.image);
         const value =  this.state.background ? {
             color: this.state.colorHex,
             elevation: this.state.elevation,
             rounded: this.state.rounded,
             image: this.state.image,
+            selectedFile: this.state.selectedFile,
+            fileName: this.state.fileName,
         } : null;
         return {
             target:{
@@ -106,99 +148,148 @@ class BackgroundControl extends React.PureComponent {
 
     render() {
         console.log("BackgroundContrdol render()");
+        console.log("BackgroundContrdol render image: ",this.state.image);
 
         const { classes } = this.props;
 
         return (
-            <Fragment>
-                <Grid container direction="row" spacing={2}>
-                    <Grid item xs={12}>
-                        <FormControlLabel
-                            classes={{ labelPlacementStart: classes.labelPlacementStart }}
-                            control={<Switch
-                                checked={this.state.background}
-                                onChange={this.handleChange}
-                                color="primary"
-                                name="background"
-                                inputProps={{ 'aria-label': 'primary checkbox' }}
-                            />}
-                            label={<Typography variant="h6" component="h3">Background</Typography>}
-                            labelPlacement="start"
-                        />
-                    </Grid>
-                    {this.state.background ? <Fragment>
-                        <Grid item>
-                            <Tooltip title="Color">
-                                <Button variant="contained"
-                                    disableElevation
-                                    className={classes.roundButton}
-                                    style={{
-                                        backgroundColor: this.state.colorHex,
-                                    }}
-                                    onClick={this.handleClose}> {/* Space here to prevent warning */}</Button>
-                            </Tooltip>
-                        </Grid>
-                        <Dialog onClose={this.handleClose} aria-labelledby="customized-dialog-title" open={this.state.openColorPanel}>
-                            <ColorPickerPanel color={this.state.color} alpha={this.state.alpha} onChange={this.handleColor} mode="RGB" />
-                        </Dialog>
-                        <Grid item>
-                            <FormControl variant="outlined">
-                                <InputLabel htmlFor="standard-adornment-upload">Image</InputLabel>
-                                <OutlinedInput
-                                    id="standard-adornment-upload"
-                                    //type={values.showPassword ? 'text' : 'password'}
-                                    name="image"
-                                    value={this.state.image}
-                                    onChange={this.handleChange}
-                                    labelWidth={44}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                //onClick={handleClickShowPassword}
-                                                //onMouseDown={handleMouseDownPassword}
-                                            >
-                                            <PublishIcon />
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                />
-                            </FormControl>
-                        </Grid>
-                        <Grid item>
-                            <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel id="elevation-label">Elevation</InputLabel>
-                                <Select
-                                    labelId="elevation-label"
-                                    value={this.state.elevation}
-                                    onChange={this.handleChange}
-                                    label="Elevation"
-                                    name="elevation"
-                                >
-                                    <MenuItem key={0} value={0}>
-                                        None
-                                </MenuItem>
-                                    {[...Array(24)].map((e, i) => <MenuItem key={i + 1} value={i + 1}>{i + 1}</MenuItem>)}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item className={classes.gridItem}>
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={this.state.rounded}
-                                        onChange={this.handleChange}
-                                        name="rounded"
-                                        color="primary"
-                                    />
-                                }
-                                label="Rounded corners"
+          <Fragment>
+            <Grid container direction="row" spacing={2}>
+              <Grid item xs={12}>
+                <FormControlLabel
+                  classes={{ labelPlacementStart: classes.labelPlacementStart }}
+                  control={
+                    <Switch
+                      checked={this.state.background}
+                      onChange={this.handleChange}
+                      color="primary"
+                      name="background"
+                      inputProps={{ "aria-label": "primary checkbox" }}
+                    />
+                  }
+                  label={
+                    <Typography variant="h6" component="h3">
+                      Background
+                    </Typography>
+                  }
+                  labelPlacement="start"
+                />
+              </Grid>
+              {this.state.background ? (
+                <Fragment>
+                  <Grid item>
+                    <Tooltip title="Color">
+                      <Button
+                        variant="contained"
+                        disableElevation
+                        className={classes.roundButton}
+                        style={{
+                          backgroundColor: this.state.colorHex,
+                        }}
+                        onClick={this.handleClose}
+                      >
+                        {" "}
+                        {/* Space here to prevent warning */}
+                      </Button>
+                    </Tooltip>
+                  </Grid>
+                  <Dialog
+                    onClose={this.handleClose}
+                    aria-labelledby="customized-dialog-title"
+                    open={this.state.openColorPanel}
+                  >
+                    <ColorPickerPanel
+                      color={this.state.color}
+                      alpha={this.state.alpha}
+                      onChange={this.handleColor}
+                      mode="RGB"
+                    />
+                  </Dialog>
+                  <Grid item>
+                    <FormControl variant="outlined">
+                      <InputLabel htmlFor="standard-adornment-upload">
+                        Image
+                      </InputLabel>
+                      <OutlinedInput
+                        id="standard-adornment-upload"
+                        //type={values.showPassword ? 'text' : 'password'}
+                        name="image"
+                        value={this.state.image}
+                        onChange={this.handleChange}
+                        labelWidth={44}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <input
+                              //accept="image/*"
+                              className={classes.input}
+                              id="input-image"
+                              type="file"
+                              onChange={this.imgSelectedHandler}
                             />
-                        </Grid>
-                    </Fragment> : null}
-                </Grid>
-            </Fragment>
-        )
+                            <label htmlFor="input-image">
+                              <IconButton
+                                color="primary"
+                                aria-label="upload picture"
+                                component="span"
+                              >
+                                <PublishIcon />
+                              </IconButton>
+                            </label>
+                            <Button
+                              variant="outlined"
+                              color="primary"
+                              autoFocus
+                              onClick={this.imgUploadHandler}
+                            >
+                              Upload
+                            </Button>
+                          </InputAdornment>
+                        }
+                      />
+                    </FormControl>
+                  </Grid>
+                  <Grid item>
+                    <FormControl
+                      variant="outlined"
+                      className={classes.formControl}
+                    >
+                      <InputLabel id="elevation-label">Elevation</InputLabel>
+                      <Select
+                        labelId="elevation-label"
+                        value={this.state.elevation}
+                        onChange={this.handleChange}
+                        label="Elevation"
+                        name="elevation"
+                      >
+                        <MenuItem key={0} value={0}>
+                          None
+                        </MenuItem>
+                        {[...Array(24)].map((e, i) => (
+                          <MenuItem key={i + 1} value={i + 1}>
+                            {i + 1}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item className={classes.gridItem}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={this.state.rounded}
+                          onChange={this.handleChange}
+                          name="rounded"
+                          color="primary"
+                        />
+                      }
+                      label="Rounded corners"
+                    />
+                  </Grid>
+                </Fragment>
+              ) : null}
+            </Grid>
+          </Fragment>
+        );
     }
 }
 

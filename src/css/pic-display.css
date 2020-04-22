@@ -11,22 +11,26 @@
 }
 .fill {
   object-fit: fill;
-  width: 100%;
+
 }
 .contain {
   object-fit: contain;
-  width: 100%;
+
 }
 .cover {
   object-fit: cover;
-  width: 100%;
+
 }
 .scale-down {
   object-fit: scale-down;
-  width: 100%;
+
 }
 .none {
   object-fit: none;
+
+}
+img{
+  height: 100%;
   width: 100%;
 }
 
