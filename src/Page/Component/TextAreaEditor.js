@@ -69,7 +69,8 @@ class TextAreaEditor extends React.Component {
 
     render() {
         return (
-            <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"} onClose={this.props.onClose}>
+            // disableEnforceFocus: otherwise user could not edit "link" (select text - right click - link )
+            <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"} onClose={this.props.onClose} disableEnforceFocus>
                 <MuiDialogContent>
                     <TinyMCE
                         initialValue={this.textarea}
