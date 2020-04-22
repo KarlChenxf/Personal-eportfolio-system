@@ -242,7 +242,7 @@ return
     "now": "2020-03-19T11:49:51.288+0000",
     "expiredate": "2020-03-20T11:49:51.288+0000",
     "status": "success",
-    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJ0ZWFtMTJzaGFyZWxpbmsxIiwiZXhwIjoxNTg0NzA0OTkxfQ.New5jrLpNfT03la0DjVqIK9jQtwmGsE9pEI_NuhLJ0Q"
+    "sharetoken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJ0ZWFtMTJzaGFyZWxpbmsxIiwiZXhwIjoxNTg0NzA0OTkxfQ.New5jrLpNfT03la0DjVqIK9jQtwmGsE9pEI_NuhLJ0Q"
 }
 ```
 
