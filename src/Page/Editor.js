@@ -288,6 +288,7 @@ class Editor extends React.Component {
                         })
                     }
                     else {
+                        //alert("Unable to Login.");
                         response.json().then(error => {
                             console.log(error);
                         }).catch(error => {
