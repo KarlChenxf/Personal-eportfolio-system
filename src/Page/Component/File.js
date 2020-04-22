@@ -1,8 +1,8 @@
 import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+
+
 
 const styles = (theme => ({
     paper: {
@@ -21,26 +21,23 @@ class File extends React.Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
-            
 
         };
     }
 
     render() {
         const { classes } = this.props;
+        console.log("file: ", this.props.fileurl);
+
 
         return (
-            <Paper className={classes.paper}>
-                <Grid container >                
-                    <p >
-                        {this.props.fileName || " "}
-                    </p>
-                </Grid>
-            </Paper>
-            
-        )
+          <Paper className={classes.paper}>
+            <a  href={this.props.fileurl} rel="noopener noreferrer" target="_blank">
+              {this.props.fileName || " "}
+            </a>
+          </Paper>
+        );
     }
 }
 
