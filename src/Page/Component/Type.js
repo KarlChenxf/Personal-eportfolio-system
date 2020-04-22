@@ -4,3 +4,4 @@ export const TEXTAREA = "c";
 export const FILE = "d";
 export const PICDISPLAY = "e"; 
 export const VIDEODISPLAY = "f"; 
+export const TEXTDRAFT = "g";

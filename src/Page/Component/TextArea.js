@@ -3,24 +3,21 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import HTMLReactParser from 'html-react-parser';
 
 const styles = (theme => ({
     paper: {
-        padding: theme.spacing(2),
-        //display: 'flex',
-        //overflow: 'auto',
-        //flexDirection: 'column',
-        flex: '1 1 auto',
-        position: "relative",
-        minHeight: '64px',
-        // Fill height
         height: '100%',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        overflow: 'hidden',
     },
 }));
 
 class TextArea extends React.Component {
 
-    constructor(props) {
+    constructor(props) { 
         super(props);
 
         this.state = {
@@ -29,19 +26,20 @@ class TextArea extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, textarea, layout, background } = this.props;
+
+        let content = HTMLReactParser(textarea || "");
+
+        content = layout && layout.padding ? <div style={{padding:layout.padding}}>{content}</div> : content;
 
         return (
-            <Paper className={classes.paper}
-            >
-                <Grid container >
-                    <Typography 
-                    variant="h5"
-                    >{this.props.textarea}
-                    </Typography>
-                </Grid>
-            </Paper>
-            
+            background ? <Paper className={classes.paper} style={{
+                backgroundImage: background.image ? `url(${background.image})` : null,
+                backgroundColor: background.color,
+                border: background.border,
+            }} elevation={background.elevation} square={!background.rounded}>
+                {content}
+            </Paper> : content
         )
     }
 }

@@ -64,11 +64,6 @@ const styles = (theme => ({
     appBar: {
         color: 'rgba(0, 0, 0, 0.87)',
         backgroundColor: '#FFF',
-        //zIndex: theme.zIndex.drawer + 1,
-        //transition: theme.transitions.create(['width', 'margin'], {
-        //    easing: theme.transitions.easing.sharp,
-        //    duration: theme.transitions.duration.leavingScreen,
-        //}),
     },
     appBarSpacer: theme.mixins.toolbar,
     content: {
@@ -574,7 +569,7 @@ class Editor extends React.Component {
                             {/* Add Personal Info */}
                             <MenuItem onClick={() => { this.newComponent(Type.PERSONAL_INFO); this.handleClose() }}>Personal Information</MenuItem>
                             {/* Add TextArea */}
-                            <MenuItem onClick={() => { this.newComponent(Type.TEXTAREA); this.handleClose() }}>Text Area</MenuItem>
+                            <MenuItem onClick={() => { this.newComponent(Type.TEXTAREA); this.handleClose() }}>Text</MenuItem>
                             {/* Add Photos */}
                             <MenuItem onClick={() => { this.newComponent(Type.PICDISPLAY); this.handleClose() }}>Pictures</MenuItem>
                             {/* Add Videos */}

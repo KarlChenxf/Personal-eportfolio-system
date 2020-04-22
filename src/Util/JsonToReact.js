@@ -5,6 +5,7 @@ import VideoDisplay from '../Page/Component/VideoDisplay.js'
 import PicDisplay from '../Page/Component/PicDisplay.js'
 import File from '../Page/Component/File.js'
 import * as Type from '../Page/Component/Type.js'
+import TextArea from '../Page/Component/TextArea.js';
 
 /* 
  * It's a function component
@@ -23,7 +24,7 @@ const ParsedComponent = React.memo(function parse(json) {
       case Type.HTML:
         return HTMLReactParser(json.props.html || "");
       case Type.TEXTAREA:
-        return HTMLReactParser(json.props.textarea || "");
+        return <TextArea {...json.props} />;
       case Type.FILE:
         return <File {...json.props} />;
       case Type.PICDISPLAY:
