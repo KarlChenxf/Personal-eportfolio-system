@@ -7,7 +7,7 @@ import '../../css/pic-display.css'
 const styles = (theme => ({
 
       paper: {
-        padding: theme.spacing(0.6),
+        padding: theme.spacing(0),
         display: 'flex',
         justifyContent: 'center',
         height: '100% ',
@@ -20,6 +20,8 @@ const styles = (theme => ({
       },
       padding: {
         padding: theme.spacing(2),
+        height: '100%',
+        width: '100%',
       }
 }));
 
@@ -37,9 +39,12 @@ class PicDisplay extends React.Component {
 
       const { classes, background, layout } = this.props;
       console.log("Displayfitting: ",this.props.fitting);
+      console.log("Displayimage: ",this.props);
 
-        let content = (        
-            <img src={this.props.picurl} alt="pic" width = '100%' class={this.props.fitting}/>       
+        let content = (  
+
+            <img src={this.props.picurl} alt="pic"  style={{objectFit:this.props.fitting}}/>   
+
         );
 
         content =
@@ -56,7 +61,7 @@ class PicDisplay extends React.Component {
               border: background.border,
           }} elevation={background.elevation} square={!background.rounded}>
               {content}
-          </Paper> : <Paper className={classes.paper}> {content} </Paper>
+          </Paper> : content
       )
     }
   }

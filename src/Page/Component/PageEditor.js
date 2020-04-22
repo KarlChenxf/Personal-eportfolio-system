@@ -19,7 +19,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Typography from '@material-ui/core/Typography';
 import 'rc-color-picker/assets/index.css';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
-
+import axios from 'axios';
 
 const styles = (() => ({
     formControl: {
@@ -41,7 +41,10 @@ const styles = (() => ({
     },
     textField: {
         minWidth: 210,
-    }
+    },
+    input:{
+        display: 'none',
+      }
 }));
 
 class PageEditor extends React.PureComponent {
@@ -87,6 +90,37 @@ class PageEditor extends React.PureComponent {
                 this.props.onChange(this.getProps());
         });
     }
+
+    imageSelectedHandler = (event) => {
+        this.setState({
+          selectedFile: event.target.files[0],
+          fileName: event.target.files[0].name,
+        });
+        console.log("imageSelectedHandler ",event.target.files[0].name);
+      };
+
+    imageUploadHandler = () => {
+        const fd = new FormData();
+        fd.append("file", this.state.selectedFile);
+        axios
+          .post("http://3.135.244.103:9090/file/upload", fd,{headers:{'token':localStorage.LoginToken}},{
+            onUploadProgress: (ProgressEvent) => {
+              console.log(
+                "Upload Progress: " +
+                  Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)
+              );
+            },
+          })
+          .then((res) => {
+            
+            this.setState({image: res.data.awsresponse, uploadStatus: res.data.status });
+            console.log("uploadrespnse image: ",this.state.image);
+            this.props.onChange(this.getProps());
+          })
+          .catch((error)=>{
+            console.log(error);
+          });
+      };
 
     getProps = () => {
         return {
@@ -154,26 +188,45 @@ class PageEditor extends React.PureComponent {
                         </Dialog>
                         <Grid item>
                             <FormControl variant="outlined">
-                                <InputLabel htmlFor="standard-adornment-upload">Image</InputLabel>
-                                <OutlinedInput
-                                    id="standard-adornment-upload"
-                                    //type={values.showPassword ? 'text' : 'password'}
-                                    name="image"
-                                    value={this.state.image}
-                                    onChange={this.handleChange}
-                                    labelWidth={44}
-                                    endAdornment={
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                            //onClick={handleClickShowPassword}
-                                            //onMouseDown={handleMouseDownPassword}
-                                            >
-                                                <PublishIcon />
-                                            </IconButton>
-                                        </InputAdornment>
-                                    }
-                                />
+                            <InputLabel htmlFor="standard-adornment-upload">
+                        Image
+                      </InputLabel>
+                      <OutlinedInput
+                        id="standard-adornment-upload"
+                        //type={values.showPassword ? 'text' : 'password'}
+                        name="image"
+                        value={this.state.image}
+                        onChange={this.handleChange}
+                        labelWidth={44}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <input
+                              //accept="image/*"
+                              className={classes.input}
+                              id="input-image"
+                              type="file"
+                              onChange={this.imageSelectedHandler}
+                            />
+                            <label htmlFor="input-image">
+                              <IconButton
+                                color="primary"
+                                aria-label="upload picture"
+                                component="span"
+                              >
+                                <PublishIcon />
+                              </IconButton>
+                            </label>
+                            <Button
+                              variant="outlined"
+                              color="primary"
+                              autoFocus
+                              onClick={this.imageUploadHandler}
+                            >
+                              Upload
+                            </Button>
+                          </InputAdornment>
+                        }
+                      />
                             </FormControl>
                         </Grid>
                         <Grid item>
