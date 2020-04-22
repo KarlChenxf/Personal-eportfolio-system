@@ -37,6 +37,7 @@ import ComponentEditor from './Component/ComponentEditor.js'
 import * as Type from './Component/Type.js'
 import { API_END_POINT } from '../Config.js';
 import PageEditor from './Component/PageEditor';
+import SharingWindow from './Component/SharingWindow';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -125,12 +126,14 @@ class Editor extends React.Component {
             openPageEditor: false,
             // Update the ver number to force reconstruce the PageEditor
             pageEditorVer: 0,
+            openSharing: false,
             profileList: null,
             linkAnchorEl: null,
         };
 
 
         this.profileId = this.props.match.params.id;
+        this.shareToken = null;
     }
 
     getProfiles() {
@@ -285,7 +288,56 @@ class Editor extends React.Component {
                         })
                     }
                     else {
-                        //alert("Unable to Login.");
+                        response.json().then(error => {
+                            console.log(error);
+                        }).catch(error => {
+                            console.error(error);
+                            //alert("Network Error.");
+                        });
+                    }
+                }
+            )
+            .catch(error => {
+                console.error(error);
+                //alert("Network Error.");
+            });
+
+        //event.preventDefault();
+    }
+
+    getSharingLink = () => {
+
+        const auth_token = localStorage.LoginToken;
+
+        const content = {
+            profileid: this.profileId,
+        }
+
+        // Check authentication with the server
+        fetch(API_END_POINT + "/share/getlink", {
+            body: JSON.stringify(content), // must match 'Content-Type' header
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'same-origin', // including cookie //include, same-origin, *omit
+            headers: {
+                'Accept': 'application/json',
+                'content-type': 'application/json',
+                'token': auth_token,
+            },
+            method: 'POST', // *GET, POST, PUT, DELETE, etc.
+            mode: 'same-origin', // no-cors, cors, *same-origin
+            redirect: 'follow', // manual, *follow, error
+            referrer: 'no-referrer', // *client, no-referrer
+        })
+            .then(
+                (response) => {
+                    if (response.ok) {                
+                        response.json().then(data => {
+                            //console.log(data);
+                            this.shareToken = data.token;
+                        })
+                    }
+                    else {
+                        alert("No response");
                         response.json().then(error => {
                             console.log(error);
                         }).catch(error => {
@@ -403,6 +455,24 @@ class Editor extends React.Component {
     closePageEditor = () => {
         this.setState({ openPageEditor: false });
     }
+
+    createSharing = () =>{
+        this.getSharingLink();
+        alert(this.shareToken)
+    }
+
+    /* Temperly use alert because of bug
+     *
+     showSharing = () => {
+        this.setState({
+            openSharing: true
+        });
+    }
+
+    closeSharing = () => {
+        this.setState({ openSharing: false });
+    }
+    */
 
     savePageProps = (props) => {
         this.setState({
@@ -532,6 +602,16 @@ class Editor extends React.Component {
                                     onClick={this.showPageEditor}
                                 >
                                     Layout/Background
+                                </Button>
+
+                                <Button
+                                    variant="outlined"
+                                    className={classes.margin}
+                                    startIcon={<LayersIcon />}
+                                    disableElevation
+                                    onClick={this.createSharing}
+                                >
+                                    Share(Temply used)
                                 </Button>
                             </Grid>
                             <Grid item>
