@@ -16,7 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import PublishIcon from '@material-ui/icons/Publish';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Typography from '@material-ui/core/Typography';
-import 'rc-color-picker/assets/index.css';
+//import 'rc-color-picker/assets/index.css';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
 import axios from 'axios';
 
