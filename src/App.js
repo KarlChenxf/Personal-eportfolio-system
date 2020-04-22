@@ -2,7 +2,9 @@ import React from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import Login from './Page/Login.js'
 import Register from './Page/Register.js'
+import Profile from './Page/Profile.js'
 import Editor from './Page/Editor.js'
+import Viewer from './Page/Viewer.js'
 
 
 function App() {
@@ -11,7 +13,10 @@ function App() {
       <Switch>
         <Route path="/" exact component={Login} />
         <Route path="/register" exact component={Register} />
-        <Route path="/editor" exact component={Editor} />
+        <Route path="/profile" exact component={Profile} />
+        <Route path="/edit/:id" exact component={Editor} />
+        <Route path="/preview/:id" exact component={Viewer} />
+        <Route path="/view/:token/:id" exact component={Viewer} />
         {/*<PrivateRoute path="/dummy" component={Login} />*/}
         <Route render={props => <Redirect to={{pathname: "/",}}/>} />
       </Switch>

@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
+import { Hidden } from '@material-ui/core';
 
 const styles = (theme => ({
     avatar: {
@@ -15,6 +16,7 @@ const styles = (theme => ({
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
+        overflow: 'hidden',
     },
     padding: {
         padding: theme.spacing(2),
@@ -44,7 +46,7 @@ class PersonalInfo extends React.Component {
                 </Grid>
             </Grid>);
 
-        content = layout && layout.padding ? <div className={classes.padding}>{content}</div> : content;
+        content = layout && layout.padding ? <div style={{padding:layout.padding}}>{content}</div> : content;
 
         return (
             background ? <Paper className={classes.paper} style={{
