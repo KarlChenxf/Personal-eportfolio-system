@@ -1,0 +1,33 @@
+.centre {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+}
+.right {
+  float: right;
+  width: 300px;
+  padding: 10px;
+}
+.fill {
+  object-fit: fill;
+  width: 100%;
+}
+.contain {
+  object-fit: contain;
+  width: 100%;
+}
+.cover {
+  object-fit: cover;
+  width: 100%;
+}
+.scale-down {
+  object-fit: scale-down;
+  width: 100%;
+}
+.none {
+  object-fit: none;
+  width: 100%;
+}
+
+

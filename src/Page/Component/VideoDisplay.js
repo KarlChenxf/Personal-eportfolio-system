@@ -1,20 +1,18 @@
 import React from 'react';
-import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import ReactPlayer from 'react-player'
 import Paper from '@material-ui/core/Paper';
 
 const styles = (theme => ({
     paper: {
-        padding: theme.spacing(2),
-        //display: 'flex',
-        //overflow: 'auto',
-        //flexDirection: 'column',
-        //flex: '1 1 auto',
+        padding: theme.spacing(0.6),
         position: "relative",
         minHeight: '64px',
-        // Fill height
         height: '100%',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        overflow: 'hidden',
     },
 }));
 
@@ -30,18 +28,29 @@ class VideoDisplay extends React.Component {
 
     render() {
 
-        const {classes} = this.props;
+        const {classes, background} = this.props;
+        console.log("videobackground: ", background);
+
+        let content = (
+            <Paper key={0} item className={classes.paper}> 
+            <ReactPlayer
+                className='react-player'
+                url= {this.props.videourl}
+                width='100%'
+                height='100%'
+                controls = {true}
+            />
+        </Paper>
+        )
 
         return (
-                <Paper key={0} item className={classes.paper}> 
-                    <ReactPlayer
-                        className='react-player'
-                        url= {this.props.videourl}
-                        width='100%'
-                        height='100%'
-                        controls = {true}
-                    />
-                </Paper>
+          background ? <Paper className={classes.paper} style={{
+              backgroundImage: background.image ? `url(${background.image})` : null,
+              backgroundColor: background.color,
+              border: background.border,
+          }} elevation={background.elevation} square={!background.rounded}>
+              {content}
+          </Paper> : content
         )
     }
 }
