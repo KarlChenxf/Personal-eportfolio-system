@@ -1,7 +1,6 @@
-import React, { Fragment }from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
@@ -16,6 +15,10 @@ import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import '../../css/pic-display.css'
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
+import PublishIcon from '@material-ui/icons/Publish';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 
 const styles = (theme) => ({
   formControl: {
@@ -24,6 +27,9 @@ const styles = (theme) => ({
   root: {
     flexGrow: 1,
   },
+  input:{
+    display: 'none',
+  }
 });
 
 class PicEditor extends React.Component {
@@ -31,10 +37,11 @@ class PicEditor extends React.Component {
     super(props);
 
     this.state = {
-      picurl: props.picurl || "",
+      picurl: props.picurl || '',
       selectedFile: null,
       fileName: props.fileUploadHandler || "",
-      fitting: props.fitting || "fill"
+      fitting: props.fitting || "fill",
+      uploadStatus: false,
     };
     this.layout = props.layout || null;
     this.background = props.background || null;
@@ -50,7 +57,7 @@ class PicEditor extends React.Component {
       fitting: this.state.fitting,
       target: {
         name: this.props.name,
-        value: { padding: this.state.padding,},
+        value: { padding: this.state.padding },
       },
     };
   }
@@ -74,11 +81,12 @@ class PicEditor extends React.Component {
     console.log(event.target.files[0].name);
   };
 
+
   fileUploadHandler = () => {
     const fd = new FormData();
-    fd.append("file", this.state.selectedFile, this.state.selectedFile.name);
+    fd.append("file", this.state.selectedFile);
     axios
-      .post("http://3.135.244.103:9090/profile/add", fd, {
+      .post("http://3.135.244.103:9090/file/upload", fd,{headers:{'token':localStorage.LoginToken}},{
         onUploadProgress: (ProgressEvent) => {
           console.log(
             "Upload Progress: " +
@@ -87,7 +95,11 @@ class PicEditor extends React.Component {
         },
       })
       .then((res) => {
-        console.log(res);
+        //console.log("uploadrespnse: ",res.data.awsresponse);
+        this.setState({picurl: res.data.awsresponse, uploadStatus: res.data.status });
+      })
+      .catch((error)=>{
+        console.log(error);
       });
   };
 
@@ -102,15 +114,50 @@ class PicEditor extends React.Component {
         onClose={this.props.onClose}
       >
         <MuiDialogContent>
-          <TextField
-            fullWidth
-            id="picurl"
-            placeholder="PicDisplay"
+          <FormControl
             variant="outlined"
-            name="picurl"
-            value={this.state.picurl}
-            onChange={this.handleChange}
-          />
+            style={{ height: "100%", width: "100%" }}
+          >
+            <InputLabel htmlFor="input-upload">
+              PictureURL
+            </InputLabel>
+            <OutlinedInput
+              id="input-upload"
+              name="picurl"
+              value={this.state.picurl}
+              onChange={this.handleChange}
+              label="PictureURL"
+              endAdornment={
+                <InputAdornment position="end">
+                  <input
+                    //accept="image/*"
+                    className={classes.input}
+                    id="input-file"
+                    type="file"
+                    onChange={this.fileSelectedHandler}
+                  />
+                  <label htmlFor="input-file">
+                    <IconButton
+                      color="primary"
+                      aria-label="upload picture"
+                      component="span"
+                    >
+                      <PublishIcon />
+                    </IconButton>
+                  </label>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    autoFocus
+                    onClick={this.fileUploadHandler}
+                  >
+                    Upload
+                  </Button>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+
           <Grid container className={classes.root} spacing={2}>
             <Grid item xs={12}>
               <Grid container flex-content="flex-start" display="flex">
@@ -122,7 +169,7 @@ class PicEditor extends React.Component {
                   />
                 </Grid>
                 <Grid item>
-                  <Grid container direction="row" spacing={2}>
+                  <Grid container display="flex" direction="row" spacing={2}>
                     <Grid item xs={12}>
                       <Typography variant="h6" component="h3">
                         Fit
@@ -165,12 +212,6 @@ class PicEditor extends React.Component {
             name="background"
             onChange={this.handlePureChange}
           />
-        </MuiDialogContent>
-        <MuiDialogContent>
-          <input autoFocus type="file" onChange={this.fileSelectedHandler} />
-          <button autoFocus onClick={this.fileUploadHandler}>
-            Upload
-          </button>
         </MuiDialogContent>
         <MuiDialogActions>
           <Button autoFocus onClick={this.props.onClose}>

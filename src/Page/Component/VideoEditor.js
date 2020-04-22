@@ -50,9 +50,9 @@ class VideoEditor extends React.Component {
           <TextField
             fullWidth
             id="videourl"
-            placeholder="VideoDisplay"
             variant="outlined"
             name="videourl"
+            label="VideoURL"
             value={this.state.videourl}
             onChange={this.handleChange}
           />

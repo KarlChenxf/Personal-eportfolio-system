@@ -37,12 +37,12 @@ class TextAreaEditor extends React.Component {
 */
 
     handleEditorChange = event => {
-       {/* 
+       /* 
         console.log(
           'Content was updated:',
           event.target.getContent()
         );
-       */}
+       */
         
         this.setState({
             textarea: event.target.getContent(),       
