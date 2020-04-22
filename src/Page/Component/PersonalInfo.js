@@ -35,6 +35,7 @@ class PersonalInfo extends React.Component {
 
     render() {
         const { classes, avatar, name, layout, background } = this.props;
+        console.log("info background: ", this.props.background)
 
         let content =
             (<Grid container justify="flex-start" spacing={0}>
