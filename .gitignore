@@ -47,3 +47,6 @@ yarn-error.log*
 
 # vscode config file
 .vscode
+
+#sensitive data
+*.pem
