@@ -23,7 +23,7 @@ import LayersIcon from '@material-ui/icons/Layers';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Tooltip from '@material-ui/core/Tooltip';
-import ShareIcon from '@material-ui/icons/Share';
+import Divider from '@material-ui/core/Divider';
 
 import { BrowserRouter as Router, Route, Link as RouteLink } from "react-router-dom";
 import { withRouter } from 'react-router';
@@ -37,7 +37,7 @@ import ComponentEditor from './Component/ComponentEditor.js'
 import * as Type from './Component/Type.js'
 import { API_END_POINT } from '../Config.js';
 import PageEditor from './Component/PageEditor';
-import SharingWindow from './Component/SharingWindow';
+import SharingDialog from './Component/SharingDialog';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -306,56 +306,7 @@ class Editor extends React.Component {
         //event.preventDefault();
     }
 
-    getSharingLink = () => {
-
-        const auth_token = localStorage.LoginToken;
-        const content = {
-            profileid: this.profileId,
-        }
-        
-
-        // Check authentication with the server
-        fetch(API_END_POINT + "/share/getlink", {
-            body: JSON.stringify(content), // must match 'Content-Type' header
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // including cookie //include, same-origin, *omit
-            headers: {
-                'Accept': 'application/json',
-                'content-type': 'application/json',
-                'token': auth_token,
-            },
-            method: 'POST', // *GET, POST, PUT, DELETE, etc.
-            // API shows as 'GET'
-            mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
-            referrer: 'no-referrer', // *client, no-referrer
-        })
-            .then(
-                (response) => {
-                    //console.log("response: ",response);
-                    if (response.ok) {
-                        response.json().then(data => {
-                            const shareUrl = API_END_POINT+"/share/getprofile?token="+data.sharetoken;
-                            window.open(shareUrl);
-                        })
-                    }
-                    else {
-                        //alert("Unable to Login.");
-                        response.json().then(error => {
-                            console.log(error);
-                        }).catch(error => {
-                            console.error(error);
-                            //alert("Network Error.");
-                        });
-                    }
-                }
-            )
-            .catch(error => {
-                console.error(error);
-                //alert("Network Error.");
-            });
-        //event.preventDefault();
-    }
+    
 
     componentDidMount() {
         //this.newComponent("");
@@ -394,7 +345,10 @@ class Editor extends React.Component {
             ] : [layout]
         } : { lg: [layout] };
 
-        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, });
+        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, },()=>{
+            // FIXME: scroll to bottom
+            this.refs.content.scrollTo(0,99999);
+        });
     }
 
     saveComponent = (props) => {
@@ -457,23 +411,6 @@ class Editor extends React.Component {
     closePageEditor = () => {
         this.setState({ openPageEditor: false });
     }
-
-    createSharing = () =>{
-        this.getSharingLink();
-    }
-
-    /* Temperly use alert because of bug
-     *
-     showSharing = () => {
-        this.setState({
-            openSharing: true
-        });
-    }
-
-    closeSharing = () => {
-        this.setState({ openSharing: false });
-    }
-    */
 
     savePageProps = (props) => {
         this.setState({
@@ -604,28 +541,9 @@ class Editor extends React.Component {
                                 >
                                     Layout/Background
                                 </Button>
-
-                                <Button
-                                    variant="outlined"
-                                    className={classes.margin}
-                                    startIcon={<LayersIcon />}
-                                    disableElevation
-                                    onClick={this.createSharing}
-                                >
-                                    Share(Temply used)
-                                </Button>
                             </Grid>
                             <Grid item>
-                                {/**TODO: popup share dialog*/}
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    className={classes.margin}
-                                    startIcon={<ShareIcon />}
-                                    disableElevation
-                                >
-                                    Share
-                                </Button>
+                                <SharingDialog profileId={this.profileId} className={classes.margin}/>
                                 <Typography variant="body1" style={{ display: 'inline-flex', verticalAlign: 'middle' }}>
                                     {localStorage.email}
                                 </Typography>
@@ -645,25 +563,26 @@ class Editor extends React.Component {
                             onClose={this.handleClose}
                             TransitionComponent={Fade}
                         >
-                            {/* Add Raw HTML */}
-                            <MenuItem title="Add Raw HTML" onClick={() => { this.newComponent(Type.HTML); this.handleClose() }}>HTML</MenuItem>
-                            {/* Add Personal Info */}
-                            <MenuItem onClick={() => { this.newComponent(Type.PERSONAL_INFO); this.handleClose() }}>Personal Information</MenuItem>
                             {/* Add TextArea */}
                             <MenuItem onClick={() => { this.newComponent(Type.TEXTAREA); this.handleClose() }}>Text</MenuItem>
                             {/* Add Photos */}
-                            <MenuItem onClick={() => { this.newComponent(Type.PICDISPLAY); this.handleClose() }}>Pictures</MenuItem>
+                            <MenuItem onClick={() => { this.newComponent(Type.PICDISPLAY); this.handleClose() }}>Picture</MenuItem>
                             {/* Add Videos */}
-                            <MenuItem onClick={() => { this.newComponent(Type.VIDEODISPLAY); this.handleClose() }}>Videos</MenuItem>
+                            <MenuItem onClick={() => { this.newComponent(Type.VIDEODISPLAY); this.handleClose() }}>Video</MenuItem>
                             {/* Add Audios */}
-                            <MenuItem onClick={this.handleClose}>Audios</MenuItem>
+                            <MenuItem onClick={this.handleClose} disabled>Audio</MenuItem>
                             {/* Add Files */}
-                            <MenuItem onClick={() => { this.newComponent(Type.FILE); this.handleClose() }}>Files</MenuItem>
+                            <MenuItem onClick={() => { this.newComponent(Type.FILE); this.handleClose() }}>File</MenuItem>
+                            {/* Add Raw HTML */}
+                            <MenuItem title="Add Raw HTML" onClick={() => { this.newComponent(Type.HTML); this.handleClose() }}>HTML</MenuItem>
+                            <Divider/>
+                            {/* Add Personal Info */}
+                            <MenuItem onClick={() => { this.newComponent(Type.PERSONAL_INFO); this.handleClose() }}>Personal Information</MenuItem>
                         </Menu>
                     </Toolbar>
                 </AppBar>
                 {/* Content */}
-                <main className={classes.content} style={pageBackground}>
+                <main className={classes.content} style={pageBackground} ref="content">
                     <div className={classes.appBarSpacer} />
                     <Container maxWidth="lg" fixed className={classes.container}>
                         <div style={spacingLayout} spacing={page.spacing}>
