@@ -32,7 +32,6 @@ class VideoDisplay extends React.Component {
         console.log("videobackground: ", background);
 
         let content = (
-            <Paper key={0} item className={classes.paper}> 
             <ReactPlayer
                 className='react-player'
                 url= {this.props.videourl}
@@ -40,7 +39,6 @@ class VideoDisplay extends React.Component {
                 height='100%'
                 controls = {true}
             />
-        </Paper>
         )
 
         return (
