@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
@@ -7,36 +7,20 @@ import { Link as RouteLink } from "react-router-dom";
 import { withRouter } from 'react-router';
 
 import { WidthProvider, Responsive } from "react-grid-layout";
-import '../css/react-grid-layout.css'
-import '../css/react-resizable.css';
 
 import { ParsedComponent } from '../Util/JsonToReact.js'
 import { API_END_POINT } from '../Config.js';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-
-/*function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-      </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}*/
-
 const styles = (theme => ({
     root: {
-        display: 'flex',
+        //display: 'flex',
     },
     content: {
-        flexGrow: 1,
-        height: '100vh',
-        overflow: 'auto',
+        //flexGrow: 1,
+        //height: '100vh',
+        //overflow: 'auto',
     },
     container: {
         paddingTop: theme.spacing(4),
@@ -62,13 +46,11 @@ class Viewer extends React.Component {
 
     getProfile = () => {
 
-        this.profileId = this.props.match.params.id;
-
         const auth_token = localStorage.LoginToken;
         //console.log(auth_token);
 
         const content = {
-            profileid: this.profileId,
+            profileid: this.props.match.params.id,
         }
 
         // Check authentication with the server
@@ -115,18 +97,13 @@ class Viewer extends React.Component {
                 console.error(error);
                 //alert("Network Error.");
             });
-
-        //event.preventDefault();
     }
 
     getSharedProfile = () => {
 
-        this.token = this.props.match.params.token;
-        this.profileId = this.props.match.params.id;
-
         const content = {
-            token: this.token,
-            profileid: this.profileId,
+            token: this.props.match.params.token,
+            profileid: this.props.match.params.id,
         }
 
         // Check authentication with the server
@@ -173,12 +150,13 @@ class Viewer extends React.Component {
                 console.error(error);
                 //alert("Network Error.");
             });
-
-        //event.preventDefault();
     }
 
     componentDidMount() {
-        this.token ? this.getSharedProfile() : this.getProfile();
+        if(this.props.match.params.token)
+            this.getSharedProfile();
+        else
+            this.getProfile();
     }
 
     /**
@@ -216,7 +194,7 @@ class Viewer extends React.Component {
             backgroundPosition: page.position,
             backgroundRepeat: page.repeat,
             backgroundSize: page.size,
-            backgroundAttachment: page.fixed ? 'fixed' : 'local',
+            backgroundAttachment: page.image ? (page.fixed ? 'fixed' : 'local') : null,
             backgroundColor: page.color,
         }
 
@@ -231,10 +209,10 @@ class Viewer extends React.Component {
         }
 
         return (
-            <div className={classes.root}>
+            <Fragment>
                 <CssBaseline />
                 {/* Content */}
-                <main className={classes.content} style={pageBackground}>
+                <main style={pageBackground}>
                     <Container maxWidth="lg" fixed className={classes.container}>
                         <div style={spacingLayout} spacing={page.spacing}>
                             <ResponsiveReactGridLayout
@@ -261,7 +239,7 @@ class Viewer extends React.Component {
                         </div>
                     </Container>
                 </main>
-            </div>
+            </Fragment>
         );
     }
 }
