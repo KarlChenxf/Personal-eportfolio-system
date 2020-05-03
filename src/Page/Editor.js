@@ -38,6 +38,7 @@ import * as Type from './Component/Type.js'
 import { API_END_POINT } from '../Config.js';
 import PageEditor from './Component/PageEditor';
 import SharingDialog from './Component/SharingDialog';
+import LinkEditor from './Component/LinkEditor';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -310,8 +311,8 @@ class Editor extends React.Component {
 
     componentDidMount() {
         //this.newComponent("");
-        this.getProfile();
-        this.getProfiles();
+        //this.getProfile();
+        //this.getProfiles();
     }
 
     /**
@@ -366,6 +367,7 @@ class Editor extends React.Component {
     }
 
     removeComponent = (index) => {
+        console.log(index);
         var newContent = this.state.components.slice();
         newContent.splice(index, 1);
         this.setState({ components: newContent });
@@ -446,6 +448,11 @@ class Editor extends React.Component {
         this.setState({
             [event.target.name]: event.target.value, // update the changed value
         });
+    }
+
+    parseLink = link => {
+        let i = this.state.profileList.find(v => v.id === link);
+        return i ? i.title : "URL";
     }
 
     render() {
@@ -615,7 +622,7 @@ class Editor extends React.Component {
                                                     classes={{ root: classes.actionLinkRoot, startIcon: classes.actionLinkIcon }}
                                                 >
                                                     {component.link && this.state.profileList ? <span className={classes.actionLinkText}>
-                                                        {this.state.profileList.find(v => v.id === component.link).title}
+                                                        
                                                     </span> : ""}
                                                 </Button>
                                             </Tooltip>
@@ -634,23 +641,12 @@ class Editor extends React.Component {
                 {/* Component Editor */}
                 <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} />
                 <PageEditor key={"p" + pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
-                <Menu
-                    id="link-menu"
-                    keepMounted
-                    getContentAnchorEl={null}
-                    //FIXME: Trying to fix the position of menu, unknown reason
-                    anchorOrigin={{vertical:0,horizontal:8}}
-                    anchorEl={this.state.linkAnchorEl}
-                    open={Boolean(this.state.linkAnchorEl)}
+                <LinkEditor key={new Date().getTime()} open={Boolean(this.state.linkAnchorEl)}
                     onClose={this.handleLinkMenuClose}
-                    TransitionComponent={Fade}
-                    disableScrollLock
-                >
-                    {this.state.profileList ? this.state.profileList.map((v, i) => {
-                        return <MenuItem key={v.id} onClick={() => { this.saveLink(v.id); }}>{v.title}</MenuItem>
-                    }) : null}
-                    <MenuItem key={"remove"} onClick={() => { this.saveLink(null); }}>Remove</MenuItem>
-                </Menu>
+                    onSave={this.saveLink}
+                    linkList={this.state.profileList}
+                    //value={this.state.edit >=0 ? this.state.components[this.state.edit].link : null}
+                    />
             </div>
         );
     }

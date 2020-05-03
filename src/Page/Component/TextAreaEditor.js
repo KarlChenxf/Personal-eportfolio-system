@@ -88,11 +88,15 @@ class TextAreaEditor extends React.Component {
                                 bullist numlist outdent indent | removeformat | help',
                             // WORKAROUND: base_url is required to enable TinyMCE to load css stylesheet correctly
                             base_url: process.env.PUBLIC_URL + '/tinymce',
+                            /*link_list: [
+                                { title: 'My page 1', value: 'https://www.tiny.cloud' },
+                                { title: 'My page 2', value: 'https://about.tiny.cloud' }
+                            ]*/
                         }}
                         onEditorChange={this.handleEditorChange}
                     />
-                    <div style={{height: 8}}/>
-                    <LayoutControl {...this.props.layout} name='layout' onChange={this.handlePureChange}/>
+                    <div style={{ height: 8 }} />
+                    <LayoutControl {...this.props.layout} name='layout' onChange={this.handlePureChange} />
                     <BackgroundControl {...this.props.background} name='background' onChange={this.handlePureChange} />
                 </MuiDialogContent>
                 <MuiDialogActions>
