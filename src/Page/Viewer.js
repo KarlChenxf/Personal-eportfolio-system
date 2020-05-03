@@ -153,7 +153,7 @@ class Viewer extends React.Component {
     }
 
     componentDidMount() {
-        if(this.props.match.params.token)
+        if (this.props.match.params.token)
             this.getSharedProfile();
         else
             this.getProfile();
@@ -166,7 +166,7 @@ class Viewer extends React.Component {
         if (this.props.match.params.token !== prevProps.match.params.token || this.props.match.params.id !== prevProps.match.params.id) {
             this.token ? this.getSharedProfile() : this.getProfile();
         }
-      }
+    }
 
     /**
      * Layout related callbacks
@@ -178,6 +178,15 @@ class Viewer extends React.Component {
         });
     }*/
 
+    isInternalURL = (to) => {
+        try {
+            const url = new URL(to, window.location.origin);
+            return url.hostname === window.location.hostname;
+        } catch {
+            return false;
+        }
+    };
+
     render() {
         const { classes } = this.props;
         const { title, page } = this.state;
@@ -187,7 +196,7 @@ class Viewer extends React.Component {
         //console.log("data: ",data);
         //console.log("classes: ",classes);
 
-        if(title) document.title = title;
+        if (title) document.title = title;
 
         const pageBackground = {
             backgroundImage: page.image ? `url(${page.image})` : null,
@@ -218,7 +227,7 @@ class Viewer extends React.Component {
                             <ResponsiveReactGridLayout
                                 key={page.spacing}
                                 //TODO: Do we need to support different resolution?
-                                breakpoints={{lg: 0}}
+                                breakpoints={{ lg: 0 }}
                                 cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
                                 rowHeight={16}
                                 margin={[0, 0]}
@@ -230,7 +239,7 @@ class Viewer extends React.Component {
                                 {/* Components */}
                                 {this.state.components.map((component) =>
                                     <div key={component.key} style={spacingItem}>
-                                        {component.link ? <RouteLink to={`./${component.link}`} className={classes.a}>
+                                        {component.link ? <RouteLink to={String(component.link)} className={classes.a}>
                                             <ParsedComponent {...component} />
                                         </RouteLink> : <ParsedComponent {...component} />}
                                     </div>
