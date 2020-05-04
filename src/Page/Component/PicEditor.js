@@ -25,7 +25,7 @@ const styles = (theme) => ({
     minWidth: 150,
   },
   root: {
-    flexGrow: 1,
+    //flexGrow: 1,
   },
   input:{
     display: 'none',
@@ -42,6 +42,8 @@ class PicEditor extends React.Component {
       fileName: props.fileUploadHandler || "",
       fitting: props.fitting || "fill",
       uploadStatus: false,
+      buttonStyle: 'outlined',
+      buttonText:'Upload',
     };
     this.layout = props.layout || null;
     this.background = props.background || null;
@@ -75,8 +77,11 @@ class PicEditor extends React.Component {
 
   fileSelectedHandler = (event) => {
     this.setState({
-      selectedFile: event.target.files[0],
-      fileName: event.target.files[0].name,
+      selectedFile: event.target.files[0]||null,
+      fileName: event.target.files[0].name||'',
+      picurl: event.target.files[0].name||'',
+      buttonStyle: 'outlined',
+      buttonText: 'Upload',
     });
     console.log(event.target.files[0].name);
   };
@@ -97,6 +102,9 @@ class PicEditor extends React.Component {
       .then((res) => {
         //console.log("uploadrespnse: ",res.data.awsresponse);
         this.setState({picurl: res.data.awsresponse, uploadStatus: res.data.status });
+        if (this.state.uploadStatus=== 'success'){this.setState({buttonStyle: 'contained',buttonText:'Uploaded'})}
+        else{this.setState({buttonStyle: 'outlined',buttonText:'Upload'})};
+        console.log("buttonstyle: ",this.state.buttonStyle);
       })
       .catch((error)=>{
         console.log(error);
@@ -118,9 +126,7 @@ class PicEditor extends React.Component {
             variant="outlined"
             style={{ height: "100%", width: "100%" }}
           >
-            <InputLabel htmlFor="input-upload">
-              PictureURL
-            </InputLabel>
+            <InputLabel htmlFor="input-upload">PictureURL</InputLabel>
             <OutlinedInput
               id="input-upload"
               name="picurl"
@@ -146,67 +152,70 @@ class PicEditor extends React.Component {
                     </IconButton>
                   </label>
                   <Button
-                    variant="outlined"
+                    variant={this.state.buttonStyle}
                     color="primary"
                     autoFocus
                     onClick={this.fileUploadHandler}
                   >
-                    Upload
+                    {this.state.buttonText}
                   </Button>
                 </InputAdornment>
               }
             />
           </FormControl>
 
-          <Grid container className={classes.root} spacing={2}>
-            <Grid item xs={12}>
-              <Grid container flex-content="flex-start" display="flex">
-                <Grid item>
-                  <LayoutControl
-                    {...this.props.layout}
-                    name="layout"
-                    onChange={this.handlePureChange}
-                  />
-                </Grid>
-                <Grid item>
-                  <Grid container display="flex" direction="row" spacing={2}>
-                    <Grid item xs={12}>
-                      <Typography variant="h6" component="h3">
-                        Fit
-                      </Typography>
-                    </Grid>
-                    <Grid item xs>
-                      <FormControl
-                        variant="outlined"
-                        className={classes.formControl}
+
+            <Grid
+              container
+              //className={classes.root}
+              direction="row"
+              justify="flex-start"
+              alignItems="center"
+              spacing={2}
+            >
+              <Grid item="auto">
+                <LayoutControl
+                  {...this.props.layout}
+                  name="layout"
+                  onChange={this.handlePureChange}
+                />
+              </Grid>
+              <Grid item= "auto">
+                <Grid container display="flex" direction="row" spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography variant="h6" component="h3">
+                      Fit
+                    </Typography>
+                  </Grid>
+                  <Grid item xs>
+                    <FormControl
+                      variant="outlined"
+                      minWidth = {150}
+                      className={classes.formControl}
+                    >
+                      <InputLabel id="fitting-label">Fitting</InputLabel>
+                      <Select
+                        labelId="fitting-label"
+                        value={this.state.fitting}
+                        onChange={this.handleChange}
+                        label="Fitting"
+                        name="fitting"
                       >
-                        <InputLabel id="fitting-label">Fitting</InputLabel>
-                        <Select
-                          labelId="fitting-label"
-                          value={this.state.fitting}
-                          onChange={this.handleChange}
-                          label="Fitting"
-                          name="fitting"
-                        >
-                          {[
-                            "fill",
-                            "contain",
-                            "cover",
-                            "none",
-                            "scale down",
-                          ].map((e) => (
+                        {["fill", "contain", "cover", "none", "scale down"].map(
+                          (e) => (
                             <MenuItem key={e} value={e}>
                               {e}
                             </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </Grid>
+                          )
+                        )}
+                      </Select>
+                    </FormControl>
                   </Grid>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
+
+
           <BackgroundControl
             {...this.props.background}
             name="background"
