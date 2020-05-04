@@ -35,6 +35,8 @@ class FileEditor extends React.Component {
       fileName: props.fileUploadHandler || "",
       fileurl: props.fileurl || "",
       uploadStatus: false,
+      buttonStyle: 'outlined',
+      buttonText:'Upload',
     };
   }
 
@@ -48,8 +50,10 @@ class FileEditor extends React.Component {
 
   fileSelectedHandler = (event) => {
     this.setState({
-      selectedFile: event.target.files[0],
-      fileName: event.target.files[0].name,
+      selectedFile: event.target.files[0]||null,
+      fileName: event.target.files[0].name||'',
+      buttonStyle: 'outlined',
+      buttonText: 'Upload',
     });
     console.log(event.target.files[0].name);
   };
@@ -68,6 +72,8 @@ class FileEditor extends React.Component {
       .then((res) => {
         console.log("uploadrespnse: ",res.data.awsresponse);
         this.setState({fileurl: res.data.awsresponse, uploadStatus: res.data.status });
+        if (this.state.uploadStatus=== 'success'){this.setState({buttonStyle: 'contained',buttonText:'Uploaded'})}
+        else{this.setState({buttonStyle: 'outlined',buttonText:'Upload'})};
       })
       .catch((error)=>{
         console.log(error);
@@ -108,26 +114,26 @@ class FileEditor extends React.Component {
                     id="outlined-read-only-input"
                     //label="File Name"
                     defaultValue="File Name"
-                    //style={{ marginLeft: "8px" }}
+                    style={{ 'margin-left': "8px" }}
                     InputProps={{
                       readOnly: true,
                     }}
                     value={this.state.fileName}
                   />
                   <Button
-                    variant="outlined"
+                    variant={this.state.buttonStyle}
                     color="primary"
-                    style={{ marginLeft: "8px"}}
+                    style={{ 'margin-left': "8px"}}
                     autoFocus
                     onClick={this.fileUploadHandler}
                   >
-                    Upload
+                    {this.state.buttonText}
                   </Button>
                             
                   
           <Button
               autoFocus
-              style={{ marginLeft: "8px",float:'right' }}
+              style={{ 'margin-left': "8px",float:'right' }}
               onClick={() => {
                 this.props.saveComponent(this.getProps());
               }}
