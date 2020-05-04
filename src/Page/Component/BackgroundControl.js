@@ -63,6 +63,8 @@ class BackgroundControl extends React.PureComponent {
             selectedFile: null,
             fileName: props.fileUploadHandler || "",
             uploadStatus: false,
+            buttonStyle: 'outlined',
+            buttonText: 'Upload',
         };
 
         console.log("BackgroundControl constructor()")
@@ -87,7 +89,10 @@ class BackgroundControl extends React.PureComponent {
     imgSelectedHandler = (event) => {
         this.setState({
           selectedFile: event.target.files[0],
-          fileName: event.target.files[0].name,
+          fileName: event.target.files[0].name||'',
+          image: event.target.files[0].name||'',
+          buttonStyle: 'outlined',
+          buttonText: 'Upload',
         });
         console.log("imageSelectedHandler ",event.target.files[0].name);
       };
@@ -109,6 +114,9 @@ class BackgroundControl extends React.PureComponent {
             
             this.setState({image: res.data.awsresponse, uploadStatus: res.data.status });
             console.log("uploadrespnse image: ",this.state.image);
+            if (this.state.uploadStatus=== 'success'){this.setState({buttonStyle: 'contained',buttonText:'Uploaded'})}
+            else{this.setState({buttonStyle: 'outlined',buttonText:'Upload'})};
+            //console.log("buttonstyle: ",this.state.buttonStyle);
             this.props.onChange(this.getProps());
           })
           .catch((error)=>{
@@ -236,12 +244,12 @@ class BackgroundControl extends React.PureComponent {
                               </IconButton>
                             </label>
                             <Button
-                              variant="outlined"
+                              variant={this.state.buttonStyle}
                               color="primary"
                               autoFocus
                               onClick={this.imgUploadHandler}
                             >
-                              Upload
+                              {this.state.buttonText}
                             </Button>
                           </InputAdornment>
                         }
