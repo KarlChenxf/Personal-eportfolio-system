@@ -25,7 +25,7 @@ class ComponentEditor extends React.PureComponent {
             case Type.HTML:
                 return <RawHTMLEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.TEXTAREA:
-                return <TextAreaEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
+                return <TextAreaEditor open={this.props.open} {...this.props.component.props} onSave={this.props.saveComponent} onClose={this.props.onClose} profileList={this.props.profileList}/>;
             case Type.FILE:
                 return <FileEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.PICDISPLAY:
