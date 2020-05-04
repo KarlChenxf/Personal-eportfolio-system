@@ -1,4 +1,5 @@
 import React from 'react';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogContent from '@material-ui/core/DialogContent';
@@ -15,19 +16,12 @@ import 'tinymce/plugins/advlist';
 import 'tinymce/plugins/autolink';
 import 'tinymce/plugins/lists';
 import 'tinymce/plugins/image';
-import 'tinymce/plugins/charmap';
-import 'tinymce/plugins/print';
 import 'tinymce/plugins/preview';
-import 'tinymce/plugins/anchor';
 import 'tinymce/plugins/searchreplace';
-import 'tinymce/plugins/visualblocks';
 import 'tinymce/plugins/code';
 import 'tinymce/plugins/fullscreen';
-import 'tinymce/plugins/insertdatetime';
-import 'tinymce/plugins/media';
 import 'tinymce/plugins/table';
 import 'tinymce/plugins/code';
-import 'tinymce/plugins/help';
 import 'tinymce/plugins/wordcount';
 import { Editor as TinyMCE } from '@tinymce/tinymce-react';
 
@@ -43,9 +37,13 @@ class TextAreaEditor extends React.Component {
     constructor(props) {
         super(props);
 
-        this.textarea = props.textarea || "";
+        this.textarea = props.textarea || '';
         this.layout = props.layout || null;
         this.background = props.background || null;
+        this.linkList = props.profileList ? 
+        props.profileList.map(v=>{return {title: v.title+' (ID:'+v.id+')', value: String(v.id)}}) : [];
+
+        console.log("TextAreaEditor constructor()")
     }
 
     /**
@@ -68,42 +66,46 @@ class TextAreaEditor extends React.Component {
     }
 
     render() {
+        console.log("TextAreaEditor render()");
+
+        const { classes, open, onClose, onSave, profileList, layout, background } = this.props;
+        const { textarea, linkList, handleEditorChange, handlePureChange } = this;
+
         return (
             // disableEnforceFocus: otherwise user could not edit "link" (select text - right click - link )
-            <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"} onClose={this.props.onClose} disableEnforceFocus>
+            <Dialog open={open} fullWidth maxWidth={"lg"} onClose={onClose} disableEnforceFocus disableScrollLock>
                 <MuiDialogContent>
                     <TinyMCE
-                        initialValue={this.textarea}
+                        initialValue={textarea}
                         init={{
                             height: 450,
                             menubar: false,
                             plugins: [
-                                'advlist autolink lists link image charmap print preview anchor',
-                                'searchreplace visualblocks code fullscreen',
-                                'insertdatetime media table paste code help wordcount'
+                                'advlist autolink lists link image preview',
+                                'searchreplace code fullscreen',
+                                'table paste code wordcount'
                             ],
                             toolbar:
                                 'undo redo | formatselect | bold italic forecolor backcolor | \
                                 alignleft aligncenter alignright alignjustify | \
-                                bullist numlist outdent indent | removeformat | help',
+                                bullist numlist outdent indent | table link | removeformat | code',
                             // WORKAROUND: base_url is required to enable TinyMCE to load css stylesheet correctly
                             base_url: process.env.PUBLIC_URL + '/tinymce',
-                            /*link_list: [
-                                { title: 'My page 1', value: 'https://www.tiny.cloud' },
-                                { title: 'My page 2', value: 'https://about.tiny.cloud' }
-                            ]*/
+                            link_list: linkList,
                         }}
-                        onEditorChange={this.handleEditorChange}
+                        onEditorChange={handleEditorChange}
                     />
+                    <Typography variant="body1" color="textSecondary">"SHIFT + ENTER" to break line; "ENTER" to start a new paragraph.</Typography>
+                    {profileList ? null : "Failed to load existing profile list, function 'Link to internal page' may not work properly. 'Link to external site' will still work."}
                     <div style={{ height: 8 }} />
-                    <LayoutControl {...this.props.layout} name='layout' onChange={this.handlePureChange} />
-                    <BackgroundControl {...this.props.background} name='background' onChange={this.handlePureChange} />
+                    <LayoutControl {...layout} name='layout' onChange={handlePureChange} />
+                    <BackgroundControl {...background} name='background' onChange={handlePureChange} />
                 </MuiDialogContent>
                 <MuiDialogActions>
-                    <Button autoFocus onClick={this.props.onClose}>
+                    <Button autoFocus onClick={onClose}>
                         Cancel
                     </Button>
-                    <Button autoFocus onClick={() => { this.props.saveComponent(this.getProps()) }} color="primary">
+                    <Button autoFocus onClick={() => { onSave(this.getProps()) }} color="primary">
                         Save
                     </Button>
                 </MuiDialogActions>
