@@ -42,26 +42,9 @@ import LinkEditor from './Component/LinkEditor';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-
-/*function Copyright() {
-    return (
-        <Typography variant="body2" color="textSecondary" align="center">
-            {'Copyright © '}
-            <Link color="inherit" href="https://material-ui.com/">
-                Your Website
-      </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}*/
-
 const styles = (theme => ({
     root: {
         display: 'flex',
-    },
-    toolbar: {
-        //paddingRight: 24,
     },
     appBar: {
         color: 'rgba(0, 0, 0, 0.87)',
@@ -311,8 +294,8 @@ class Editor extends React.Component {
 
     componentDidMount() {
         //this.newComponent("");
-        //this.getProfile();
-        //this.getProfiles();
+        this.getProfile();
+        this.getProfiles();
     }
 
     /**
@@ -622,7 +605,7 @@ class Editor extends React.Component {
                                                     classes={{ root: classes.actionLinkRoot, startIcon: classes.actionLinkIcon }}
                                                 >
                                                     {component.link && this.state.profileList ? <span className={classes.actionLinkText}>
-                                                        
+                                                        {this.parseLink(component.link)}
                                                     </span> : ""}
                                                 </Button>
                                             </Tooltip>
@@ -639,14 +622,15 @@ class Editor extends React.Component {
                     </Container>
                 </main>
                 {/* Component Editor */}
-                <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} />
+                <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} profileList={this.state.profileList}/>
                 <PageEditor key={"p" + pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
+                {this.state.profileList && this.state.edit >=0 ? 
                 <LinkEditor key={new Date().getTime()} open={Boolean(this.state.linkAnchorEl)}
                     onClose={this.handleLinkMenuClose}
                     onSave={this.saveLink}
                     linkList={this.state.profileList}
-                    //value={this.state.edit >=0 ? this.state.components[this.state.edit].link : null}
-                    />
+                    value={this.state.components[this.state.edit].link}
+                    /> : null}
             </div>
         );
     }

@@ -4,50 +4,20 @@ import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Grid from '@material-ui/core/Grid';
-import Tooltip from '@material-ui/core/Tooltip';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import PublishIcon from '@material-ui/icons/Publish';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Typography from '@material-ui/core/Typography';
-import 'rc-color-picker/assets/index.css';
-import { Panel as ColorPickerPanel } from 'rc-color-picker';
-import axios from 'axios';
 import Radio from '@material-ui/core/Radio';
 import TextField from '@material-ui/core/TextField';
 
 const styles = (() => ({
-    formControl: {
-        minWidth: 150,
-    },
-    gridItem: {
+    label: {
         cursor: 'pointer',
         display: 'inline-flex',
     },
-    labelPlacementStart: {
-        marginLeft: 0,
-    },
-    roundButton: {
-        borderRadius: '50%',
-        height: 44,
-        width: 44,
-        minWidth: 0,
-        border: '1px solid rgba(0, 0, 0, 0.23)',
-        marginTop: 6,
-    },
-    textField: {
-        minWidth: 210,
-    },
-    input: {
-        display: 'none',
-    }
 }));
 
 class LinkEditor extends React.PureComponent {
@@ -55,15 +25,16 @@ class LinkEditor extends React.PureComponent {
     constructor(props) {
         super(props);
 
-        let isInternal = props.profileList && props.profileList.find(v => v.id === props.value);
+        let isInternal = props.linkList && props.linkList.find(v => String(v.id) === String(props.value));
+        let type = !props.value ? '0' : (isInternal ? '1' : '2');
 
         this.state = {
-            page: isInternal ? props.value : null,
-            url: isInternal ? "" : props.value,
-            type: isInternal ? "0" : '1',
+            page: type==='1' ? props.value : '',
+            url: type==='2' ? props.value : '',
+            type: type,
         };
 
-        console.log("PageEditor constructor()")
+        console.log("LinkEditor constructor()")
     }
 
     handleClose = () => {
@@ -74,7 +45,7 @@ class LinkEditor extends React.PureComponent {
 
     handleChange = event => {
         this.setState({
-            [event.target.name]: event.target.type === 'checkbox' ? event.target.checked : event.target.value, // update the changed value
+            [event.target.name]: event.target.value,
         }, () => {
             if (this.props.onChange)
                 this.props.onChange(this.getProps());
@@ -82,18 +53,18 @@ class LinkEditor extends React.PureComponent {
     }
 
     getProps = () => {
-        if (this.state.type === '0') {
+        if (this.state.type === '1') {
             return this.state.page;
-        } else if (this.state.type === '1') {
+        } else if (this.state.type === '2') {
             return this.state.url;
         } else return null;
     }
 
     render() {
-        console.log("PageEditor render()");
+        console.log("LinkEditor render()");
 
         const { classes, open, onClose, onSave, linkList } = this.props;
-        const { type } = this.state;
+        const { type, page, url } = this.state;
         const { handleChange } = this;
 
         return (
@@ -105,36 +76,49 @@ class LinkEditor extends React.PureComponent {
                                 Link to
                             </Typography>
                         </Grid>
-                        <Grid item component="label" xs={12} alignItems="center" className={classes.gridItem}>
+                        <Grid item component="label" xs={12} alignItems="center" className={classes.label}>
                             <Radio
-                                checked={type === "0"}
+                                checked={type === '0'}
                                 onChange={handleChange}
-                                value="0"
+                                value='0'
+                                name="type"
+                            />
+                            {<Typography variant="body1" component="span">None</Typography>}
+                        </Grid>
+                        <Grid item component="label" xs={12} alignItems="center" className={classes.label}>
+                            <Radio
+                                checked={type === '1'}
+                                onChange={handleChange}
+                                value='1'
                                 name="type"
                             />
                             {<Typography variant="body1" component="span">Internal page</Typography>}
                         </Grid>
-                        <Grid item>
-                            <FormControl variant="outlined" className={classes.formControl} disabled={type !== "0"}>
-                                <InputLabel id="spacing-label">Page</InputLabel>
+                        <Grid item xs={12}>
+                            <FormControl variant="outlined" disabled={type !== '1'} fullWidth>
+                                <InputLabel id="input-label">Page</InputLabel>
                                 <Select
-                                    labelId="spacing-label"
-                                    value={this.state.page}
-                                    onChange={this.handleChange}
+                                    labelId="input-label"
+                                    value={page}
+                                    onChange={handleChange}
                                     label="Page"
                                     name="page"
                                 >
-                                    {linkList ? linkList.map((v, i) => {
-                                        return <MenuItem key={v.id} value={v.id}>{v.title}</MenuItem>
+                                    {linkList ? linkList.map((v) => {
+                                        return <MenuItem key={v.id} value={v.id}>
+                                            {v.title}
+                                            <Typography variant="body1" component="span" color="textSecondary" 
+                                                style={{ paddingLeft: "0.2em" }}>(ID:{v.id})</Typography>
+                                        </MenuItem>
                                     }) : null}
                                 </Select>
                             </FormControl>
                         </Grid>
-                        <Grid item component="label" xs={12} alignItems="center" className={classes.gridItem}>
+                        <Grid item component="label" xs={12} alignItems="center" className={classes.label}>
                             <Radio
-                                checked={type === "1"}
+                                checked={type === '2'}
                                 onChange={handleChange}
-                                value="1"
+                                value='2'
                                 name="type"
                             />
                             <Typography variant="body1" component="span">Extrenal site</Typography>
@@ -145,14 +129,14 @@ class LinkEditor extends React.PureComponent {
                                 fullWidth
                                 name="url"
                                 label="URL"
-                                value={this.state.url}
-                                onChange={this.handleChange}
-                                disabled={type !== "1"} />
+                                value={url}
+                                onChange={handleChange}
+                                disabled={type !== '2'} />
                         </Grid>
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={this.props.onClose}>
+                    <Button autoFocus onClick={onClose}>
                         Cancel
                     </Button>
                     <Button autoFocus onClick={() => { onSave(this.getProps()) }} color="primary">
