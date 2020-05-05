@@ -61,9 +61,8 @@ class PageEditor extends React.PureComponent {
             fixed: props.fixed || false,
             image: props.image || "",
             openColorPanel: false,
-            buttonStyle: 'outlined',
-            buttonText: 'Upload',
         };
+        this.fileInput=React.createRef();
 
         console.log("PageEditor constructor()")
     }
@@ -93,20 +92,16 @@ class PageEditor extends React.PureComponent {
         });
     }
 
-    imageSelectedHandler = (event) => {
+    fileOnClick=()=>{
         this.setState({
-          selectedFile: event.target.files[0],
-          fileName: event.target.files[0].name||'',
-          image: event.target.files[0].name||'',
-          buttonStyle: 'outlined',
-          buttonText: 'Upload',
-        });
-        console.log("imageSelectedHandler ",event.target.files[0].name);
-      };
+          selectedFile: null,
+        })
+        
+      }
 
-    imageUploadHandler = () => {
+    imgUploadHandler = () => {
         const fd = new FormData();
-        fd.append("file", this.state.selectedFile);
+        fd.append("file", this.fileInput.current.files[0]);
         axios
           .post("http://3.135.244.103:9090/file/upload", fd,{headers:{'token':localStorage.LoginToken}},{
             onUploadProgress: (ProgressEvent) => {
@@ -120,8 +115,7 @@ class PageEditor extends React.PureComponent {
             
             this.setState({image: res.data.awsresponse, uploadStatus: res.data.status });
             console.log("uploadrespnse image: ",this.state.image);
-            if (this.state.uploadStatus=== 'success'){this.setState({buttonStyle: 'contained',buttonText:'Uploaded'})}
-            else{this.setState({buttonStyle: 'outlined',buttonText:'Upload'})};
+            if (this.state.uploadStatus=== 'success'){alert("Upload success!");}
             this.props.onChange(this.getProps());
           })
           .catch((error)=>{
@@ -212,25 +206,19 @@ class PageEditor extends React.PureComponent {
                               className={classes.input}
                               id="input-image"
                               type="file"
-                              onChange={this.imageSelectedHandler}
+                              ref={this.fileInput}
+                              onChange={this.imgUploadHandler}
                             />
                             <label htmlFor="input-image">
                               <IconButton
                                 color="primary"
                                 aria-label="upload picture"
                                 component="span"
+                                onClick={this.fileOnClick}
                               >
                                 <PublishIcon />
                               </IconButton>
                             </label>
-                            <Button
-                              variant={this.state.buttonStyle}
-                              color="primary"
-                              autoFocus
-                              onClick={this.imageUploadHandler}
-                            >
-                              {this.state.buttonText}
-                            </Button>
                           </InputAdornment>
                         }
                       />
