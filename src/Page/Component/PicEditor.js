@@ -39,14 +39,13 @@ class PicEditor extends React.Component {
     this.state = {
       picurl: props.picurl || '',
       selectedFile: null,
-      fileName: props.fileUploadHandler || "",
+      fileName: props.fileUpload || "",
       fitting: props.fitting || "fill",
       uploadStatus: false,
-      buttonStyle: 'outlined',
-      buttonText:'Upload',
     };
     this.layout = props.layout || null;
     this.background = props.background || null;
+    this.fileInput=React.createRef();
   }
 
   getProps() {
@@ -68,28 +67,26 @@ class PicEditor extends React.Component {
     this.setState({
       [event.target.name]: event.target.value, // update the changed value
     });
-    console.log("fitting: ",this.state.fitting);
+    //console.log("fitting: ",this.state.fitting);
   };
 
   handlePureChange = (event) => {
     this[event.target.name] = event.target.value;
   };
 
-  fileSelectedHandler = (event) => {
+
+  fileOnClick=()=>{
     this.setState({
-      selectedFile: event.target.files[0]||null,
-      fileName: event.target.files[0].name||'',
-      picurl: event.target.files[0].name||'',
-      buttonStyle: 'outlined',
-      buttonText: 'Upload',
-    });
-    console.log(event.target.files[0].name);
-  };
+      selectedFile: null,
+    })
+    
+  }
 
 
   fileUploadHandler = () => {
     const fd = new FormData();
-    fd.append("file", this.state.selectedFile);
+    fd.append("file", this.fileInput.current.files[0]);
+    //console.log("fileUpload: ", this.state.selectedFile);
     axios
       .post("http://3.135.244.103:9090/file/upload", fd,{headers:{'token':localStorage.LoginToken}},{
         onUploadProgress: (ProgressEvent) => {
@@ -100,12 +97,15 @@ class PicEditor extends React.Component {
         },
       })
       .then((res) => {
-        //console.log("uploadrespnse: ",res.data.awsresponse);
-        this.setState({picurl: res.data.awsresponse, uploadStatus: res.data.status });
-        if (this.state.uploadStatus=== 'success'){this.setState({buttonStyle: 'contained',buttonText:'Uploaded'})}
-        else{this.setState({buttonStyle: 'outlined',buttonText:'Upload'})};
-        console.log("buttonstyle: ",this.state.buttonStyle);
-      })
+                       //console.log("uploadrespnse: ",res.data.awsresponse);
+                       this.setState({
+                         picurl: res.data.awsresponse,
+                         uploadStatus: res.data.status,
+                       });
+                       if (this.state.uploadStatus === "success") {
+                         alert("Upload success!");
+                       } 
+                     })
       .catch((error)=>{
         console.log(error);
       });
@@ -140,25 +140,19 @@ class PicEditor extends React.Component {
                     className={classes.input}
                     id="input-file"
                     type="file"
-                    onChange={this.fileSelectedHandler}
+                    ref={this.fileInput}
+                    onChange={this.fileUploadHandler}
                   />
                   <label htmlFor="input-file">
                     <IconButton
-                      color="primary"
+                      color='primary'
                       aria-label="upload picture"
                       component="span"
+                      onClick={this.fileOnClick}
                     >
                       <PublishIcon />
                     </IconButton>
                   </label>
-                  <Button
-                    variant={this.state.buttonStyle}
-                    color="primary"
-                    autoFocus
-                    onClick={this.fileUploadHandler}
-                  >
-                    {this.state.buttonText}
-                  </Button>
                 </InputAdornment>
               }
             />
