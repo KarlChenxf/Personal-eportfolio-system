@@ -3,15 +3,13 @@ import Container from '@material-ui/core/Container';
 import {Link as RouteLink } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import { API_END_POINT } from '../Config.js';
-import Dialog from '@material-ui/core/Dialog';
-
+import CssBaseline from '@material-ui/core/CssBaseline';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -21,7 +19,20 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import AddBoxIcon from '@material-ui/icons/AddBox';
+import DescriptionIcon from '@material-ui/icons/Description';
+import LibraryAddIcon from '@material-ui/icons/LibraryAdd';
+import AppBar from '@material-ui/core/AppBar';
+import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
+import CreateIcon from '@material-ui/icons/Create';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+
 
 const styles = (theme) => ({
   "@global": {
@@ -29,13 +40,16 @@ const styles = (theme) => ({
       backgroundColor: theme.palette.common.white,
     },
   },
+  root: {
+    display: 'flex',
+},
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
   },
-  root: {
+  tableroot: {
     width: '100%',
   },
   closeButton: {
@@ -63,40 +77,49 @@ const styles = (theme) => ({
     top: 20,
     width: 1,
   },
+  row:{
+    align:'center',
+  },
+
+toolbar: {
+    //paddingRight: 24,
+},
+appBar: {
+    color: 'rgba(0, 0, 0, 0.87)',
+    backgroundColor: '#FFF',
+},
+appBarSpacer: theme.mixins.toolbar,
+content: {
+    flexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
+},
+container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+},
+actions: {
+    position: "absolute",
+    top: '10px',
+    right: '10px',
+},
+margin: {
+    margin: theme.spacing(1),
+},
 });
 
 
-/*function createData(name, catigory, date) {
-  return { name, catigory, date };
-}
-
-const rows = [
-  createData("Cupcake", 305, 3.7),
-  createData("Donut", 452, 25.0),
-  createData("Eclair", 262, 16.0),
-  createData("Frozen yoghurt", 159, 6.0),
-  createData("Gingerbread", 356, 16.0),
-  createData("Honeycomb", 408, 3.2),
-  createData("Ice cream sandwich", 237, 9.0),
-  createData("Jelly Bean", 375, 0.0),
-  createData("KitKat", 518, 26.0),
-  createData("Lollipop", 392, 0.2),
-  createData("Marshmallow", 318, 0),
-  createData("Nougat", 360, 19.0),
-  createData("Oreo", 437, 18.0)
-];*/
-
 const headCells = [
-  { id: "id", toright: false, label: "ID" },
-  { id: "url", toright: false, label: "Title" },
-  //{ id: "date", toright: false, label: "Date" }
+  { id: "id", label: "ID" },
+  { id: "url", label: "Title" },
+  //{ id: "date", label: "Date" }
 ];
 
 class EnhancedTableHead extends React.Component{
   constructor(props){
     super(props);
     this.state={
-
+      
     };
   }
 
@@ -105,31 +128,57 @@ class EnhancedTableHead extends React.Component{
   const createSortHandler = property => event => {
     onRequestSort(event, property);
   };
+  //console.log("headcess: ",headCells)
 
   return (
     <TableHead>
       <TableRow>
-        {headCells.map(headCell => (
+        <TableCell padding='checkbox' align='center'>
+          
+        </TableCell>
+
           <TableCell
-            key={headCell.id}
-            align={headCell.toright ? "right" : "left"}
-            padding={"default"}
-            sortDirection={orderBy === headCell.id ? order : false}
+            key={headCells[0].id}
+            align={"left"}
+            padding={"checkbox"}
+            sortDirection={orderBy === headCells[0].id ? order : false}
           >
             <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : "asc"}
-              onClick={createSortHandler(headCell.id)}
+              active={orderBy === headCells[0].id}
+              direction={orderBy === headCells[0].id ? order : "asc"}
+              onClick={createSortHandler(headCells[0].id)}
             >
-              {headCell.label}
-              {orderBy === headCell.id ? (
+              {headCells[0].label}
+              {orderBy === headCells[0].id ? (
                 <span className={classes.visuallyHidden}>
                   {order === "desc" ? "sorted descending" : "sorted ascending"}
                 </span>
               ) : null}
             </TableSortLabel>
           </TableCell>
-        ))}
+
+          <TableCell
+            key={headCells[1].id}
+            align={"left"}
+            padding={"default"}
+            sortDirection={orderBy === headCells[1].id ? order : false}
+          >
+            <TableSortLabel
+              active={orderBy === headCells[1].id}
+              direction={orderBy === headCells[1].id ? order : "asc"}
+              onClick={createSortHandler(headCells[1].id)}
+            >
+              {headCells[1].label}
+              {orderBy === headCells[1].id ? (
+                <span className={classes.visuallyHidden}>
+                  {order === "desc" ? "sorted descending" : "sorted ascending"}
+                </span>
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+          
+          <TableCell padding={"checkbox"} align={"center"}>Edit</TableCell>
+        <TableCell padding={"checkbox"} align={"center"}>Delete</TableCell>
       </TableRow>
     </TableHead>
   );
@@ -148,23 +197,22 @@ EnhancedTableHead.propTypes = {
 class Profile extends React.Component {
   constructor(props) {
     super(props);
+    this.handleClick = this.handleClick.bind(this);
 
     this.state = {
       profileList: [],
       pname: "",
-      open: true,
       order: 'asc',
       orderBy: 'filename',
-      page: 0,
-      rowsPerPage: 5,
-      //rows: []
+      open: false,
+      deleteid: null,
     };
     console.log("profileprops: ",props);
   }
 
   componentDidMount() {
     this.getProfiles();
-  }
+  };
 
   getProfiles() {
     const auth_token = localStorage.LoginToken;
@@ -218,7 +266,7 @@ class Profile extends React.Component {
         console.error(error);
         //alert("Network Error.");
       });
-  }
+  };
 
   newProfile = () => {
     const auth_token = localStorage.LoginToken;
@@ -275,20 +323,66 @@ class Profile extends React.Component {
       });
   };
 
+  deleteProfile() {
+    const auth_token = localStorage.LoginToken;
+    //console.log(auth_token);
+    console.log("deletting! ", this.state.deleteid);
+
+    const content = {
+      id: this.state.deleteid,
+
+    };
+
+    // Check authentication with the server
+    fetch(API_END_POINT + "/profile/delete", {
+      body: JSON.stringify(content), // must match 'Content-Type' header
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "same-origin", // including cookie //include, same-origin, *omit
+      headers: {
+        Accept: "application/json",
+        "content-type": "application/json",
+        token: auth_token,
+      },
+      method: "DELETE", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, cors, *same-origin
+      redirect: "follow", // manual, *follow, error
+      referrer: "no-referrer", // *client, no-referrer
+    })
+      .then((response) => {
+        //console.log("response: ",response);
+        if (response.ok) {
+          response.json().then((data) => {
+            console.log(data);
+            if (data.status === "success") {
+              //alert("delete success!");
+              this.setState({deleteid: null});
+
+            } else {alert(data.message);}
+          });
+        } else {
+          //alert("Unable to Login.");
+          response
+            .json()
+            .then((error) => {
+              console.log(error);
+            })
+            .catch((error) => {
+              console.error(error);
+              //alert("Network Error.");
+            });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        //alert("Network Error.");
+      });
+  };
 
   handleChange = (event) => {
     this.setState({
       [event.target.name]: event.target.value, // update the changed value
     });
   };
-
-  /*handleClickOpen = () => {
-          this.setState({open: true});
-  };
-
-  handleClose = () => {
-    this.setState({open: false});
-  };*/
 
   descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -317,59 +411,111 @@ class Profile extends React.Component {
     return stabilizedThis.map(el => el[0]);
   };
 
-handleRequestSort = (event, property) => {
-    const isAsc = this.state.orderBy === property && this.state.order === 'asc';
-    this.setState({order: (isAsc?'desc' : 'asc'), orderBy: property });
+  handleRequestSort = (event, property) => {
+      const isAsc = this.state.orderBy === property && this.state.order === 'asc';
+      this.setState({order: (isAsc?'desc' : 'asc'), orderBy: property });
+    };
+
+
+  handleClick = (event, id) => {
+    if(id!=null){this.props.history.push(`/edit/${id}`);};
+    
   };
 
+  handleDeleteClickOpen = (event,profileid) => {
+    this.setState({open:true,deleteid:profileid})
+  };
 
-handleClick = (event, id) => {
-  
-  this.props.history.push(`/edit/${id}`);
-};
+  handleDeleteClose = () => {
+    this.setState({open:false})
+  };
 
-handleChangePage = (event, newPage) => {
-  this.setState({page: newPage});
-};
+  handleDelete = ()=>{
+    let deleteid = this.state.deleteid;
+    this.setState({
+      profileList: this.state.profileList.filter(function(profile){return profile.id!==deleteid}),
+      open: false
+    });
+    this.deleteProfile();
 
-handleChangeRowsPerPage = (event) => {
-this.setState({rowsPerPage: parseInt(event.target.value, 10), page: 0}) ; 
-};
+  }
 
 
   render() {
     const { classes } = this.props;
-    const emptyRows = this.state.rowsPerPage - Math.min(this.state.rowsPerPage, ((this.state.profileList=== null) ? 0:this.state.profileList.length)- this.state.page * this.state.rowsPerPage);
+
     console.log("rows: ",this.state.profileList);
     return (
-      <Container component="main" maxWidth="xs">
+      <div className={classes.root}>
+        <CssBaseline />
+        {/* Appbar */}
+        <AppBar position="absolute" className={classes.appBar}>
+          <Toolbar className={classes.toolbar}>
+            <Grid
+              container
+              direction="row"
+              justify="space-between"
+              alignItems="center"
+            >
+              <Grid item>
+                <DescriptionIcon
+                  fontSize="large"
+                  color="primary"
+                  style={{ display: "inline-flex", verticalAlign: "middle" }}
+                />
+                <Typography
+                  variant="h6"
+                  style={{ display: "inline-flex", verticalAlign: "middle" }}
+                >
+                  My Profiles
+                </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className={classes.margin}
+                  startIcon={
+                    <AddIcon aria-controls="fade-menu" aria-haspopup="true" />
+                  }
+                  disableElevation
+                  onClick={this.newProfile}
+                  aria-label="menu"
+                  style={{ marginLeft: "100px" }}
+                >
+                  empty profile
+                </Button>
+                <Button
+                  variant="outlined"
+                  className={classes.margin}
+                  startIcon={<LibraryAddIcon />}
+                  disableElevation
+                  onClick={this.showPageEditor}
+                >
+                  template profile
+                </Button>
+              </Grid>
+              <Grid item>
+                <Typography
+                  variant="body1"
+                  style={{ display: "inline-flex", verticalAlign: "middle" }}
+                >
+                  {localStorage.email}
+                </Typography>
 
-        <div>
-          <Dialog
-            onClose={this.handleClose}
-            aria-labelledby="customized-dialog-title"
-            open={this.state.open}
-          >
-            <div className={classes.root}>
+                <Tooltip title="Logout">
+                  <IconButton component={RouteLink} to={"/"} edge="end">
+                    <ExitToAppIcon />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+            </Grid>
+          </Toolbar>
+        </AppBar>
+        {/* Content */}
+        <main className={classes.content} ref="content">
+          <div className={classes.appBarSpacer} />
+          <Container maxWidth="lg" fixed className={classes.container}>
+            <div className={classes.tableroot}>
               <Paper className={classes.tabpaper}>
-                <Toolbar style={{ paddingLeft: 15, paddingRight: 20 }}>
-                  <Typography
-                    style={{ flex: "1 1 100%" }}
-                    variant="h6"
-                    id="tableTitle"
-                    component="div"
-                  >
-                    My Files
-                  </Typography>
-                  <div>
-                    <Tooltip title="Logout">
-                      <IconButton component={RouteLink} to={"/"} edge="end">
-                        <ExitToAppIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                </Toolbar>
-
                 <TableContainer>
                   <Table
                     className={classes.table}
@@ -382,82 +528,85 @@ this.setState({rowsPerPage: parseInt(event.target.value, 10), page: 0}) ;
                       orderBy={this.state.orderBy}
                       onRequestSort={this.handleRequestSort}
                       rowCount={
-                        this.state.profileList === null
-                          ? 0
-                          : this.state.profileList.length
+                        this.state.profileList === null ? 0 : this.state.profileList.length
                       }
                     />
                     <TableBody>
                       {this.stableSort(
                         this.state.profileList,
                         this.getComparator(this.state.order, this.state.orderBy)
-                      )
-                        .slice(
-                          this.state.page * this.state.rowsPerPage,
-                          this.state.page * this.state.rowsPerPage +
-                            this.state.rowsPerPage
-                        )
-                        .map((row, index) => {
-                          const labelId = `enhanced-table-checkbox-${index}`;
-
-                          return (
-                            <TableRow
-                              hover
-                              onClick={(event) =>
-                                this.handleClick(event, row.id)
-                              }
-                              tabIndex={-1}
-                              key={row.name}
+                      ).map((row, index) => {
+                        const labelId = `enhanced-table-checkbox-${index}`;
+                        return (
+                          <TableRow hover role="fileicon" tabIndex={-1}>
+                            <TableCell padding="checkbox" align="center">
+                              <DescriptionIcon color="primary"></DescriptionIcon>
+                            </TableCell>
+                            <TableCell
+                              component="th"
+                              id={labelId}
+                              scope="row"
+                              padding="checkbox"
                             >
-                              <TableCell
-                                component="th"
-                                id={labelId}
-                                scope="row"
-                                padding="default"
-                              >
-                                {row.id}
-                              </TableCell>
-                              <TableCell align="left">{row.url}</TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      {emptyRows > 0 && (
-                        <TableRow style={{ height: 53 * emptyRows }}>
-                          <TableCell colSpan={6} />
-                        </TableRow>
-                      )}
+                              {row.id}
+                            </TableCell>
+                            <TableCell align="left">{row.url}</TableCell>
+                            <TableCell padding="checkbox" align="right">
+                              <Tooltip title="Edit" textAlign="center">
+                                <IconButton
+                                  key={row.id}
+                                  onClick={(event) =>this.handleClick(event, row.id)}
+                                  edge="false"
+                                >
+                                  <CreateIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </TableCell>
+                            <TableCell align="right">
+                              <Tooltip title="Delete">
+                                <IconButton
+                                  key={row.id}
+                                  onClick={(event) =>this.handleDeleteClickOpen(event, row.id)}
+                                  edge="false"
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 </TableContainer>
-                <Toolbar style={{ paddingLeft: 15, paddingRight: 20 }}>
-                  <div>
-                    <Tooltip title="Add file">
-                      <IconButton onClick={this.newProfile}>
-                        <AddBoxIcon color='action'/>
-                      </IconButton>
-                    </Tooltip>
-                  </div>
-                  <div style={{'margin-left':'66px'}}>
-                  <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={
-                      this.state.profileList === null
-                        ? 0
-                        : this.state.profileList.length
-                    }
-                    rowsPerPage={this.state.rowsPerPage}
-                    page={this.state.page}
-                    onChangePage={this.handleChangePage}
-                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                  />
-                  </div>
-                </Toolbar>
               </Paper>
+              <Dialog
+                open={this.state.open}
+                onClose={this.handleDeleteClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  {"Delete Profile?"}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    This profile will be permanently deleted.
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={this.handleDeleteClose} color="inherit">
+                    Cancle
+                  </Button>
+                  <Button onClick={this.handleDelete}color="secondary"autoFocus>
+                    Delete
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </div>
-          </Dialog>
-        </div>
-      </Container>
+          </Container>
+        </main>
+      </div>
     );
   }
 }
