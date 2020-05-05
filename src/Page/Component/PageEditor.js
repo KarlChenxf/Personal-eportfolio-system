@@ -20,6 +20,7 @@ import Typography from '@material-ui/core/Typography';
 import 'rc-color-picker/assets/index.css';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
 import axios from 'axios';
+import message from "@davistran86/notification";
 
 const styles = (() => ({
     formControl: {
@@ -115,7 +116,10 @@ class PageEditor extends React.PureComponent {
             
             this.setState({image: res.data.awsresponse, uploadStatus: res.data.status });
             console.log("uploadrespnse image: ",this.state.image);
-            if (this.state.uploadStatus=== 'success'){alert("Upload success!");}
+            if (this.state.uploadStatus === "success") {
+              //alert("Upload success!");
+              message.success("Image upload success!",{duration:3000, position: "bottom-left",});
+            }
             this.props.onChange(this.getProps());
           })
           .catch((error)=>{

@@ -19,6 +19,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import PublishIcon from '@material-ui/icons/Publish';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import message from "@davistran86/notification";
 
 const styles = (theme) => ({
   formControl: {
@@ -103,7 +104,8 @@ class PicEditor extends React.Component {
                          uploadStatus: res.data.status,
                        });
                        if (this.state.uploadStatus === "success") {
-                         alert("Upload success!");
+                         //alert("Upload success!");
+                         message.success("Image upload success!",{duration:3000, position: "bottom-left",});
                        } 
                      })
       .catch((error)=>{
