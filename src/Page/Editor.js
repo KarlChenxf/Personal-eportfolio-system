@@ -310,6 +310,7 @@ class Editor extends React.Component {
 
     componentDidMount() {
         //this.newComponent("");
+        console.log("editorcomponentMount");
         this.getProfile();
         this.getProfiles();
     }
