@@ -354,7 +354,7 @@ class Editor extends React.Component {
         console.log(index);
         var newContent = this.state.components.slice();
         newContent.splice(index, 1);
-        this.setState({ components: newContent });
+        this.setState({ components: newContent ,edit: -1});
     }
 
     editLink = (event, index) => {
