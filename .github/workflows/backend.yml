@@ -21,7 +21,7 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
     - name: Verify MySQL connection from host
-      run: 
+      run: |
         sudo apt-get install -y mysql-client
         mysql --host 127.0.0.1 --port ${{ job.services.mysql.ports['3306'] }} -u root -p password -e "CREATE DATABASE eportfolio;"
     - uses: actions/checkout@v2
