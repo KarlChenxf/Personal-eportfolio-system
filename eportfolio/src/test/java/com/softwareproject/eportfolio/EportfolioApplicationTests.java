@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-05-07 18:24:46
- * @LastEditTime: 2020-05-07 22:08:45
+ * @LastEditTime: 2020-05-07 22:22:32
  */
 package com.softwareproject.eportfolio;
 
@@ -123,7 +123,7 @@ public class EportfolioApplicationTests {
 	 * @param token the token to set
 	 */
 	public void setToken(String token) {
-		this.token = token;
+		this.token = token;  
 	}
 
 	/**
