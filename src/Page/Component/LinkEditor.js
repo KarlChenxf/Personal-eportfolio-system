@@ -37,12 +37,6 @@ class LinkEditor extends React.PureComponent {
         console.log("LinkEditor constructor()")
     }
 
-    handleClose = () => {
-        this.setState({
-            openColorPanel: !this.state.openColorPanel,
-        })
-    };
-
     handleChange = event => {
         this.setState({
             [event.target.name]: event.target.value,
@@ -91,6 +85,7 @@ class LinkEditor extends React.PureComponent {
                                 onChange={handleChange}
                                 value='1'
                                 name="type"
+                                disabled={!linkList}
                             />
                             {<Typography variant="body1" component="span">Internal page</Typography>}
                         </Grid>

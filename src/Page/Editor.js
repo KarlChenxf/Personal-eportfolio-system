@@ -12,7 +12,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fade from '@material-ui/core/Fade';
-import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import LinkIcon from '@material-ui/icons/Link';
 import TextField from '@material-ui/core/TextField';
@@ -24,6 +23,9 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 import { BrowserRouter as Router, Route, Link as RouteLink } from "react-router-dom";
 import { withRouter } from 'react-router';
@@ -290,7 +292,7 @@ class Editor extends React.Component {
         //event.preventDefault();
     }
 
-    
+
 
     componentDidMount() {
         //this.newComponent("");
@@ -330,9 +332,9 @@ class Editor extends React.Component {
             ] : [layout]
         } : { lg: [layout] };
 
-        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, },()=>{
+        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, }, () => {
             // FIXME: scroll to bottom
-            this.refs.content.scrollTo(0,99999);
+            this.refs.content.scrollTo(0, 99999);
         });
     }
 
@@ -350,14 +352,17 @@ class Editor extends React.Component {
         this.setState({ openEditor: false });
     }
 
-    removeComponent = (index) => {
+    removeComponent = () => {
+        const index = this.state.edit;
         console.log(index);
         var newContent = this.state.components.slice();
         newContent.splice(index, 1);
-        this.setState({ components: newContent ,edit: -1});
+        this.setState({ components: newContent, edit: -1 });
+        this.handleComponentMenuClose();
     }
 
     editLink = (event, index) => {
+        console.log(event + ',' + index)
         this.setState({ edit: index, linkAnchorEl: event.currentTarget });
     }
 
@@ -369,6 +374,51 @@ class Editor extends React.Component {
 
     handleLinkMenuClose = () => {
         this.setState({ linkAnchorEl: null });
+    }
+
+    duplicateComponent = () => {
+
+        let component = this.state.components[this.state.edit];
+
+        let layout = this.state.layouts.lg.find(v => { return v.i === component.key });
+
+        let newComponent = JSON.parse(JSON.stringify(component));
+        let newLayout = JSON.parse(JSON.stringify(layout));
+
+        const key = new Date().getTime().toString(36);
+        newComponent.key = key;
+        newLayout.i = key;
+        newLayout.x = 0;
+        newLayout.y = Infinity;
+
+        const { components, layouts } = this.state;
+
+        let newComponents = components.slice();
+        newComponents.push(newComponent);
+
+        // IMPORTANT: Deep Clone is essential!
+        let newLayouts = layouts ? {
+            ...layouts,
+            lg: layouts.lg ? [
+                ...layouts.lg,
+                newLayout
+            ] : [newLayout]
+        } : { lg: [newLayout] };
+
+        this.handleComponentMenuClose();
+
+        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, }, () => {
+            // FIXME: scroll to bottom
+            setTimeout(()=>this.refs.content.scrollTo(0, 99999),100);
+        });
+    }
+
+    handleComponentMenuOpen = (event, index) => {
+        this.setState({ componentMenuCloseAnchorEl: event.currentTarget, edit: index, });
+    }
+
+    handleComponentMenuClose = () => {
+        this.setState({ componentMenuCloseAnchorEl: null, });
     }
 
     /**
@@ -440,8 +490,9 @@ class Editor extends React.Component {
     }
 
     render() {
+        const { handleComponentMenuClose, removeComponent, duplicateComponent } = this;
         const { classes } = this.props;
-        const { title, page, pageEditorVer } = this.state;
+        const { title, page, pageEditorVer, componentMenuCloseAnchorEl } = this.state;
         //const { data } = this.props.location;
         //const {data} = this.state.name;
         //console.log("props: ",this.props);
@@ -534,7 +585,7 @@ class Editor extends React.Component {
                                 </Button>
                             </Grid>
                             <Grid item>
-                                <SharingDialog profileId={this.profileId} className={classes.margin}/>
+                                <SharingDialog profileId={this.profileId} className={classes.margin} />
                                 <Typography variant="body1" style={{ display: 'inline-flex', verticalAlign: 'middle' }}>
                                     {localStorage.email}
                                 </Typography>
@@ -566,7 +617,7 @@ class Editor extends React.Component {
                             <MenuItem onClick={() => { this.newComponent(Type.FILE); this.handleClose() }}>File</MenuItem>
                             {/* Add Raw HTML */}
                             <MenuItem title="Add Raw HTML" onClick={() => { this.newComponent(Type.HTML); this.handleClose() }}>HTML</MenuItem>
-                            <Divider/>
+                            <Divider />
                             {/* Add Personal Info */}
                             <MenuItem onClick={() => { this.newComponent(Type.PERSONAL_INFO); this.handleClose() }}>Personal Information</MenuItem>
                         </Menu>
@@ -594,9 +645,9 @@ class Editor extends React.Component {
                                         <ParsedComponent {...component} />
                                         {/* Actions: Edit//Remove */}
                                         <div className={classes.actions} style={spacingAction}>
-                                            <Tooltip title="Remove">
-                                                <IconButton size="medium" onClick={() => this.removeComponent(index)}>
-                                                    <DeleteIcon fontSize="small" />
+                                            <Tooltip title="Edit">
+                                                <IconButton size="medium" color="primary" onClick={() => this.editComponent(index)}>
+                                                    <EditIcon fontSize="small" />
                                                 </IconButton>
                                             </Tooltip>
                                             <Tooltip title="Link">
@@ -610,9 +661,9 @@ class Editor extends React.Component {
                                                     </span> : ""}
                                                 </Button>
                                             </Tooltip>
-                                            <Tooltip title="Edit">
-                                                <IconButton size="medium" color="primary" onClick={() => this.editComponent(index)}>
-                                                    <EditIcon fontSize="small" />
+                                            <Tooltip title="More">
+                                                <IconButton size="medium" onClick={(event) => this.handleComponentMenuOpen(event, index)}>
+                                                    <MoreVertIcon fontSize="small" />
                                                 </IconButton>
                                             </Tooltip>
                                         </div>
@@ -622,15 +673,38 @@ class Editor extends React.Component {
                         </div>
                     </Container>
                 </main>
+                <Menu
+                    //anchorEl={componentMenuCloseAnchorEl}
+                    //keepMounted
+                    open={Boolean(componentMenuCloseAnchorEl)}
+                    onClose={handleComponentMenuClose}
+                    disableScrollLock
+                    transformOrigin={{ vertical: 26 }}
+                    anchorReference='anchorPosition'
+                    anchorPosition={componentMenuCloseAnchorEl ? { left: componentMenuCloseAnchorEl.getBoundingClientRect().x, top: componentMenuCloseAnchorEl.getBoundingClientRect().y + 18 } : null}
+                >
+                    <MenuItem key={0} onClick={duplicateComponent}>
+                        <ListItemIcon>
+                            <FileCopyIcon fontSize="small" />
+                        </ListItemIcon>
+                        Copy
+                    </MenuItem>
+                    <MenuItem key={1} onClick={removeComponent}>
+                        <ListItemIcon>
+                            <DeleteIcon fontSize="small" />
+                        </ListItemIcon>
+                        Remove
+                    </MenuItem>
+                </Menu>
                 {/* Component Editor */}
-                <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} profileList={this.state.profileList}/>
+                <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} profileList={this.state.profileList} />
                 <PageEditor key={"p" + pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
-                {this.state.profileList && this.state.edit >=0 ? 
-                <LinkEditor key={new Date().getTime()} open={Boolean(this.state.linkAnchorEl)}
-                    onClose={this.handleLinkMenuClose}
-                    onSave={this.saveLink}
-                    linkList={this.state.profileList}
-                    value={this.state.components[this.state.edit].link}
+                {this.state.edit >= 0 ?
+                    <LinkEditor key={new Date().getTime()} open={Boolean(this.state.linkAnchorEl)}
+                        onClose={this.handleLinkMenuClose}
+                        onSave={this.saveLink}
+                        linkList={this.state.profileList}
+                        value={this.state.components[this.state.edit].link}
                     /> : null}
             </div>
         );
