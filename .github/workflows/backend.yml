@@ -20,19 +20,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: branches
-      run: git branch
-    - name: checkout
-      run: git checkout backend
-    - name: branches
-      run: git branch
-    - name: pwd
-      run: pwd
     - name: Verify MySQL connection from host
       run: |
         sudo systemctl start mysql
-        mysql -uroot -proot -e "SHOW DATABASES"
         mysql -uroot -proot -e "CREATE DATABASE eportfolio"
-        mysql -uroot -proot -e "SHOW DATABASES"
     - name: Build with Maven
-      run: mvn -B package --file /home/runner/work/ci/ci/demo/pom.xml
+      run: mvn -B package --file /home/runner/work/Personal-eportfolio-system/Personal-eportfolio-system/eportfolio/pom.xml
