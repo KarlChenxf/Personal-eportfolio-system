@@ -5,9 +5,9 @@ name: Java CI with Maven
 
 on:
   push:
-    branches: [ master ]
+    branches: [ backend ]
   pull_request:
-    branches: [ master ]
+    branches: [ backend ]
 
 jobs:
   build:
@@ -21,4 +21,4 @@ jobs:
       with:
         java-version: 1.8
     - name: Build with Maven
-      run: mvn -B package --file pom.xml
+      run: mvn test -f "/eportfolio/pom.xml"
