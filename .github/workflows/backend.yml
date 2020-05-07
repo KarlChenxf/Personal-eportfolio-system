@@ -20,9 +20,11 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Verify MySQL connection from host
+    - name: Start MySQL
+      run: sudo systemctl start mysql
+    - name: Import sql script
       run: |
-        sudo systemctl start mysql
         mysql -uroot -proot -e "CREATE DATABASE eportfolio"
+        mysql -uroot -proot eportfolio < /home/runner/work/Personal-eportfolio-system/Personal-eportfolio-system/eportfolio.sql
     - name: Build with Maven
       run: mvn -B package --file /home/runner/work/Personal-eportfolio-system/Personal-eportfolio-system/eportfolio/pom.xml
