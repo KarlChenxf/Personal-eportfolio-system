@@ -86,7 +86,7 @@ class TextAreaEditor extends React.Component {
                                 'table paste code wordcount'
                             ],
                             toolbar:
-                                'undo redo | formatselect | bold italic forecolor backcolor | \
+                                'undo redo | formatselect | fontsizeselect | bold italic underline forecolor backcolor | \
                                 alignleft aligncenter alignright alignjustify | \
                                 bullist numlist outdent indent | table link | removeformat | code',
                             // WORKAROUND: base_url is required to enable TinyMCE to load css stylesheet correctly

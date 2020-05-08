@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
-import { Hidden } from '@material-ui/core';
+import HTMLReactParser from 'html-react-parser';
 
 const styles = (theme => ({
     avatar: {
@@ -18,8 +18,8 @@ const styles = (theme => ({
         backgroundPosition: 'center',
         overflow: 'hidden',
     },
-    padding: {
-        padding: theme.spacing(2),
+    marginLeft: {
+        marginLeft: theme.spacing(2),
     }
 }));
 
@@ -35,15 +35,16 @@ class PersonalInfo extends React.Component {
 
     render() {
         const { classes, avatar, name, layout, background } = this.props;
-        console.log("info background: ", this.props.background)
+        
+        let text = HTMLReactParser(name || "");
 
         let content =
             (<Grid container justify="flex-start" spacing={0}>
                 <Grid key={0} item>
                     <Avatar className={classes.avatar} src={avatar}></Avatar>
                 </Grid>
-                <Grid key={1} item>
-                    <Typography variant="h5">{name}</Typography>
+                <Grid key={1} item className={classes.marginLeft}>
+                    {text}
                 </Grid>
             </Grid>);
 

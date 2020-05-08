@@ -9,6 +9,26 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import 'rc-color-picker/assets/index.css';
 
+// TinyMCE (*required, please ignore the variable not used warning)
+import tinymce from 'tinymce/tinymce';
+// TinyMCE/theme (*required)
+import 'tinymce/themes/silver';
+// TinyMCE/plugins (*required)
+import 'tinymce/plugins/paste';
+import 'tinymce/plugins/link';
+import 'tinymce/plugins/advlist';
+import 'tinymce/plugins/autolink';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/image';
+import 'tinymce/plugins/preview';
+import 'tinymce/plugins/searchreplace';
+import 'tinymce/plugins/code';
+import 'tinymce/plugins/fullscreen';
+import 'tinymce/plugins/table';
+import 'tinymce/plugins/code';
+import 'tinymce/plugins/wordcount';
+import { Editor as TinyMCE } from '@tinymce/tinymce-react';
+
 import BackgroundControl from './BackgroundControl.js'
 import LayoutControl from './LayoutControl.js'
 
@@ -49,10 +69,14 @@ class PersonalInfoEditor extends React.Component {
         this[event.target.name] = event.target.value;
     }
 
+    handleEditorChange = (content, editor) => {
+        this.textarea = content
+    }
+
     getProps() {
         return {
             avatar: this.state.avatar,
-            name: this.state.name,
+            name: this.textarea,
             layout: this.layout,
             background: this.background,
         };
@@ -62,16 +86,12 @@ class PersonalInfoEditor extends React.Component {
 
         console.log("PersonalInfoEditor render()")
 
+        const { handleEditorChange } = this;
+
         return (
-            <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"} onClose={this.props.onClose}>
-                <MuiDialogContent>
+            <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"} onClose={this.props.onClose} disableScrollLock>
+                <MuiDialogContent>  
                     <Grid container direction="row" spacing={2}>
-                        <Grid item xs={12}>
-                            <Typography variant="h5" component="h2">Personal Information</Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Typography variant="h6" component="h3">Content</Typography>
-                        </Grid>
                         <Grid item xs={12}>
                             <TextField fullWidth
                                 id="avatar"
@@ -83,14 +103,34 @@ class PersonalInfoEditor extends React.Component {
                                 onChange={this.handleChange} />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField fullWidth
+                            {/*<TextField fullWidth
                                 id="name"
                                 //placeholder="Name"
                                 variant="outlined"
                                 name="name"
                                 label="Name"
                                 value={this.state.name}
-                                onChange={this.handleChange} />
+                                onChange={this.handleChange} />*/}
+                            <TinyMCE
+                                initialValue={this.props.name}
+                                init={{
+                                    height: 240,
+                                    menubar: false,
+                                    plugins: [
+                                        'advlist autolink lists link image preview',
+                                        'searchreplace code fullscreen',
+                                        'table paste code wordcount'
+                                    ],
+                                    toolbar:
+                                        'undo redo | formatselect | fontsizeselect | bold italic underline forecolor backcolor | \
+                                        alignleft aligncenter alignright alignjustify | \
+                                        bullist numlist outdent indent | table link | removeformat | code',
+                                    // WORKAROUND: base_url is required to enable TinyMCE to load css stylesheet correctly
+                                    base_url: process.env.PUBLIC_URL + '/tinymce',
+                                    //link_list: linkList,
+                                }}
+                                onEditorChange={handleEditorChange}
+                            />
                         </Grid>
                     </Grid>
                     <LayoutControl {...this.props.layout} name='layout' onChange={this.handlePureChange} />
