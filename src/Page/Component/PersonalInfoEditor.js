@@ -5,8 +5,13 @@ import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
-import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import Tooltip from '@material-ui/core/Tooltip';
+import { Panel as ColorPickerPanel } from 'rc-color-picker';
 import 'rc-color-picker/assets/index.css';
 
 // TinyMCE (*required, please ignore the variable not used warning)
@@ -33,9 +38,16 @@ import BackgroundControl from './BackgroundControl.js'
 import LayoutControl from './LayoutControl.js'
 
 const styles = (theme => ({
-    avatar: {
-        width: theme.spacing(20),
-        height: theme.spacing(20),
+    formControl: {
+        minWidth: 150,
+    },
+    roundButton: {
+        borderRadius: '50%',
+        height: 44,
+        width: 44,
+        minWidth: 0,
+        border: '1px solid rgba(0, 0, 0, 0.23)',
+        marginTop: 6,
     },
 }));
 
@@ -45,11 +57,19 @@ class PersonalInfoEditor extends React.Component {
         super(props);
 
         this.state = {
-            avatar: props.avatar || "",
-            name: props.name || "",
+            avatar: props.avatar || '',
+            avatar_size: props.avatar_size || 160,
+            name: props.name || '',
+
+            alpha: props.color ? Math.round(parseInt(props.color.substr(7, 2), 16) / 2.55) : 100,
+            color: props.color ? props.color.substr(0, 7) : '#FFFFFF',
+            colorHex: props.color ? props.color : '#FFFFFFFF',
+            openColorPanel: false,
             //background: props.background,
         };
 
+        this.textarea = this.props.name;
+        this.textarea2 = this.props.avatar_text;
         this.layout = props.layout || null;
         this.background = props.background || null;
 
@@ -73,9 +93,32 @@ class PersonalInfoEditor extends React.Component {
         this.textarea = content
     }
 
+    handleEditorChange2 = (content, editor) => {
+        this.textarea2 = content
+    }
+
+    handleClose = () => {
+        this.setState({
+            openColorPanel: !this.state.openColorPanel,
+        })
+    };
+
+    handleColor = (colorObj) => {
+        const { color, alpha } = colorObj;
+        this.setState({
+            alpha: alpha,
+            color: color,
+            colorHex: color + Math.round(255 * alpha / 100).toString(16).padStart(2, '0'),
+        });
+    }
+
     getProps() {
+        console.log(this.state.colorHex)
         return {
             avatar: this.state.avatar,
+            avatar_size: this.state.avatar_size,
+            avatar_text: this.textarea2,
+            color: this.state.colorHex,
             name: this.textarea,
             layout: this.layout,
             background: this.background,
@@ -86,12 +129,55 @@ class PersonalInfoEditor extends React.Component {
 
         console.log("PersonalInfoEditor render()")
 
-        const { handleEditorChange } = this;
+        const { props, handleEditorChange, handleEditorChange2 } = this;
+        const { classes } = props;
 
         return (
             <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"} onClose={this.props.onClose} disableScrollLock>
-                <MuiDialogContent>  
+                <MuiDialogContent>
                     <Grid container direction="row" spacing={2}>
+                        <Grid item>
+                            <Tooltip title="Color">
+                                <Button
+                                    variant="contained"
+                                    disableElevation
+                                    className={classes.roundButton}
+                                    style={{
+                                        backgroundColor: this.state.colorHex,
+                                    }}
+                                    onClick={this.handleClose}
+                                >
+                                    {" "}
+                                    {/* Space here to prevent warning */}
+                                </Button>
+                            </Tooltip>
+                        </Grid>
+                        <Dialog
+                            onClose={this.handleClose}
+                            aria-labelledby="customized-dialog-title"
+                            open={this.state.openColorPanel}
+                        >
+                            <ColorPickerPanel
+                                color={this.state.color}
+                                alpha={this.state.alpha}
+                                onChange={this.handleColor}
+                                mode="RGB"
+                            />
+                        </Dialog>
+                        <Grid item xs>
+                            <FormControl variant="outlined" className={classes.formControl}>
+                                <InputLabel id="size-label">Size</InputLabel>
+                                <Select
+                                    labelId="size-label"
+                                    value={this.state.avatar_size}
+                                    onChange={this.handleChange}
+                                    label="Size"
+                                    name="avatar_size"
+                                >
+                                    {[...Array(24).keys()].map((e) => <MenuItem key={e} value={(e + 1) * 8}>{(e + 1) * 8}</MenuItem>)}
+                                </Select>
+                            </FormControl>
+                        </Grid>
                         <Grid item xs={12}>
                             <TextField fullWidth
                                 id="avatar"
@@ -101,6 +187,28 @@ class PersonalInfoEditor extends React.Component {
                                 label="Avatar"
                                 value={this.state.avatar}
                                 onChange={this.handleChange} />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TinyMCE
+                                initialValue={this.props.avatar_text}
+                                init={{
+                                    height: 180,
+                                    menubar: false,
+                                    plugins: [
+                                        'advlist autolink lists link image preview',
+                                        'searchreplace code fullscreen',
+                                        'table paste code wordcount'
+                                    ],
+                                    toolbar:
+                                        'undo redo | formatselect | fontsizeselect | bold italic underline forecolor backcolor | \
+                                        alignleft aligncenter alignright alignjustify | \
+                                        bullist numlist outdent indent | table link | removeformat | code',
+                                    // WORKAROUND: base_url is required to enable TinyMCE to load css stylesheet correctly
+                                    base_url: process.env.PUBLIC_URL + '/tinymce',
+                                    //link_list: linkList,
+                                }}
+                                onEditorChange={handleEditorChange2}
+                            />
                         </Grid>
                         <Grid item xs={12}>
                             {/*<TextField fullWidth
