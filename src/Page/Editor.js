@@ -59,8 +59,7 @@ const styles = (theme => ({
         overflow: 'auto',
     },
     container: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
+        overflow: 'hidden',
     },
     actions: {
         position: "absolute",
@@ -388,8 +387,6 @@ class Editor extends React.Component {
         const key = new Date().getTime().toString(36);
         newComponent.key = key;
         newLayout.i = key;
-        newLayout.x = 0;
-        newLayout.y = Infinity;
 
         const { components, layouts } = this.state;
 
@@ -407,10 +404,7 @@ class Editor extends React.Component {
 
         this.handleComponentMenuClose();
 
-        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, }, () => {
-            // FIXME: scroll to bottom
-            setTimeout(()=>this.refs.content.scrollTo(0, 99999),100);
-        });
+        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, });
     }
 
     handleComponentMenuOpen = (event, index) => {
@@ -501,7 +495,8 @@ class Editor extends React.Component {
 
         const pageBackground = {
             backgroundImage: page.image ? `url(${page.image})` : null,
-            backgroundPosition: page.position,
+            // background-position: add 64px offset for AppBar
+            backgroundPosition: page.position ? page.position.replace('top', '64px') : null,
             backgroundRepeat: page.repeat,
             backgroundSize: page.size,
             backgroundAttachment: page.fixed ? 'fixed' : 'local',
@@ -697,7 +692,7 @@ class Editor extends React.Component {
                     </MenuItem>
                 </Menu>
                 {/* Component Editor */}
-                <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} profileList={this.state.profileList} />
+                <ComponentEditor key={"ce"+new Date().getTime()} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} profileList={this.state.profileList} />
                 <PageEditor key={"p" + pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
                 {this.state.edit >= 0 ?
                     <LinkEditor key={new Date().getTime()} open={Boolean(this.state.linkAnchorEl)}

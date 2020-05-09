@@ -7,16 +7,15 @@ import Paper from '@material-ui/core/Paper';
 import HTMLReactParser from 'html-react-parser';
 
 const styles = (theme => ({
-    avatar: {
-        width: theme.spacing(20),
-        height: theme.spacing(20),
-    },
     paper: {
         height: '100%',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         overflow: 'hidden',
+    },
+    displayFlex: {
+        display: 'flex',
     },
     marginLeft: {
         marginLeft: theme.spacing(2),
@@ -34,18 +33,22 @@ class PersonalInfo extends React.Component {
     }
 
     render() {
-        const { classes, avatar, name, layout, background } = this.props;
-        
-        let text = HTMLReactParser(name || "");
+        const { classes, avatar, avatar_size, avatar_text, color, name, layout, background } = this.props;
 
+        const avatarSizing = {
+            backgroundColor: color,
+            width: avatar_size || 160,
+            height: avatar_size || 160,
+        }
+    
         let content =
             (<Grid container justify="flex-start" spacing={0}>
-                <Grid key={0} item>
-                    <Avatar className={classes.avatar} src={avatar}></Avatar>
+                <Grid key={0} item alignItems="center" className={classes.displayFlex}>
+                    <Avatar style={avatarSizing} src={avatar}>{avatar_text ? HTMLReactParser(avatar_text) : null}</Avatar>
                 </Grid>
-                <Grid key={1} item className={classes.marginLeft}>
-                    {text}
-                </Grid>
+                {name ? <Grid key={1} item className={classes.marginLeft} xs>
+                    {HTMLReactParser(name)}
+                </Grid> : null}
             </Grid>);
 
         content = layout && layout.padding ? <div style={{padding:layout.padding}}>{content}</div> : content;

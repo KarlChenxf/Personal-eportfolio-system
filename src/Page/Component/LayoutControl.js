@@ -66,7 +66,7 @@ class LayoutControl extends React.PureComponent {
                                 label="Padding"
                                 name="padding"
                             >
-                                {[0, 8, 16, 32, 64, 128].map((e) => <MenuItem key={e} value={e}>{e}</MenuItem>)}
+                                {[...Array(17).keys()].map((e) => <MenuItem key={e} value={e*8}>{e*8}</MenuItem>)}
                             </Select>
                         </FormControl>
                     </Grid>

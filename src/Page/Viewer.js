@@ -24,8 +24,7 @@ const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const styles = (theme => ({
     container: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
+        overflow: 'hidden',
     },
     a: {
         textDecoration: 'none',
@@ -238,7 +237,7 @@ class Viewer extends React.Component {
                 {/* Content */}
                 <main style={pageBackground}>
                     <Container maxWidth="lg" fixed className={classes.container}>
-                        <div style={spacingLayout} spacing={page.spacing}>
+                        <div style={spacingLayout}>
                             <ResponsiveReactGridLayout
                                 key={page.spacing}
                                 //TODO: Do we need to support different resolution?
@@ -250,7 +249,8 @@ class Viewer extends React.Component {
                                 //onBreakpointChange={this.onBreakpointChange}
                                 layouts={this.state.layouts || {}}
                                 isDraggable={false}
-                                isResizable={false}>
+                                isResizable={false}
+                                useCSSTransforms={false}>
                                 {/* Components */}
                                 {this.state.components.map((component) =>
                                     <div key={component.key} style={spacingItem}>
