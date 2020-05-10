@@ -5,3 +5,4 @@ export const FILE = "d";
 export const PICDISPLAY = "e"; 
 export const VIDEODISPLAY = "f"; 
 export const TEXTDRAFT = "g";
+export const SnsEditor = "h";

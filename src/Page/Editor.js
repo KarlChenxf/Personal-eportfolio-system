@@ -615,6 +615,8 @@ class Editor extends React.Component {
                             <MenuItem onClick={this.handleClose} disabled>Audio</MenuItem>
                             {/* Add Files */}
                             <MenuItem onClick={() => { this.newComponent(Type.FILE); this.handleClose() }}>File</MenuItem>
+                            {/* Add SNS information */}
+                            <MenuItem onClick={() => { this.newComponent(Type.SnsEditor); this.handleClose() }}>SNS information</MenuItem>
                             {/* Add Raw HTML */}
                             <MenuItem title="Add Raw HTML" onClick={() => { this.newComponent(Type.HTML); this.handleClose() }}>HTML</MenuItem>
                             <Divider />
