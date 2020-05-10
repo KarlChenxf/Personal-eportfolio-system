@@ -41,6 +41,7 @@ import { API_END_POINT } from '../Config.js';
 import PageEditor from './Component/PageEditor';
 import SharingDialog from './Component/SharingDialog';
 import LinkEditor from './Component/LinkEditor';
+import SnsEditor from './Component/SnsEditor';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -616,7 +617,7 @@ class Editor extends React.Component {
                             {/* Add Files */}
                             <MenuItem onClick={() => { this.newComponent(Type.FILE); this.handleClose() }}>File</MenuItem>
                             {/* Add SNS information */}
-                            <MenuItem onClick={() => { this.newComponent(Type.SnsEditor); this.handleClose() }}>SNS information</MenuItem>
+                            <MenuItem onClick={() => { this.newComponent(Type.SNSDISPLAY); this.handleClose() }}>SNS information</MenuItem>
                             {/* Add Raw HTML */}
                             <MenuItem title="Add Raw HTML" onClick={() => { this.newComponent(Type.HTML); this.handleClose() }}>HTML</MenuItem>
                             <Divider />

@@ -2,6 +2,7 @@ import React from 'react'
 import HTMLReactParser from 'html-react-parser';
 import PersonalInfo from '../Page/Component/PersonalInfo.js'
 import VideoDisplay from '../Page/Component/VideoDisplay.js'
+import SnsDisplay from '../Page/Component/SnsDisplay.js'
 import PicDisplay from '../Page/Component/PicDisplay.js'
 import File from '../Page/Component/File.js'
 import * as Type from '../Page/Component/Type.js'
@@ -31,6 +32,8 @@ const ParsedComponent = React.memo(function parse(json) {
         return <PicDisplay {...json.props} />;
       case Type.VIDEODISPLAY:
         return <VideoDisplay {...json.props} />;
+	  case Type.SNSDISPLAY:
+	    return <SnsDisplay {...json.props} />
       default:
         return null;
     }

@@ -33,7 +33,7 @@ class ComponentEditor extends React.PureComponent {
                 return <PicEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.VIDEODISPLAY:
                 return <VideoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
-            case Type.SnsEditor:
+            case Type.SNSDISPLAY:
                 return <SnsEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
             default:
                 return null;
