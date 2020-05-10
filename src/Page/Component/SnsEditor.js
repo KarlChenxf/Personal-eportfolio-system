@@ -15,7 +15,7 @@ class SnsEditor extends React.Component {
     super(props);
 
     this.state = {
-      sharingurl: props.sharingurl || "",
+      urlA: props.urlA || "",
     };
     
     this.background = props.background || null;
@@ -23,7 +23,7 @@ class SnsEditor extends React.Component {
 
   getProps() {
     return {
-      sharingurl: this.state.sharingurl,
+      urlA: this.state.urlA,
       background: this.background,
     };
   }
@@ -32,6 +32,7 @@ class SnsEditor extends React.Component {
     this.setState({
       [event.target.name]: event.target.value, // update the changed value
     });
+    console.log(this.state)
   }
 
   handlePureChange = (event) => {
@@ -49,11 +50,11 @@ class SnsEditor extends React.Component {
         <MuiDialogContent>
           <TextField
             fullWidth
-            id="videourl"
+            id="1"
+            name="urlA"
             variant="outlined"
-            name="videourl"
-            label="VideoURL"
-            value={this.state.sharingurl}
+            label="The first URL"
+            value={this.state.urlA}
             onChange={this.handleChange}
           />
           <BackgroundControl
