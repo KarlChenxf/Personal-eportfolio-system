@@ -5,6 +5,7 @@ import TextAreaEditor from './TextAreaEditor.js'
 import VideoEditor from './VideoEditor.js'
 import PicEditor from './PicEditor.js'
 import FileEditor from './FileEditor.js'
+import SnsEditor from './SnsEditor.js'
 import * as Type from './Type.js'
 
 class ComponentEditor extends React.PureComponent {
@@ -32,6 +33,8 @@ class ComponentEditor extends React.PureComponent {
                 return <PicEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.VIDEODISPLAY:
                 return <VideoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
+            case Type.SNSDISPLAY:
+                return <SnsEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
             default:
                 return null;
         }
