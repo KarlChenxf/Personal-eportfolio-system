@@ -20,6 +20,7 @@ import Typography from '@material-ui/core/Typography';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
 import axios from 'axios';
 import message from "@davistran86/notification";
+import FileUploadControl from './FileUploadControl.js'
 
 const styles = (() => ({
     formControl: {
@@ -134,7 +135,7 @@ class BackgroundControl extends React.PureComponent {
     }
 
     getProps = () => {
-      console.log("background getProps： ",this.state.image);
+        console.log("background getProps： ",this.state.image);
         const value =  this.state.background ? {
             color: this.state.colorHex,
             elevation: this.state.elevation,
@@ -151,8 +152,29 @@ class BackgroundControl extends React.PureComponent {
         }
     }
 
+    onSubmit = (imgUrl) => {
+        const { onSubmit } = this.props;
+        const value = this.state.background ? {
+            color: this.state.colorHex,
+            elevation: this.state.elevation,
+            rounded: this.state.rounded,
+            image: imgUrl,
+            selectedFile: this.state.selectedFile,
+            fileName: this.state.fileName,
+        } : null;
+        if(onSubmit)
+            onSubmit(value);
+    }
+
+    componentDidUpdate(prevProps) {
+        const { onSubmit } = this.props;
+        if (!prevProps.submit && this.props.submit)
+            if (onSubmit && !this.state.background)
+                onSubmit(null)
+    }
+
     render() {
-        //console.log("BackgroundContrdol render()");
+        console.log("BackgroundContrdol render()");
         //console.log("BackgroundContrdol render image: ",this.state.image);
 
         const { classes } = this.props;
@@ -211,41 +233,7 @@ class BackgroundControl extends React.PureComponent {
                     />
                   </Dialog>
                   <Grid item>
-                    <FormControl variant="outlined">
-                      <InputLabel htmlFor="standard-adornment-upload">
-                        Image
-                      </InputLabel>
-                      <OutlinedInput
-                        id="standard-adornment-upload"
-                        //type={values.showPassword ? 'text' : 'password'}
-                        name="image"
-                        value={this.state.image}
-                        onChange={this.handleChange}
-                        labelWidth={44}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <input
-                              //accept="image/*"
-                              className={classes.input}
-                              id="input-image"
-                              type="file"
-                              ref={this.fileInput}
-                              onChange={this.imgUploadHandler}
-                            />
-                            <label htmlFor="input-image">
-                              <IconButton
-                                color="primary"
-                                aria-label="upload picture"
-                                component="span"
-                                onClick={this.imgOnClick}
-                              >
-                                <PublishIcon />
-                              </IconButton>
-                            </label>
-                          </InputAdornment>
-                        }
-                      />
-                    </FormControl>
+                    <FileUploadControl label="Image" accept="image/*" value={this.props.image} submit={this.props.submit} onProgress={this.props.onProgress} onSubmit={this.onSubmit}/>
                   </Grid>
                   <Grid item>
                     <FormControl
