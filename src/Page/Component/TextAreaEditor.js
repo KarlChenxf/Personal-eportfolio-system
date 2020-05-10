@@ -5,6 +5,7 @@ import Dialog from '@material-ui/core/Dialog';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import { withStyles } from '@material-ui/core/styles';
+import LinearProgress from '@material-ui/core/LinearProgress';
 // TinyMCE (*required, please ignore the variable not used warning)
 import tinymce from 'tinymce/tinymce';
 // TinyMCE/theme (*required)
@@ -37,6 +38,12 @@ class TextAreaEditor extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            submit: false,
+            progress: 0,
+            err: false,
+        };
 
         this.textarea = props.textarea || '';
         this.layout = props.layout || null;
@@ -184,15 +191,38 @@ class TextAreaEditor extends React.Component {
         };
     }
 
+    save = () => {
+        this.setState({
+            err: false,
+            submit: true,
+            progress: 1,
+        })
+    }
+
+    onProgress = (e) => {
+        if(e.err)
+            this.setState({
+                err: true,
+                submit: false,
+                progress: 0,
+            })
+    }
+
+    onSubmit = (background) => {
+        this.background = background;
+        this.props.onSave(this.getProps())
+    }
+
     render() {
         console.log("TextAreaEditor render()");
 
-        const { classes, open, onClose, onSave, profileList, layout, background } = this.props;
-        const { textarea, linkList, handleEditorChange, handlePureChange } = this;
+        const { props, state, textarea, linkList, handleEditorChange, handlePureChange } = this;
+        const { classes, open, onClose, onSave, profileList, layout, background } = props;
+        const { progress, err } = state;
 
         return (
             // disableEnforceFocus: otherwise user could not edit "link" (select text - right click - link )
-            <Dialog open={open} fullWidth maxWidth={"lg"} onClose={onClose} disableEnforceFocus disableScrollLock>
+            <Dialog open={open} fullWidth maxWidth={"lg"} onClose={this.state.submit ? null : onClose} disableEnforceFocus disableScrollLock>
                 <MuiDialogContent>
                     <TinyMCE
                         initialValue={textarea}
@@ -230,16 +260,18 @@ class TextAreaEditor extends React.Component {
                     {profileList ? null : "Failed to load existing profile list, function 'Link to internal page' may not work properly. 'Link to external site' will still work."}
                     <div style={{ height: 8 }} />
                     <LayoutControl {...layout} name='layout' onChange={handlePureChange} />
-                    <BackgroundControl {...background} name='background' onChange={handlePureChange} />
+                    <BackgroundControl {...background} submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmit} />
                 </MuiDialogContent>
                 <MuiDialogActions>
-                    <Button autoFocus onClick={onClose}>
+                    {err? <Typography color="error">Upload failed. Click 'SAVE' to try again.</Typography> : null}
+                    <Button autoFocus onClick={onClose}  disabled={this.state.submit}>
                         Cancel
                     </Button>
-                    <Button autoFocus onClick={() => { onSave(this.getProps()) }} color="primary">
+                    <Button autoFocus onClick={this.save} color="primary" disabled={this.state.submit}>
                         Save
                     </Button>
                 </MuiDialogActions>
+                {progress>0 ? <LinearProgress/> : null}
             </Dialog>
         )
     }
