@@ -4,13 +4,9 @@ import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import Paper from '@material-ui/core/Paper';
-import { Hidden } from '@material-ui/core';
+import HTMLReactParser from 'html-react-parser';
 
 const styles = (theme => ({
-    avatar: {
-        width: theme.spacing(20),
-        height: theme.spacing(20),
-    },
     paper: {
         height: '100%',
         backgroundSize: 'cover',
@@ -18,8 +14,11 @@ const styles = (theme => ({
         backgroundPosition: 'center',
         overflow: 'hidden',
     },
-    padding: {
-        padding: theme.spacing(2),
+    displayFlex: {
+        display: 'flex',
+    },
+    marginLeft: {
+        marginLeft: theme.spacing(2),
     }
 }));
 
@@ -34,17 +33,22 @@ class PersonalInfo extends React.Component {
     }
 
     render() {
-        const { classes, avatar, name, layout, background } = this.props;
-        console.log("info background: ", this.props.background)
+        const { classes, avatar, avatar_size, avatar_text, color, name, layout, background } = this.props;
 
+        const avatarSizing = {
+            backgroundColor: color,
+            width: avatar_size || 160,
+            height: avatar_size || 160,
+        }
+    
         let content =
             (<Grid container justify="flex-start" spacing={0}>
-                <Grid key={0} item>
-                    <Avatar className={classes.avatar} src={avatar}></Avatar>
+                <Grid key={0} item alignItems="center" className={classes.displayFlex}>
+                    <Avatar style={avatarSizing} src={avatar}>{avatar_text ? HTMLReactParser(avatar_text) : null}</Avatar>
                 </Grid>
-                <Grid key={1} item>
-                    <Typography variant="h5">{name}</Typography>
-                </Grid>
+                {name ? <Grid key={1} item className={classes.marginLeft} xs>
+                    {HTMLReactParser(name)}
+                </Grid> : null}
             </Grid>);
 
         content = layout && layout.padding ? <div style={{padding:layout.padding}}>{content}</div> : content;

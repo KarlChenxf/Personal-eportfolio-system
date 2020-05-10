@@ -59,8 +59,7 @@ const styles = (theme => ({
         overflow: 'auto',
     },
     container: {
-        paddingTop: theme.spacing(4),
-        paddingBottom: theme.spacing(4),
+        overflow: 'hidden',
     },
     actions: {
         position: "absolute",
@@ -108,12 +107,14 @@ class Editor extends React.Component {
 
             anchorEl: null,
             edit: -1,
+            componentEditorVer: 0,
             openEditor: false,
             openPageEditor: false,
             // Update the ver number to force reconstruce the PageEditor
             pageEditorVer: 0,
             openSharing: false,
             profileList: null,
+            linkEditorVer: 0,
             linkAnchorEl: null,
         };
 
@@ -332,7 +333,7 @@ class Editor extends React.Component {
             ] : [layout]
         } : { lg: [layout] };
 
-        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, }, () => {
+        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, componentEditorVer: this.state.componentEditorVer+1}, () => {
             // FIXME: scroll to bottom
             this.refs.content.scrollTo(0, 99999);
         });
@@ -345,7 +346,9 @@ class Editor extends React.Component {
     }
 
     editComponent = (index) => {
-        this.setState({ edit: index, openEditor: true, });
+        this.setState({ edit: index, openEditor: true, componentEditorVer: this.state.componentEditorVer+1},()=>{
+            console.log(this.state.componentEditorVer)
+        });
     }
 
     closeEditor = (index) => {
@@ -363,7 +366,7 @@ class Editor extends React.Component {
 
     editLink = (event, index) => {
         console.log(event + ',' + index)
-        this.setState({ edit: index, linkAnchorEl: event.currentTarget });
+        this.setState({ edit: index, linkAnchorEl: event.currentTarget, linkEditorVer: this.state.linkEditorVer+1 });
     }
 
     saveLink = (props) => {
@@ -388,8 +391,6 @@ class Editor extends React.Component {
         const key = new Date().getTime().toString(36);
         newComponent.key = key;
         newLayout.i = key;
-        newLayout.x = 0;
-        newLayout.y = Infinity;
 
         const { components, layouts } = this.state;
 
@@ -407,10 +408,7 @@ class Editor extends React.Component {
 
         this.handleComponentMenuClose();
 
-        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, }, () => {
-            // FIXME: scroll to bottom
-            setTimeout(()=>this.refs.content.scrollTo(0, 99999),100);
-        });
+        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, });
     }
 
     handleComponentMenuOpen = (event, index) => {
@@ -501,7 +499,8 @@ class Editor extends React.Component {
 
         const pageBackground = {
             backgroundImage: page.image ? `url(${page.image})` : null,
-            backgroundPosition: page.position,
+            // background-position: add 64px offset for AppBar
+            backgroundPosition: page.position ? page.position.replace('top', '64px') : null,
             backgroundRepeat: page.repeat,
             backgroundSize: page.size,
             backgroundAttachment: page.fixed ? 'fixed' : 'local',
@@ -697,10 +696,10 @@ class Editor extends React.Component {
                     </MenuItem>
                 </Menu>
                 {/* Component Editor */}
-                <ComponentEditor key={this.state.edit} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} profileList={this.state.profileList} />
+                <ComponentEditor key={"ce"+this.state.componentEditorVer} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} profileList={this.state.profileList} />
                 <PageEditor key={"p" + pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
                 {this.state.edit >= 0 ?
-                    <LinkEditor key={new Date().getTime()} open={Boolean(this.state.linkAnchorEl)}
+                    <LinkEditor key={'l'+this.state.linkEditorVer} open={Boolean(this.state.linkAnchorEl)}
                         onClose={this.handleLinkMenuClose}
                         onSave={this.saveLink}
                         linkList={this.state.profileList}
