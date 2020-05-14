@@ -538,7 +538,7 @@ class Profile extends React.Component {
                       ).map((row, index) => {
                         const labelId = `enhanced-table-checkbox-${index}`;
                         return (
-                          <TableRow hover role="fileicon" tabIndex={-1}>
+                          <TableRow hover role="fileicon" tabIndex={-1} key={row.id}>
                             <TableCell padding="checkbox" align="center">
                               <DescriptionIcon color="primary"></DescriptionIcon>
                             </TableCell>
@@ -552,11 +552,11 @@ class Profile extends React.Component {
                             </TableCell>
                             <TableCell align="left">{row.url}</TableCell>
                             <TableCell padding="checkbox" align="right">
-                              <Tooltip title="Edit" textAlign="center">
+                              <Tooltip title="Edit" textalign="center">
                                 <IconButton
                                   key={row.id}
                                   onClick={(event) =>this.handleClick(event, row.id)}
-                                  edge="false"
+                                  edge={false}
                                 >
                                   <CreateIcon />
                                 </IconButton>
@@ -567,7 +567,7 @@ class Profile extends React.Component {
                                 <IconButton
                                   key={row.id}
                                   onClick={(event) =>this.handleDeleteClickOpen(event, row.id)}
-                                  edge="false"
+                                  edge={false}
                                 >
                                   <DeleteIcon />
                                 </IconButton>

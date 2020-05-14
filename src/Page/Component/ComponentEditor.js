@@ -22,7 +22,7 @@ class ComponentEditor extends React.PureComponent {
         // Return different editor based on type
         switch(this.props.component.type){
             case Type.PERSONAL_INFO:
-                return <PersonalInfoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
+                return <PersonalInfoEditor open={this.props.open} {...this.props.component.props} onSave={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.HTML:
                 return <RawHTMLEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.TEXTAREA:

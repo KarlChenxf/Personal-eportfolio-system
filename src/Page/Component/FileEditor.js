@@ -4,8 +4,6 @@ import Dialog from '@material-ui/core/Dialog';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import FormControl from '@material-ui/core/FormControl';
-import TextField from '@material-ui/core/TextField';
-import Box from '@material-ui/core/Box';
 import BackgroundControl from "./BackgroundControl.js";
 import LayoutControl from './LayoutControl.js'
 import Typography from '@material-ui/core/Typography';
@@ -53,6 +51,7 @@ class FileEditor extends React.Component {
     };
     this.layout = props.layout || null;
     this.background = props.background || null;
+    this.i=0;
     //console.log("fileName: ",props.fileName)
   }
 
@@ -84,7 +83,6 @@ class FileEditor extends React.Component {
         progressFile: 1,
         progressBackground: 1,
     });
-    console.log("save: ",this.state.submitBackground||this.state.submitFile)
   }
 
   onProgressBackground = (e) => {
@@ -94,7 +92,7 @@ class FileEditor extends React.Component {
             submitBackground: false,
             progressBackground: 0,
         })
-    console.log("onProgress: ",this.state.submitBackground)
+    //console.log("onProgress: ",this.state.submitBackground)
 }
 
 onProgressFile = (e) => {
@@ -104,26 +102,25 @@ onProgressFile = (e) => {
           submitFile: false,
           progressFile: 0,
       })
-  console.log("onProgress: ",this.state.submitFile)
+  //console.log("onProgress: ",this.state.submitFile)
 }
 
 onSubmitBackground = (background) => {
   this.background = background;
-  this.props.onSave(this.getProps());
+  this.i++;
+  if(this.i>=2)this.props.onSave(this.getProps());
   //console.log("background: ",background)
 }
 onSubmitFile = (fileUrl,fileName) => {
   this.setState({fileurl:fileUrl,fileName:fileName})
-  this.props.onSave(this.getProps());
+  this.i++;
+  if(this.i>=2)this.props.onSave(this.getProps());
   //console.log("file value: ", fileName)
 }
 
 
   render() {
-    console.log("fileEditor render: ", this.state.submitBackground||this.state.submitFile)
-    console.log(" fileEditor render: ",this.state.submitBackground,this.state.submitFile)
-   console.log(" fileEditor render fileurl: ",this.state.fileurl)
-    
+    console.log("fileEditor render: ")
 
     return (
       <Dialog

@@ -11,10 +11,6 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import PublishIcon from '@material-ui/icons/Publish';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Typography from '@material-ui/core/Typography';
 //import 'rc-color-picker/assets/index.css';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
@@ -110,7 +106,7 @@ class BackgroundControl extends React.PureComponent {
           .then((res) => {
             
             this.setState({image: res.data.awsresponse, uploadStatus: res.data.status });
-            console.log("uploadrespnse image: ",this.state.image);
+            //console.log("uploadrespnse image: ",this.state.image);
             if (this.state.uploadStatus === "success") {
               //alert("Upload success!");
               message.success("Image upload success!",{duration:3000, position: "bottom-left",});
@@ -171,12 +167,10 @@ class BackgroundControl extends React.PureComponent {
         if (!prevProps.submit && this.props.submit)
             if (onSubmit && !this.state.background)
                 onSubmit(null)
-        console.log("BackgroundContrdol componentDidUpdate: ",prevProps.submit,this.props.submit);
     }
 
     render() {
         console.log("BackgroundContrdol render()");
-        //console.log("BackgroundContrdol render image: ",this.state.image);
 
         const { classes } = this.props;
 

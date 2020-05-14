@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
-import axios from 'axios';
 import 'rc-color-picker/assets/index.css';
 import BackgroundControl from './BackgroundControl.js'
 import LayoutControl from './LayoutControl.js'
@@ -15,14 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import '../../css/pic-display.css'
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import PublishIcon from '@material-ui/icons/Publish';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import message from "@davistran86/notification";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { API_END_POINT } from '../../Config.js';
-import ClearIcon from '@material-ui/icons/Clear';
 import FileUploadControl from './FileUploadControl.js'
 
 const styles = (theme) => ({
@@ -56,6 +48,7 @@ class PicEditor extends React.Component {
     this.layout = props.layout || null;
     this.background = props.background || null;
     this.fileInput=React.createRef();
+    this.i=0;
   }
 
   getProps() {
@@ -92,7 +85,6 @@ class PicEditor extends React.Component {
         progressPic: 1,
         progressBackground: 1,
     });
-    console.log("save: ",this.state.submitBackground,this.state.submitPic)
   }
 
   onProgressPic = (e) => {
@@ -102,7 +94,6 @@ class PicEditor extends React.Component {
               submitPic: false,
               progressPic: 0,
           })
-      console.log("onProgresspic: ",this.state.submitPic)
   }
 
   onProgressBackground = (e) => {
@@ -112,32 +103,27 @@ class PicEditor extends React.Component {
             submitBackground: false,
             progressBackground: 0,
         })
-    console.log("onProgressback: ",this.state.submitBackground)
 }
 
   onSubmitBackground = (background) => {
       this.background = background;
-      this.props.onSave(this.getProps());
-      console.log("onSubmitback: ",this.state.submitBackground)
+      this.i++;
+      if(this.i>=2)this.props.onSave(this.getProps());
   }
 
   onSubmitPic= (imgUrl) => {
     this.setState({
         picurl: imgUrl,
-        submitPic:false,
     });
-    //console.log("onImgSubmit picurl: ",this.state.picurl);
-    console.log("onImgSubmitpic: ",this.state.submitPic)
-    this.props.onSave(this.getProps());
+    this.i++;
+    if(this.i>=2)this.props.onSave(this.getProps());
 }
 
   render() {
-    const { props, state, handlePureChange } = this;
-    const { classes, open, onClose, onSave, layout, background } = props;
-    const { progress, err } = state;
-    console.log(" picEditor render: ",this.state.submitBackground||this.state.submitPic)
-    console.log(" picEditor render: ",this.state.submitBackground,this.state.submitPic)
-    //console.log(" picEditor render: ",this.state.progressBackground,this.state.progressPic)
+    const { props, state, } = this;
+    const { classes, open, onClose,  background } = props;
+    const { err } = state;
+    console.log(" picEditor render: ")
 
     return (
       <Dialog
@@ -163,14 +149,14 @@ class PicEditor extends React.Component {
               alignItems="center"
               spacing={2}
             >
-              <Grid item="auto">
+              <Grid item>
                 <LayoutControl
                   {...this.props.layout}
                   name="layout"
                   onChange={this.handlePureChange}
                 />
               </Grid>
-              <Grid item= "auto">
+              <Grid item>
                 <Grid container display="flex" direction="row" spacing={2}>
                   <Grid item xs={12}>
                     <Typography variant="h6" component="h3">
@@ -180,7 +166,7 @@ class PicEditor extends React.Component {
                   <Grid item xs>
                     <FormControl
                       variant="outlined"
-                      minWidth = {150}
+                      minwidth = {150}
                       className={classes.formControl}
                     >
                       <InputLabel id="fitting-label">Fitting</InputLabel>
@@ -204,7 +190,7 @@ class PicEditor extends React.Component {
                 </Grid>
               </Grid>
             </Grid>
-            <BackgroundControl {...background} inputid="background-input"submit={this.state.submitBackground} onProgress={this.onProgressBackground} onSubmit={this.onSubmitBackground} />
+            <BackgroundControl {...background} inputid="pic-background-input"submit={this.state.submitBackground} onProgress={this.onProgressBackground} onSubmit={this.onSubmitBackground} />
         </MuiDialogContent>
         <MuiDialogActions>
                     {err? <Typography color="error">Upload failed. Click 'SAVE' to try again.</Typography> : null}

@@ -26,14 +26,11 @@ import Divider from '@material-ui/core/Divider';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-
-import { BrowserRouter as Router, Route, Link as RouteLink } from "react-router-dom";
+import { Link as RouteLink } from "react-router-dom";
 import { withRouter } from 'react-router';
-
 import { WidthProvider, Responsive } from "react-grid-layout";
 import '../css/react-grid-layout.css'
 import '../css/react-resizable.css';
-
 import { ParsedComponent } from '../Util/JsonToReact.js'
 import ComponentEditor from './Component/ComponentEditor.js'
 import * as Type from './Component/Type.js'
@@ -41,7 +38,6 @@ import { API_END_POINT } from '../Config.js';
 import PageEditor from './Component/PageEditor';
 import SharingDialog from './Component/SharingDialog';
 import LinkEditor from './Component/LinkEditor';
-import SnsEditor from './Component/SnsEditor';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -487,6 +483,14 @@ class Editor extends React.Component {
         let i = this.state.profileList.find(v => v.id === link);
         return i ? i.title : "URL";
     }
+    handlePreview = () => {
+        // eslint-disable-next-line no-restricted-globals
+        let conf = confirm("Current profile will be saved if you want to preview it.");
+        if (conf) {
+            this.updateProfile();
+            window.open(`/preview/${this.profileId}`,`_blank`);
+        } 
+    }
 
     render() {
         const { handleComponentMenuClose, removeComponent, duplicateComponent } = this;
@@ -559,9 +563,10 @@ class Editor extends React.Component {
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title="Preview">
-                                    <IconButton component={RouteLink} to={`/preview/${this.profileId}`} target={"_blank"}>
+                                    <IconButton onClick={this.handlePreview}>
                                         <VisibilityIcon />
                                     </IconButton>
+
                                 </Tooltip>
                                 <Button
                                     variant="contained"
