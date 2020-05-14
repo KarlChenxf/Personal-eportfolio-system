@@ -270,7 +270,7 @@ class PersonalInfoEditor extends React.Component {
                         </Grid>
                     </Grid>
                     <LayoutControl {...this.props.layout} name='layout' onChange={this.handlePureChange} />
-                    <BackgroundControl {...this.props.background} submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmit}/>
+                    <BackgroundControl {...this.props.background} inputid="personalifo-background-input" submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmit}/>
                 </MuiDialogContent>
                 <MuiDialogActions>
                     {err? <Typography color="error">Upload failed. Click 'SAVE' to try again.</Typography> : null}

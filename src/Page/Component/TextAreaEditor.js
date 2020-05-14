@@ -260,7 +260,7 @@ class TextAreaEditor extends React.Component {
                     {profileList ? null : "Failed to load existing profile list, function 'Link to internal page' may not work properly. 'Link to external site' will still work."}
                     <div style={{ height: 8 }} />
                     <LayoutControl {...layout} name='layout' onChange={handlePureChange} />
-                    <BackgroundControl {...background} submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmit} />
+                    <BackgroundControl {...background} inputid="text-background-input" submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmit} />
                 </MuiDialogContent>
                 <MuiDialogActions>
                     {err? <Typography color="error">Upload failed. Click 'SAVE' to try again.</Typography> : null}

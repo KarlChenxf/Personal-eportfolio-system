@@ -28,11 +28,11 @@ class ComponentEditor extends React.PureComponent {
             case Type.TEXTAREA:
                 return <TextAreaEditor open={this.props.open} {...this.props.component.props} onSave={this.props.saveComponent} onClose={this.props.onClose} profileList={this.props.profileList}/>;
             case Type.FILE:
-                return <FileEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
+                return <FileEditor open={this.props.open} {...this.props.component.props} onSave={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.PICDISPLAY:
-                return <PicEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
+                return <PicEditor open={this.props.open} {...this.props.component.props} onSave={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.VIDEODISPLAY:
-                return <VideoEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
+                return <VideoEditor open={this.props.open} {...this.props.component.props} onSave={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.SNSDISPLAY:
                 return <SnsEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
             default:

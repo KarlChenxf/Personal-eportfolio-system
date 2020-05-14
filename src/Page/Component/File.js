@@ -7,14 +7,11 @@ import Paper from '@material-ui/core/Paper';
 const styles = (theme => ({
     paper: {
         padding: theme.spacing(2),
-        //display: 'flex',
-        //overflow: 'auto',
-        //flexDirection: 'column',
-        //flex: '1 1 auto',
-        position: "relative",
-        minHeight: '64px',
-        // Fill height
         height: '100%',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        overflow: 'hidden',
     },
 }));
 class File extends React.Component {
@@ -27,17 +24,32 @@ class File extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes,background,layout } = this.props;
         console.log("file: ", this.props.fileurl);
+        console.log("file: ", this.props.fileName);
 
+        let content = (
+          <a  href={this.props.fileurl} rel="noopener noreferrer" target="_blank">
+          {this.props.fileName || " "}
+        </a>
+      )
 
-        return (
-          <Paper className={classes.paper}>
-            <a  href={this.props.fileurl} rel="noopener noreferrer" target="_blank">
-              {this.props.fileName || " "}
-            </a>
-          </Paper>
-        );
+      content =
+      layout && layout.padding ? (
+        <div className={classes.padding}>{content}</div>
+      ) : (
+        content
+      );
+
+      return (
+        background ? <Paper className={classes.paper} style={{
+            backgroundImage: background.image ? `url(${background.image})` : null,
+            backgroundColor: background.color,
+            border: background.border,
+        }} elevation={background.elevation} square={!background.rounded}>
+            {content}
+        </Paper> : content
+      )
     }
 }
 

@@ -6,6 +6,14 @@ import axios from 'axios';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Box from '@material-ui/core/Box';
+import BackgroundControl from "./BackgroundControl.js";
+import LayoutControl from './LayoutControl.js'
+import Typography from '@material-ui/core/Typography';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import FileUploadControl from './FileUploadControl.js';
+import MuiDialogContent from '@material-ui/core/DialogContent';
+import MuiDialogActions from '@material-ui/core/DialogActions';
+
 const styles = (() => ({
   box:{
     //borderColor:"text.primary",
@@ -32,12 +40,20 @@ class FileEditor extends React.Component {
 
     this.state = {
       selectedFile: null,
-      fileName: props.fileUploadHandler || "",
+      fileName: props.fileName || "",
       fileurl: props.fileurl || "",
       uploadStatus: false,
       buttonStyle: 'outlined',
       buttonText:'Upload',
+      submitFile: false,
+      submitBackground: false,
+      progressFile: 0,
+      progressBackground: 0,
+      err: false,
     };
+    this.layout = props.layout || null;
+    this.background = props.background || null;
+    //console.log("fileName: ",props.fileName)
   }
 
   getProps() {
@@ -45,114 +61,97 @@ class FileEditor extends React.Component {
       selectedFile: this.state.selectedFile,
       fileName: this.state.fileName,
       fileurl: this.state.fileurl,
+      layout: this.layout,
+      background: this.background,
     };
   }
 
-  fileSelectedHandler = (event) => {
+  handleChange = (event) => {
     this.setState({
-      selectedFile: event.target.files[0]||null,
-      fileName: event.target.files[0].name||'',
-      buttonStyle: 'outlined',
-      buttonText: 'Upload',
+      [event.target.name]: event.target.value, // update the changed value
     });
-    console.log(event.target.files[0].name);
-  };
-  fileUploadHandler = () => {
-    const fd = new FormData();
-    fd.append("file", this.state.selectedFile);
-    axios
-      .post("http://3.135.244.103:9090/file/upload", fd,{headers:{'token':localStorage.LoginToken}},{
-        onUploadProgress: (ProgressEvent) => {
-          console.log(
-            "Upload Progress: " +
-              Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)
-          );
-        },
+  }
+
+  handlePureChange = (event) => {
+    this[event.target.name] = event.target.value;
+  }
+
+  save = () => {
+    this.setState({
+        err: false,
+        submitFile: true,
+        submitBackground: true,
+        progressFile: 1,
+        progressBackground: 1,
+    });
+    console.log("save: ",this.state.submitBackground||this.state.submitFile)
+  }
+
+  onProgressBackground = (e) => {
+    if(e.err)
+        this.setState({
+            err: true,
+            submitBackground: false,
+            progressBackground: 0,
+        })
+    console.log("onProgress: ",this.state.submitBackground)
+}
+
+onProgressFile = (e) => {
+  if(e.err)
+      this.setState({
+          err: true,
+          submitFile: false,
+          progressFile: 0,
       })
-      .then((res) => {
-        console.log("uploadrespnse: ",res.data.awsresponse);
-        this.setState({fileurl: res.data.awsresponse, uploadStatus: res.data.status });
-        if (this.state.uploadStatus=== 'success'){this.setState({buttonStyle: 'contained',buttonText:'Uploaded'})}
-        else{this.setState({buttonStyle: 'outlined',buttonText:'Upload'})};
-      })
-      .catch((error)=>{
-        console.log(error);
-      });
-  };
+  console.log("onProgress: ",this.state.submitFile)
+}
+
+onSubmitBackground = (background) => {
+  this.background = background;
+  this.props.onSave(this.getProps());
+  //console.log("background: ",background)
+}
+onSubmitFile = (fileUrl,fileName) => {
+  this.setState({fileurl:fileUrl,fileName:fileName})
+  this.props.onSave(this.getProps());
+  //console.log("file value: ", fileName)
+}
+
 
   render() {
-    const { classes } = this.props;
+    console.log("fileEditor render: ", this.state.submitBackground||this.state.submitFile)
+    console.log(" fileEditor render: ",this.state.submitBackground,this.state.submitFile)
+   console.log(" fileEditor render fileurl: ",this.state.fileurl)
+    
+
     return (
       <Dialog
         open={this.props.open}
         fullWidth={true}
         maxWidth={"lg"}
-        onClose={this.props.onClose}
+        onClose={(this.state.submitBackground||this.state.submitFile) ? null : this.props.onClose} disableEnforceFocus disableScrollLock
       >
-        <div style={{ padding: "8px" }}>
-          <div>
-            <Box className={classes.Box}>
-                  <input
-                    //accept="image/*"
-                    className={classes.input}
-                    id="contained-button-file"
-                    multiple
-                    type="file"
-                    onChange={this.fileSelectedHandler}
-                  />
-                  <label htmlFor="contained-button-file">
-                    <Button
-                      autoFocus
-                      variant="contained"
-                      color="primary"
-                      component="span"
-                    >
-                      Choose file
+        <MuiDialogContent>
+          <FormControl
+            variant="outlined"
+            style={{ height: "100%", width: "100%" }}
+          >
+            <FileUploadControl id = "file-upload" inputid="file-input" label="File" accept="file/*" value={this.state.fileurl} submit={this.state.submitFile} onProgress={this.onProgressFile} onSubmit={this.onSubmitFile}/>
+          </FormControl>
+            <LayoutControl {...this.props.layout} name='layout' onChange={this.handlePureChange} />
+            <BackgroundControl {...this.props.background} inputid="background-input" submit={this.state.submitBackground} onProgress={this.onProgressBackground} onSubmit={this.onSubmitBackground} />
+        </MuiDialogContent>
+        <MuiDialogActions>
+                    {this.state.err? <Typography color="error">Upload failed. Click 'SAVE' to try again.</Typography> : null}
+                    <Button autoFocus onClick={this.props.onClose}  disabled={this.state.submitBackground||this.state.submitFile}>
+                        Cancel
                     </Button>
-                  </label>
-                  <TextField
-                    id="outlined-read-only-input"
-                    //label="File Name"
-                    defaultValue="File Name"
-                    style={{ 'margin-left': "8px" }}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    value={this.state.fileName}
-                  />
-                  <Button
-                    variant={this.state.buttonStyle}
-                    color="primary"
-                    style={{ 'margin-left': "8px"}}
-                    autoFocus
-                    onClick={this.fileUploadHandler}
-                  >
-                    {this.state.buttonText}
-                  </Button>
-                            
-                  
-          <Button
-              autoFocus
-              style={{ 'margin-left': "8px",float:'right' }}
-              onClick={() => {
-                this.props.saveComponent(this.getProps());
-              }}
-              color="primary"
-            >
-              Save
-            </Button>
-            <Button autoFocus onClick={this.props.onClose}style={{float:'right'}}>
-              Cancel
-            </Button>
-            
-            </Box>   
-          </div>
-
-        </div>
-        <FormControl
-          variant="outlined"
-          style={{ height: "100%", width: "100%" }}
-        ></FormControl>
+                    <Button autoFocus onClick={this.save} color="primary" disabled={this.state.submitBackground||this.state.submitFile}>
+                        Save
+                    </Button>
+                </MuiDialogActions>
+                {(this.state.progressBackground + this.state.progressFile)>0 ? <LinearProgress/> : null}
       </Dialog>
     );
   }
