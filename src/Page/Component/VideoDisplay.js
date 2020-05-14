@@ -28,7 +28,7 @@ class VideoDisplay extends React.Component {
 
     render() {
 
-        const {classes, background} = this.props;
+        const {classes, background,layout} = this.props;
         console.log("videobackground: ", background);
 
         let content = (
@@ -40,6 +40,14 @@ class VideoDisplay extends React.Component {
                 controls = {true}
             />
         )
+        content =
+
+        layout && layout.padding ? (
+          <div className={classes.padding}>{content}</div>
+        ) : (
+          content
+        );
+  
 
         return (
           background ? <Paper className={classes.paper} style={{
