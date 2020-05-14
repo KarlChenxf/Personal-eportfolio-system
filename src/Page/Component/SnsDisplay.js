@@ -56,7 +56,7 @@ class SnsDisplay extends React.Component {
         let buttoncreated = (
           <IconButton
            aria-label="Findanexpert"
-           href={this.props.urlA}>
+           onClick={() => {window.open('https://'+this.props.urlA)}}>
           <FindanexpertIcon />
           </IconButton>
         );
@@ -65,7 +65,7 @@ class SnsDisplay extends React.Component {
             let buttoncreated = (
                 <IconButton
                  aria-label="Linkedin"
-				 onClick={() => {window.open(this.props.urlA)}}>
+				 onClick={() => {window.open('https://'+this.props.urlA)}}>
                 <LinkedinIcon />
                 </IconButton>
               )
@@ -74,7 +74,7 @@ class SnsDisplay extends React.Component {
             let buttoncreated = (
                 <IconButton
                  aria-label="facebook"
-                 onClick={() => {window.open(this.props.urlA)}}>
+                 onClick={() => {window.open('https://'+this.props.urlA)}}>
                 <FacebookIcon />
                 </IconButton>
               )
@@ -83,7 +83,7 @@ class SnsDisplay extends React.Component {
             let buttoncreated = (
                 <IconButton
                  aria-label="twitter"
-                 onClick={() => {window.open(this.props.urlA)}}>
+                 onClick={() => {window.open('https://'+this.props.urlA)}}>
                 <TwitterIcon />
                 </IconButton>
               )
@@ -92,7 +92,7 @@ class SnsDisplay extends React.Component {
             let buttoncreated = (
                 <IconButton
                  aria-label="github"
-                 onClick={() => {window.open(this.props.urlA)}}>
+                 onClick={() => {window.open('https://'+this.props.urlA)}}>
                 <GitHubIcon />
                 </IconButton>
               )
@@ -101,7 +101,7 @@ class SnsDisplay extends React.Component {
             let buttoncreated = (
                 <IconButton
                  aria-label={this.host}
-                 onClick={() => {window.open(this.props.urlA)}}>
+                 onClick={() => {window.open('https://'+this.props.urlA)}}>
                 <OtherIcon />
                 </IconButton>
               )
