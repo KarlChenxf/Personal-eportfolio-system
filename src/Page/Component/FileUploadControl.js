@@ -61,7 +61,7 @@ class FileUploadControl extends React.PureComponent {
 
         this.f = null;
 
-        console.log("FileUploadControl constructor()")
+        console.log("FileUploadControl constructor(): ",this.props.value)
     }
 
     handleChange = event => {
@@ -71,12 +71,13 @@ class FileUploadControl extends React.PureComponent {
     }
 
     onFileSelected = (event) => {
-        //console.log(event.target.files)
+        console.log("onFileSelected: ",event.target.files)
         this.setState({
             value: '',
             file: event.target.files[0].name,
         });
         this.f = event.target.files[0];
+        
     }
 
     clearValue = () => {
@@ -105,7 +106,7 @@ class FileUploadControl extends React.PureComponent {
             .then((res) => {
                 if (res.data.status === "success") {
                     if (onSubmit)
-                        onSubmit(res.data.awsresponse)
+                        onSubmit(res.data.awsresponse,this.state.file)
                 }
                 else if (onProgress)
                     onProgress({ err: true })
@@ -122,11 +123,13 @@ class FileUploadControl extends React.PureComponent {
             if (this.f)
                 this.uploadFile(this.f);
             else if (onSubmit)
-                onSubmit(this.state.value)
+                onSubmit(this.state.value,this.state.file)
+                console.log("value: ",this.state.file)
     }
 
     render() {
         console.log("FileUploadControl render()");
+        //console.log(this.props.inputid);
 
         const { classes } = this.props;
 
@@ -137,7 +140,7 @@ class FileUploadControl extends React.PureComponent {
                         {this.props.label}
                       </InputLabel>
                     <OutlinedInput
-                        id="standard-adornment-upload"
+                        id={this.props.id}
                         //type={values.showPassword ? 'text' : 'password'}
                         name="value"
                         value={this.state.value || this.state.file}
@@ -159,12 +162,12 @@ class FileUploadControl extends React.PureComponent {
                                     <input
                                         accept={this.props.accept}
                                         className={classes.input}
-                                        id="input-image"
+                                        id={this.props.inputid}
                                         type="file"
                                         //ref={this.fileInput}
                                         onChange={this.onFileSelected}
                                     />
-                                    <label htmlFor="input-image">
+                                    <label htmlFor={this.props.inputid}>
                                         <IconButton
                                             color="primary"
                                             aria-label="upload"

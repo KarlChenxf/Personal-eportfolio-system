@@ -8,6 +8,7 @@ import HTMLReactParser from 'html-react-parser';
 const styles = (theme => ({
     paper: {
         height: '100%',
+        position: "relative",
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',

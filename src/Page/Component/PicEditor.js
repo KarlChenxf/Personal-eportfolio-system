@@ -20,10 +20,14 @@ import IconButton from '@material-ui/core/IconButton';
 import PublishIcon from '@material-ui/icons/Publish';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import message from "@davistran86/notification";
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { API_END_POINT } from '../../Config.js';
+import ClearIcon from '@material-ui/icons/Clear';
+import FileUploadControl from './FileUploadControl.js'
 
 const styles = (theme) => ({
   formControl: {
-    minWidth: 150,
+    //minWidth: 150,
   },
   root: {
     //flexGrow: 1,
@@ -39,10 +43,15 @@ class PicEditor extends React.Component {
 
     this.state = {
       picurl: props.picurl || '',
-      selectedFile: null,
-      fileName: props.fileUpload || "",
+      file: null,
+      fileName: "",
       fitting: props.fitting || "fill",
-      uploadStatus: false,
+      submitPic: false,
+      submitBackground: false,
+      progressPic: 0,
+      progressBackground: 0,
+      err: false,
+
     };
     this.layout = props.layout || null;
     this.background = props.background || null;
@@ -52,11 +61,12 @@ class PicEditor extends React.Component {
   getProps() {
     return {
       picurl: this.state.picurl,
-      selectedFile: this.state.selectedFile,
-      fileName: this.state.fileName,
+      pic: this.state.pic,
+      picName: this.state.picName,
       layout: this.layout,
       background: this.background,
       fitting: this.state.fitting,
+      image: this.state.image,
       target: {
         name: this.props.name,
         value: { padding: this.state.padding },
@@ -68,96 +78,80 @@ class PicEditor extends React.Component {
     this.setState({
       [event.target.name]: event.target.value, // update the changed value
     });
-    //console.log("fitting: ",this.state.fitting);
   };
 
   handlePureChange = (event) => {
     this[event.target.name] = event.target.value;
   };
 
-
-  fileOnClick=()=>{
+  save = () => {
     this.setState({
-      selectedFile: null,
-    })
-    
+        err: false,
+        submitPic: true,
+        submitBackground:true,
+        progressPic: 1,
+        progressBackground: 1,
+    });
+    console.log("save: ",this.state.submitBackground,this.state.submitPic)
   }
 
+  onProgressPic = (e) => {
+      if(e.err)
+          this.setState({
+              err: true,
+              submitPic: false,
+              progressPic: 0,
+          })
+      console.log("onProgresspic: ",this.state.submitPic)
+  }
 
-  fileUploadHandler = () => {
-    const fd = new FormData();
-    fd.append("file", this.fileInput.current.files[0]);
-    //console.log("fileUpload: ", this.state.selectedFile);
-    axios
-      .post("http://3.135.244.103:9090/file/upload", fd,{headers:{'token':localStorage.LoginToken}},{
-        onUploadProgress: (ProgressEvent) => {
-          console.log(
-            "Upload Progress: " +
-              Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)
-          );
-        },
-      })
-      .then((res) => {
-                       //console.log("uploadrespnse: ",res.data.awsresponse);
-                       this.setState({
-                         picurl: res.data.awsresponse,
-                         uploadStatus: res.data.status,
-                       });
-                       if (this.state.uploadStatus === "success") {
-                         //alert("Upload success!");
-                         message.success("Image upload success!",{duration:3000, position: "bottom-left",});
-                       } 
-                     })
-      .catch((error)=>{
-        console.log(error);
-      });
-  };
+  onProgressBackground = (e) => {
+    if(e.err)
+        this.setState({
+            err: true,
+            submitBackground: false,
+            progressBackground: 0,
+        })
+    console.log("onProgressback: ",this.state.submitBackground)
+}
+
+  onSubmitBackground = (background) => {
+      this.background = background;
+      this.props.onSave(this.getProps());
+      console.log("onSubmitback: ",this.state.submitBackground)
+  }
+
+  onSubmitPic= (imgUrl) => {
+    this.setState({
+        picurl: imgUrl,
+        submitPic:false,
+    });
+    //console.log("onImgSubmit picurl: ",this.state.picurl);
+    console.log("onImgSubmitpic: ",this.state.submitPic)
+    this.props.onSave(this.getProps());
+}
 
   render() {
-    const { classes } = this.props;
+    const { props, state, handlePureChange } = this;
+    const { classes, open, onClose, onSave, layout, background } = props;
+    const { progress, err } = state;
+    console.log(" picEditor render: ",this.state.submitBackground||this.state.submitPic)
+    console.log(" picEditor render: ",this.state.submitBackground,this.state.submitPic)
+    //console.log(" picEditor render: ",this.state.progressBackground,this.state.progressPic)
 
     return (
       <Dialog
-        open={this.props.open}
+        open={open}
         fullWidth={true}
         maxWidth={"lg"}
-        onClose={this.props.onClose}
+        onClose={(this.state.submitBackground||this.state.submitPic) ? null : onClose} disableEnforceFocus disableScrollLock
       >
         <MuiDialogContent>
           <FormControl
             variant="outlined"
             style={{ height: "100%", width: "100%" }}
           >
-            <InputLabel htmlFor="input-upload">PictureURL</InputLabel>
-            <OutlinedInput
-              id="input-upload"
-              name="picurl"
-              value={this.state.picurl}
-              onChange={this.handleChange}
-              label="PictureURL"
-              endAdornment={
-                <InputAdornment position="end">
-                  <input
-                    //accept="image/*"
-                    className={classes.input}
-                    id="input-file"
-                    type="file"
-                    ref={this.fileInput}
-                    onChange={this.fileUploadHandler}
-                  />
-                  <label htmlFor="input-file">
-                    <IconButton
-                      color='primary'
-                      aria-label="upload picture"
-                      component="span"
-                      onClick={this.fileOnClick}
-                    >
-                      <PublishIcon />
-                    </IconButton>
-                  </label>
-                </InputAdornment>
-              }
-            />
+            <FileUploadControl id = "front-pic-upload" inputid="image-input" label="Image" accept="image/*" value={this.state.picurl} submit={this.state.submitPic} onProgress={this.onProgressPic} onSubmit={this.onSubmitPic}/>
           </FormControl>
 
 
@@ -186,7 +180,7 @@ class PicEditor extends React.Component {
                   <Grid item xs>
                     <FormControl
                       variant="outlined"
-                      minWidth = {150}
+                      //minWidth = {150}
                       className={classes.formControl}
                     >
                       <InputLabel id="fitting-label">Fitting</InputLabel>
@@ -210,28 +204,18 @@ class PicEditor extends React.Component {
                 </Grid>
               </Grid>
             </Grid>
-
-
-          <BackgroundControl
-            {...this.props.background}
-            name="background"
-            onChange={this.handlePureChange}
-          />
+            <BackgroundControl {...background} inputid="background-input"submit={this.state.submitBackground} onProgress={this.onProgressBackground} onSubmit={this.onSubmitBackground} />
         </MuiDialogContent>
         <MuiDialogActions>
-          <Button autoFocus onClick={this.props.onClose}>
-            Cancel
-          </Button>
-          <Button
-            autoFocus
-            onClick={() => {
-              this.props.saveComponent(this.getProps());
-            }}
-            color="primary"
-          >
-            Save
-          </Button>
-        </MuiDialogActions>
+                    {err? <Typography color="error">Upload failed. Click 'SAVE' to try again.</Typography> : null}
+                    <Button autoFocus onClick={onClose}  disabled={this.state.submitBackground||this.state.submitFile}>
+                        Cancel
+                    </Button>
+                    <Button autoFocus onClick={this.save} color="primary" disabled={this.state.submitBackground||this.state.submitFile}>
+                        Save
+                    </Button>
+                </MuiDialogActions>
+                {(this.state.progressBackground + this.state.progressPic)>0 ? <LinearProgress/> : null}
       </Dialog>
     );
   }
