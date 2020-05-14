@@ -1,26 +1,14 @@
 import React, { Fragment } from 'react';
-import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
-import Dialog from '@material-ui/core/Dialog';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import Grid from '@material-ui/core/Grid';
-import Tooltip from '@material-ui/core/Tooltip';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import PublishIcon from '@material-ui/icons/Publish';
 import ClearIcon from '@material-ui/icons/Clear';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-import Typography from '@material-ui/core/Typography';
-//import 'rc-color-picker/assets/index.css';
-import { Panel as ColorPickerPanel } from 'rc-color-picker';
+//import 'rc-color-picker/assets/index.css'; from 'rc-color-picker';
 import axios from 'axios';
-import message from "@davistran86/notification";
 import { API_END_POINT } from '../../Config.js';
 
 const styles = (() => ({
@@ -61,7 +49,7 @@ class FileUploadControl extends React.PureComponent {
 
         this.f = null;
 
-        console.log("FileUploadControl constructor(): ",this.props.value)
+        console.log("FileUploadControl constructor(): ")
     }
 
     handleChange = event => {
@@ -90,7 +78,6 @@ class FileUploadControl extends React.PureComponent {
 
     uploadFile = (file) => {
         const { onProgress, onSubmit } = this.props;
-
         const fd = new FormData();
         fd.append("file", file);
         // axios onUploadProgress is not working in nodejs
@@ -110,6 +97,7 @@ class FileUploadControl extends React.PureComponent {
                 }
                 else if (onProgress)
                     onProgress({ err: true })
+                    console.log("uploadAvatarFail")
             })
             .catch((error) => {
                 if (onProgress)
@@ -124,12 +112,10 @@ class FileUploadControl extends React.PureComponent {
                 this.uploadFile(this.f);
             else if (onSubmit)
                 onSubmit(this.state.value,this.state.file)
-                console.log("value: ",this.state.file)
     }
 
     render() {
         console.log("FileUploadControl render()");
-        //console.log(this.props.inputid);
 
         const { classes } = this.props;
 

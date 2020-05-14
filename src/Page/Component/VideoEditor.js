@@ -52,7 +52,6 @@ class VideoEditor extends React.Component {
         submit: true,
         progress: 1,
     });
-    console.log("save: ",this.state.submit)
   }
 
   onProgress = (e) => {
@@ -62,7 +61,6 @@ class VideoEditor extends React.Component {
             submit: false,
             progress: 0,
         })
-    console.log("onProgress: ",this.state.submit)
 }
 
 onSubmit = (background) => {
@@ -71,7 +69,7 @@ onSubmit = (background) => {
 }
 
   render() {
-    console.log("VideoEditor render: ",this.state.submit)
+    console.log("VideoEditor render: ")
     return (
       <Dialog
         open={this.props.open}

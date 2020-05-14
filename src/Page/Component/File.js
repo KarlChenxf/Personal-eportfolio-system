@@ -25,8 +25,8 @@ class File extends React.Component {
 
     render() {
         const { classes,background,layout } = this.props;
-        console.log("file: ", this.props.fileurl);
-        console.log("file: ", this.props.fileName);
+        //console.log("file: ", this.props.fileurl);
+        //console.log("file: ", this.props.fileName);
 
         let content = (
           <a  href={this.props.fileurl} rel="noopener noreferrer" target="_blank">
