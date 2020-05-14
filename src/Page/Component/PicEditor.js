@@ -27,7 +27,7 @@ import FileUploadControl from './FileUploadControl.js'
 
 const styles = (theme) => ({
   formControl: {
-    //minWidth: 150,
+    minWidth: 150,
   },
   root: {
     //flexGrow: 1,
@@ -180,7 +180,7 @@ class PicEditor extends React.Component {
                   <Grid item xs>
                     <FormControl
                       variant="outlined"
-                      //minWidth = {150}
+                      minWidth = {150}
                       className={classes.formControl}
                     >
                       <InputLabel id="fitting-label">Fitting</InputLabel>
