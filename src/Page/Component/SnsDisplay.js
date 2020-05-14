@@ -36,7 +36,7 @@ class SnsDisplay extends React.Component {
         if( domain[2] ) {
             domain = domain[2];
         } else {
-            domain = '';
+            domain = url;
         }
         let host = domain.split('.');
         return host[host.length-2];
@@ -50,53 +50,62 @@ class SnsDisplay extends React.Component {
         let host = this.props.urlA ? this.getHostName(this.props.urlA):"";
         console.log(host);
         
+		var content;
+		
         if (host === "findanexpert"){
-        var content = (
+        let buttoncreated = (
           <IconButton
            aria-label="Findanexpert"
            href={this.props.urlA}>
           <FindanexpertIcon />
           </IconButton>
-        )} else if (host === "linkedin"){
-            var content = (
+        );
+		content = buttoncreated;
+		} else if (host === "linkedin"){
+            let buttoncreated = (
                 <IconButton
                  aria-label="Linkedin"
-                 href={this.props.urlA}>
+				 onClick={() => {window.open(this.props.urlA)}}>
                 <LinkedinIcon />
                 </IconButton>
               )
+		content = buttoncreated;
         } else if (host === "facebook"){
-            var content = (
+            let buttoncreated = (
                 <IconButton
                  aria-label="facebook"
-                 href={this.props.urlA}>
+                 onClick={() => {window.open(this.props.urlA)}}>
                 <FacebookIcon />
                 </IconButton>
               )
+		content = buttoncreated;
         } else if (host === "twitter"){
-            var content = (
+            let buttoncreated = (
                 <IconButton
                  aria-label="twitter"
-                 href={this.props.urlA}>
+                 onClick={() => {window.open(this.props.urlA)}}>
                 <TwitterIcon />
                 </IconButton>
               )
+		content = buttoncreated;
         } else if (host === "github"){
-            var content = (
+            let buttoncreated = (
                 <IconButton
                  aria-label="github"
-                 href={this.props.urlA}>
+                 onClick={() => {window.open(this.props.urlA)}}>
                 <GitHubIcon />
                 </IconButton>
               )
+		content = buttoncreated;
         } else {
-            var content = (
+            let buttoncreated = (
                 <IconButton
                  aria-label={this.host}
-                 href={this.props.urlA}>
+                 onClick={() => {window.open(this.props.urlA)}}>
                 <OtherIcon />
                 </IconButton>
               )
+		content = buttoncreated;
         }
 
         return (

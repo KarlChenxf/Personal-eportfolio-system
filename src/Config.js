@@ -1,1 +1,1 @@
-export const API_END_POINT = "http://ec2-3-132-233-250.us-east-2.compute.amazonaws.com:9090";
+export const API_END_POINT = "https://api.eport.dev";
