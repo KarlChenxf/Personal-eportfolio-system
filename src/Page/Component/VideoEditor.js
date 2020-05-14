@@ -7,6 +7,9 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
 import "rc-color-picker/assets/index.css";
 import BackgroundControl from "./BackgroundControl.js";
+import LayoutControl from './LayoutControl.js'
+import Typography from '@material-ui/core/Typography';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const styles = (theme) => ({});
 
@@ -16,13 +19,18 @@ class VideoEditor extends React.Component {
 
     this.state = {
       videourl: props.videourl || "",
+      submit: false,
+      progress: 0,
+      err: false,
     };
     
+    this.layout = props.layout || null;
     this.background = props.background || null;
   }
 
   getProps() {
     return {
+      layout: this.layout,
       videourl: this.state.videourl,
       background: this.background,
     };
@@ -38,13 +46,38 @@ class VideoEditor extends React.Component {
     this[event.target.name] = event.target.value;
   }
 
+  save = () => {
+    this.setState({
+        err: false,
+        submit: true,
+        progress: 1,
+    });
+    console.log("save: ",this.state.submit)
+  }
+
+  onProgress = (e) => {
+    if(e.err)
+        this.setState({
+            err: true,
+            submit: false,
+            progress: 0,
+        })
+    console.log("onProgress: ",this.state.submit)
+}
+
+onSubmit = (background) => {
+  this.background = background;
+  this.props.onSave(this.getProps());
+}
+
   render() {
+    console.log("VideoEditor render: ",this.state.submit)
     return (
       <Dialog
         open={this.props.open}
         fullWidth={true}
         maxWidth={"lg"}
-        onClose={this.props.onClose}
+        onClose={this.state.submit ? null : this.props.onClose} disableEnforceFocus disableScrollLock
       >
         <MuiDialogContent>
           <TextField
@@ -56,26 +89,19 @@ class VideoEditor extends React.Component {
             value={this.state.videourl}
             onChange={this.handleChange}
           />
-          <BackgroundControl
-            {...this.props.background}
-            name="background"
-            onChange={this.handlePureChange}
-          />
+          <LayoutControl {...this.props.layout} name='layout' onChange={this.handlePureChange} />
+          <BackgroundControl {...this.props.background} inputid="video-background-input" submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmit} />
         </MuiDialogContent>
         <MuiDialogActions>
-          <Button autoFocus onClick={this.props.onClose}>
-            Cancel
-          </Button>
-          <Button
-            autoFocus
-            onClick={() => {
-              this.props.saveComponent(this.getProps());
-            }}
-            color="primary"
-          >
-            Save
-          </Button>
-        </MuiDialogActions>
+                    {this.state.err? <Typography color="error">Upload failed. Click 'SAVE' to try again.</Typography> : null}
+                    <Button autoFocus onClick={this.props.onClose}  disabled={this.state.submit}>
+                        Cancel
+                    </Button>
+                    <Button autoFocus onClick={this.save} color="primary" disabled={this.state.submit}>
+                        Save
+                    </Button>
+                </MuiDialogActions>
+                {this.state.progress>0 ? <LinearProgress/> : null}
       </Dialog>
     );
   }

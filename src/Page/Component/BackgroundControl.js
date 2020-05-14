@@ -91,7 +91,7 @@ class BackgroundControl extends React.PureComponent {
             if (this.props.onChange)
                 this.props.onChange(this.getProps());
         });
-        console.log("handlechange: ",this.state);
+        //console.log("handlechange: ",this.state);
     }
    
     
@@ -135,7 +135,7 @@ class BackgroundControl extends React.PureComponent {
     }
 
     getProps = () => {
-        console.log("background getProps： ",this.state.image);
+        //console.log("background getProps： ",this.state.image);
         const value =  this.state.background ? {
             color: this.state.colorHex,
             elevation: this.state.elevation,
@@ -171,6 +171,7 @@ class BackgroundControl extends React.PureComponent {
         if (!prevProps.submit && this.props.submit)
             if (onSubmit && !this.state.background)
                 onSubmit(null)
+        console.log("BackgroundContrdol componentDidUpdate: ",prevProps.submit,this.props.submit);
     }
 
     render() {
@@ -233,7 +234,7 @@ class BackgroundControl extends React.PureComponent {
                     />
                   </Dialog>
                   <Grid item>
-                    <FileUploadControl label="Image" accept="image/*" value={this.props.image} submit={this.props.submit} onProgress={this.props.onProgress} onSubmit={this.onSubmit}/>
+                    <FileUploadControl inputid = {this.props.inputid} id="background-img-upload" label="Image" accept="image/*" value={this.props.image} submit={this.props.submit} onProgress={this.props.onProgress} onSubmit={this.onSubmit}/>
                   </Grid>
                   <Grid item>
                     <FormControl

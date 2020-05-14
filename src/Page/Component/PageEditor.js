@@ -3,7 +3,6 @@ import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogActions from '@material-ui/core/DialogActions';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -12,15 +11,14 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
-import PublishIcon from '@material-ui/icons/Publish';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Typography from '@material-ui/core/Typography';
 import 'rc-color-picker/assets/index.css';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
 import axios from 'axios';
 import message from "@davistran86/notification";
+import FileUploadControl from './FileUploadControl.js'
+import MuiDialogActions from '@material-ui/core/DialogActions';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const styles = (() => ({
     formControl: {
@@ -62,6 +60,9 @@ class PageEditor extends React.PureComponent {
             fixed: props.fixed || false,
             image: props.image || "",
             openColorPanel: false,
+            submit: false,
+            progress: 0,
+            err: false,
         };
         this.fileInput=React.createRef();
 
@@ -127,6 +128,30 @@ class PageEditor extends React.PureComponent {
           });
       };
 
+    save = () => {
+        this.setState({
+            err: false,
+            submit: true,
+            progress: 1,
+        })
+    }
+
+    onProgress = (e) => {
+        if(e.err)
+            this.setState({
+                err: true,
+                submit: false,
+                progress: 0,
+            })
+    }
+
+    onSubmit= (imgUrl) => {
+        this.setState({
+            image: imgUrl,
+        }) ;
+        this.props.onSave(this.getProps());
+    }
+
     getProps = () => {
         return {
             spacing: this.state.spacing,
@@ -141,11 +166,13 @@ class PageEditor extends React.PureComponent {
 
     render() {
         console.log("PageEditor render()");
+        const { props, state,  } = this;
+        const { classes, open, onClose, onSave, } = props;
+        const { progress, err } = state;
 
-        const { classes, open, onClose, onSave } = this.props;
 
         return (
-            <Dialog open={open} fullWidth={true} maxWidth={"lg"} onClose={onClose}>
+            <Dialog open={open} fullWidth={true} maxWidth={"lg"} onClose={this.state.submit ? null : onClose} disableEnforceFocus disableScrollLock>
                 <DialogContent>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
@@ -192,41 +219,9 @@ class PageEditor extends React.PureComponent {
                             <ColorPickerPanel color={this.state.color} enableAlpha={false} onChange={this.handleColor} mode="RGB" />
                         </Dialog>
                         <Grid item>
-                            <FormControl variant="outlined">
-                            <InputLabel htmlFor="standard-adornment-upload">
-                        Image
-                      </InputLabel>
-                      <OutlinedInput
-                        id="standard-adornment-upload"
-                        //type={values.showPassword ? 'text' : 'password'}
-                        name="image"
-                        value={this.state.image}
-                        onChange={this.handleChange}
-                        labelWidth={44}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <input
-                              //accept="image/*"
-                              className={classes.input}
-                              id="input-image"
-                              type="file"
-                              ref={this.fileInput}
-                              onChange={this.imgUploadHandler}
-                            />
-                            <label htmlFor="input-image">
-                              <IconButton
-                                color="primary"
-                                aria-label="upload picture"
-                                component="span"
-                                onClick={this.fileOnClick}
-                              >
-                                <PublishIcon />
-                              </IconButton>
-                            </label>
-                          </InputAdornment>
-                        }
-                      />
-                            </FormControl>
+                            
+                            <FileUploadControl label="Image" inputid="page-background-input" accept="image/*" value={this.state.image} submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmit}/>
+                         
                         </Grid>
                         <Grid item>
                             <FormControl variant="outlined" className={classes.formControl}>
@@ -289,14 +284,16 @@ class PageEditor extends React.PureComponent {
                         </Grid>
                     </Grid>
                 </DialogContent>
-                <DialogActions>
-                    <Button autoFocus onClick={this.props.onClose}>
+                <MuiDialogActions>
+                    {err? <Typography color="error">Upload failed. Click 'SAVE' to try again.</Typography> : null}
+                    <Button autoFocus onClick={onClose}  disabled={this.state.submit}>
                         Cancel
                     </Button>
-                    <Button autoFocus onClick={() => { onSave(this.getProps()) }} color="primary">
+                    <Button autoFocus onClick={this.save} color="primary" disabled={this.state.submit}>
                         Save
                     </Button>
-                </DialogActions>
+                </MuiDialogActions>
+                {progress>0 ? <LinearProgress/> : null}
             </Dialog>
         )
     }
