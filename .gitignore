@@ -50,3 +50,6 @@ yarn-error.log*
 
 #sensitive data
 *.pem
+*.key
+**/*.pem
+**/*.key
