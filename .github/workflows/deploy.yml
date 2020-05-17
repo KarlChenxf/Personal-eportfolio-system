@@ -32,7 +32,7 @@ jobs:
     - name: npm install and build
       run: |
           npm install
-          CI=false npm run build
+          npm run build
     - uses: actions/upload-artifact@master
       with:
           name: artifacts

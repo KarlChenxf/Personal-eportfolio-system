@@ -12,10 +12,7 @@ import Select from '@material-ui/core/Select';
 import Grid from '@material-ui/core/Grid';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
-import 'rc-color-picker/assets/index.css';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
-import axios from 'axios';
-import message from "@davistran86/notification";
 import FileUploadControl from './FileUploadControl.js'
 import MuiDialogActions from '@material-ui/core/DialogActions';
 import LinearProgress from '@material-ui/core/LinearProgress';
@@ -27,9 +24,6 @@ const styles = (() => ({
     gridItem: {
         display: 'inline-flex',
     },
-    labelPlacementStart: {
-        marginLeft: 0,
-    },
     roundButton: {
         borderRadius: '50%',
         height: 44,
@@ -38,12 +32,6 @@ const styles = (() => ({
         border: '1px solid rgba(0, 0, 0, 0.23)',
         marginTop: 6,
     },
-    textField: {
-        minWidth: 210,
-    },
-    input:{
-        display: 'none',
-      }
 }));
 
 class PageEditor extends React.PureComponent {
@@ -58,13 +46,14 @@ class PageEditor extends React.PureComponent {
             repeat: props.repeat || 'no-repeat',
             size: props.size || '100%',
             fixed: props.fixed || false,
-            image: props.image || "",
+            //image: props.image || "",
             openColorPanel: false,
             submit: false,
             progress: 0,
             err: false,
         };
-        this.fileInput=React.createRef();
+
+        this.image = props.image;
 
         console.log("PageEditor constructor()")
     }
@@ -78,9 +67,6 @@ class PageEditor extends React.PureComponent {
     handleChange = event => {
         this.setState({
             [event.target.name]: event.target.type === 'checkbox' ? event.target.checked : event.target.value, // update the changed value
-        }, () => {
-            if (this.props.onChange)
-                this.props.onChange(this.getProps());
         });
     }
 
@@ -88,45 +74,8 @@ class PageEditor extends React.PureComponent {
         const { color } = colorObj;
         this.setState({
             color: color,
-        }, () => {
-            if (this.props.onChange)
-                this.props.onChange(this.getProps());
         });
     }
-
-    fileOnClick=()=>{
-        this.setState({
-          selectedFile: null,
-        })
-        
-      }
-
-    imgUploadHandler = () => {
-        const fd = new FormData();
-        fd.append("file", this.fileInput.current.files[0]);
-        axios
-          .post("http://3.135.244.103:9090/file/upload", fd,{headers:{'token':localStorage.LoginToken}},{
-            onUploadProgress: (ProgressEvent) => {
-              console.log(
-                "Upload Progress: " +
-                  Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100)
-              );
-            },
-          })
-          .then((res) => {
-            
-            this.setState({image: res.data.awsresponse, uploadStatus: res.data.status });
-            console.log("uploadrespnse image: ",this.state.image);
-            if (this.state.uploadStatus === "success") {
-              //alert("Upload success!");
-              message.success("Image upload success!",{duration:3000, position: "bottom-left",});
-            }
-            this.props.onChange(this.getProps());
-          })
-          .catch((error)=>{
-            console.log(error);
-          });
-      };
 
     save = () => {
         this.setState({
@@ -146,9 +95,7 @@ class PageEditor extends React.PureComponent {
     }
 
     onSubmit= (imgUrl) => {
-        this.setState({
-            image: imgUrl,
-        }) ;
+        this.image = imgUrl;
         this.props.onSave(this.getProps());
     }
 
@@ -160,14 +107,14 @@ class PageEditor extends React.PureComponent {
             repeat: this.state.repeat,
             size: this.state.size,
             fixed: this.state.fixed,
-            image: this.state.image,
+            image: this.image,
         };
     }
 
     render() {
         console.log("PageEditor render()");
-        const { props, state,  } = this;
-        const { classes, open, onClose, onSave, } = props;
+        const { props, state, } = this;
+        const { classes, open, onClose, } = props;
         const { progress, err } = state;
 
 
@@ -219,15 +166,13 @@ class PageEditor extends React.PureComponent {
                             <ColorPickerPanel color={this.state.color} enableAlpha={false} onChange={this.handleColor} mode="RGB" />
                         </Dialog>
                         <Grid item>
-                            
-                            <FileUploadControl label="Image" inputid="page-background-input" accept="image/*" value={this.state.image} submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmit}/>
-                         
+                            <FileUploadControl label="Image" inputid="page-background-input" accept="image/*" value={this.props.image} submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmit}/>
                         </Grid>
                         <Grid item>
                             <FormControl variant="outlined" className={classes.formControl}>
                                 <InputLabel id="position-label">Position</InputLabel>
                                 <Select
-                                    disabled={!this.state.image}
+                                    //disabled={!this.state.image}
                                     labelId="position-label"
                                     value={this.state.position}
                                     onChange={this.handleChange}
@@ -242,7 +187,7 @@ class PageEditor extends React.PureComponent {
                             <FormControl variant="outlined" className={classes.formControl}>
                                 <InputLabel id="repeat-label">Repeat</InputLabel>
                                 <Select
-                                    disabled={!this.state.image}
+                                    //disabled={!this.state.image}
                                     labelId="repeat-label"
                                     value={this.state.repeat}
                                     onChange={this.handleChange}
@@ -257,7 +202,7 @@ class PageEditor extends React.PureComponent {
                             <FormControl variant="outlined" className={classes.formControl}>
                                 <InputLabel id="size-label">Size</InputLabel>
                                 <Select
-                                    disabled={!this.state.image}
+                                    //disabled={!this.state.image}
                                     labelId="size-label"
                                     value={this.state.size}
                                     onChange={this.handleChange}
@@ -272,7 +217,7 @@ class PageEditor extends React.PureComponent {
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        disabled={!this.state.image}
+                                        //disabled={!this.state.image}
                                         checked={this.state.fixed}
                                         onChange={this.handleChange}
                                         name="fixed"

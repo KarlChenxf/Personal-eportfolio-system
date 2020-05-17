@@ -1,7 +1,6 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import '../../css/pic-display.css'
 
 
 const styles = (theme => ({
@@ -43,7 +42,7 @@ class PicDisplay extends React.Component {
 
         let content = (  
 
-            <img src={this.props.picurl} alt="pic"  style={{objectFit:this.props.fitting}}/>   
+            <img src={this.props.picurl} alt="pic"  style={{height:'100%',width:'100%',pointerEvents:'none',objectFit:this.props.fitting}}/>   
 
         );
 

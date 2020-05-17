@@ -3,16 +3,13 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { BrowserRouter as Router, Route, Link as RouteLink } from "react-router-dom";
+import { Link as RouteLink } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import { API_END_POINT } from '../Config.js';
 
@@ -21,7 +18,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="#">
-      Gabriel and David
+      Team 12
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -59,6 +56,7 @@ class Register extends React.Component {
 		super(props);
 
 		this.state = {
+      loading: false,
       fname: "",
       lname: "",
 			email: "",
@@ -67,6 +65,10 @@ class Register extends React.Component {
   }
 
   register(event) {
+
+    this.setState({
+      loading:true,
+    })
 
     let credentials = {
       firstName: this.state.fname,
@@ -94,13 +96,16 @@ class Register extends React.Component {
 					if (response.ok) {
 						response.json().then(data => {
 							//console.log(data);
-							localStorage.setItem('RegisterToken', data.token)// save token in local storage
 							if (data.status === "success") {
-								// Send them to the profile
-                this.props.history.replace("/");
+                  // Send them to the profile
+                  localStorage.setItem('RegisterToken', data.token)// save token in local storage
+                  this.props.history.replace("/");
 							}
 							else {
-								alert("Invalid Authentication.");
+                  alert(data.message);
+                  this.setState({
+                    loading:false,
+                  })
 							}
 						})
 					}
@@ -206,6 +211,7 @@ class Register extends React.Component {
             color="primary"
             className={classes.submit}
             onClick={(e) => this.register(e)}
+            disabled={this.state.loading}
           >
             Sign Up
           </Button>

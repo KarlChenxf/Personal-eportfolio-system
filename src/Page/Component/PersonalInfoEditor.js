@@ -13,31 +13,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Typography from '@material-ui/core/Typography';
 import { Panel as ColorPickerPanel } from 'rc-color-picker';
-import 'rc-color-picker/assets/index.css';
-
-// TinyMCE (*required, please ignore the variable not used warning)
-import tinymce from 'tinymce/tinymce';
-// TinyMCE/theme (*required)
-import 'tinymce/themes/silver';
-// TinyMCE/plugins (*required)
-import 'tinymce/plugins/paste';
-import 'tinymce/plugins/link';
-import 'tinymce/plugins/advlist';
-import 'tinymce/plugins/autolink';
-import 'tinymce/plugins/lists';
-import 'tinymce/plugins/image';
-import 'tinymce/plugins/preview';
-import 'tinymce/plugins/searchreplace';
-import 'tinymce/plugins/code';
-import 'tinymce/plugins/fullscreen';
-import 'tinymce/plugins/table';
-import 'tinymce/plugins/code';
-import 'tinymce/plugins/wordcount';
-import { Editor as TinyMCE } from '@tinymce/tinymce-react';
 
 import BackgroundControl from './BackgroundControl.js'
 import LayoutControl from './LayoutControl.js'
 import FileUploadControl from './FileUploadControl.js'
+import TinyMCEWapper from './TinyMCEWapper.js'
 
 const styles = (theme => ({
     formControl: {
@@ -190,6 +170,7 @@ class PersonalInfoEditor extends React.Component {
                 ? null
                 : this.props.onClose
             }
+            disableEnforceFocus
             disableScrollLock
           >
             <MuiDialogContent>
@@ -261,56 +242,10 @@ class PersonalInfoEditor extends React.Component {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <TinyMCE
-                    initialValue={this.props.avatar_text}
-                    init={{
-                      height: 180,
-                      menubar: false,
-                      plugins: [
-                        "advlist autolink lists link image preview",
-                        "searchreplace code fullscreen",
-                        "table paste code wordcount",
-                      ],
-                      toolbar:
-                        "undo redo | formatselect | fontsizeselect | bold italic underline forecolor backcolor | \
-                                        alignleft aligncenter alignright alignjustify | \
-                                        bullist numlist outdent indent | table link | removeformat | code",
-                      // WORKAROUND: base_url is required to enable TinyMCE to load css stylesheet correctly
-                      base_url: process.env.PUBLIC_URL + "/tinymce",
-                      //link_list: linkList,
-                    }}
-                    onEditorChange={handleEditorChange2}
-                  />
+                  <TinyMCEWapper defaultValue={this.props.avatar_text} height={180} onEditorChange={handleEditorChange2}/>
                 </Grid>
                 <Grid item xs={12}>
-                  {/*<TextField fullWidth
-                                id="name"
-                                //placeholder="Name"
-                                variant="outlined"
-                                name="name"
-                                label="Name"
-                                value={this.state.name}
-                                onChange={this.handleChange} />*/}
-                  <TinyMCE
-                    initialValue={this.props.name}
-                    init={{
-                      height: 240,
-                      menubar: false,
-                      plugins: [
-                        "advlist autolink lists link image preview",
-                        "searchreplace code fullscreen",
-                        "table paste code wordcount",
-                      ],
-                      toolbar:
-                        "undo redo | formatselect | fontsizeselect | bold italic underline forecolor backcolor | \
-                                        alignleft aligncenter alignright alignjustify | \
-                                        bullist numlist outdent indent | table link | removeformat | code",
-                      // WORKAROUND: base_url is required to enable TinyMCE to load css stylesheet correctly
-                      base_url: process.env.PUBLIC_URL + "/tinymce",
-                      //link_list: linkList,
-                    }}
-                    onEditorChange={handleEditorChange}
-                  />
+                  <TinyMCEWapper defaultValue={this.props.name} height={240} onEditorChange={handleEditorChange}/>
                 </Grid>
               </Grid>
               <LayoutControl
