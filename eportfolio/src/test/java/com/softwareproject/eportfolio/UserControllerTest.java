@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-05-07 18:24:46
- * @LastEditTime: 2020-05-17 18:49:42
+ * @LastEditTime: 2020-05-17 19:29:51
  */
 package com.softwareproject.eportfolio;
 
@@ -79,7 +79,7 @@ public class UserControllerTest {
 		testUser.put("firstName", "1");
 		testUser.put("lastName", "2");
 		testUser.put("email", "adminTest");
-		/*
+		
 		mvc.perform(
 			MockMvcRequestBuilders.post("/user/signup")				
 				.content(testUser.toJSONString())
@@ -94,7 +94,7 @@ public class UserControllerTest {
 						System.out.println("----"+result.getResponse().getContentAsString());
 					}
 				});
-				*/
+				
 	}
 
 
