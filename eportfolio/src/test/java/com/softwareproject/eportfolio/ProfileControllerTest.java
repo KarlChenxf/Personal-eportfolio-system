@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-05-07 18:24:46
- * @LastEditTime: 2020-05-08 20:38:18
+ * @LastEditTime: 2020-05-17 19:27:16
  */
 package com.softwareproject.eportfolio;
 
@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.ResultHandler;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.util.NestedServletException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -98,7 +99,27 @@ public class ProfileControllerTest {
     }
 
     @Test
-	public void testGet() throws Exception{
+	public void testAddWithoutToken() throws Exception{
+		JSONObject testProfile = new JSONObject();
+		testProfile.put("html", JSONObject.parse("{\"contetnt\":{\"fefa\":\"feafefef\"}}"));
+        testProfile.put("url", "http://google.com");
+        testProfile.put("userid", getUserid());
+		
+        //Email already exists
+        try {
+            mvc.perform(
+                MockMvcRequestBuilders.post("/profile/add")				
+                    .content(testProfile.toJSONString())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    ).andExpect(MockMvcResultMatchers.status().is5xxServerError())
+                    ;            
+        } catch (NestedServletException e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+	public void testGetByProfileId() throws Exception{
         JSONObject testProfile = new JSONObject();
         testProfile.put("profileid", "1");
 		
@@ -119,9 +140,14 @@ public class ProfileControllerTest {
 					}
                 });
         
+				
+    }
+
+    @Test
+	public void testGetByUserid() throws Exception{
+        JSONObject testProfile = new JSONObject();
         //Get by userid
         testProfile.put("userid", getUserid());
-        testProfile.put("profileid", null);
         mvc.perform(
 			MockMvcRequestBuilders.post("/profile/get")				
 				.content(testProfile.toJSONString())
@@ -137,6 +163,44 @@ public class ProfileControllerTest {
                         System.out.println("----"+result.getResponse().getContentAsString());
 					}
 				});
+				
+    }
+
+    @Test
+	public void testGetByProfileIdWithoutToken() throws Exception{
+        JSONObject testProfile = new JSONObject();
+        testProfile.put("profileid", "1");
+		
+		//Get by profileid
+        try {
+            mvc.perform(
+                MockMvcRequestBuilders.post("/profile/get")				
+                    .content(testProfile.toJSONString())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    ).andExpect(MockMvcResultMatchers.status().is5xxServerError())
+                    ;            
+        } catch (NestedServletException e) {
+            System.out.println(e);
+        }
+        
+				
+    }
+
+    @Test
+	public void testGetByUseridWithoutToken() throws Exception{
+        JSONObject testProfile = new JSONObject();
+        //Get by userid
+        testProfile.put("userid", getUserid());
+        try {
+            mvc.perform(
+                MockMvcRequestBuilders.post("/profile/get")				
+                    .content(testProfile.toJSONString())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    ).andExpect(MockMvcResultMatchers.status().is5xxServerError())
+                    ;            
+        } catch (NestedServletException e) {
+            System.out.println(e);
+        }
 				
     }
 
@@ -183,6 +247,88 @@ public class ProfileControllerTest {
 					}
 				});
 				
+    }
+
+
+    @Test
+	public void testUpdateWithoutToken() throws Exception{
+        JSONObject testProfile = new JSONObject();
+        testProfile.put("id", "1");
+		testProfile.put("html", JSONObject.parse("{\"contetnt\":{\"updated\":\"updated\"}}"));
+        testProfile.put("url", "http://google.com");
+        testProfile.put("userid", getUserid());
+		//Get by profileid
+        try {
+            mvc.perform(
+                MockMvcRequestBuilders.put("/profile/update")				
+                    .content(testProfile.toJSONString())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    ).andExpect(MockMvcResultMatchers.status().is5xxServerError())
+                    ;            
+        } catch (NestedServletException e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+	public void testZDeleteWithoutToken() throws Exception{
+        JSONObject testProfile = new JSONObject();
+        testProfile.put("id", "1");
+		//Get by profileid
+        try {
+            mvc.perform(
+                MockMvcRequestBuilders.delete("/profile/delete")				
+                    .content(testProfile.toJSONString())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    ).andExpect(MockMvcResultMatchers.status().is5xxServerError())
+                    ;            
+        } catch (NestedServletException e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void testZDelete() throws Exception{
+        JSONObject testProfile = new JSONObject();
+        testProfile.put("id", "1");
+
+        mvc.perform(
+			MockMvcRequestBuilders.delete("/profile/delete")				
+				.content(testProfile.toJSONString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("token", getToken())
+				.accept(MediaType.APPLICATION_JSON)
+				)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("success"))
+				.andDo(new ResultHandler(){
+					@Override
+					public void handle(MvcResult result) throws Exception {
+                        System.out.println("----"+result.getResponse().getContentAsString());
+					}
+				});
+    }
+
+    @Test
+    public void testZDeleteNullProfile() throws Exception{
+        JSONObject testProfile = new JSONObject();
+        testProfile.put("id", "1");
+
+        mvc.perform(
+			MockMvcRequestBuilders.delete("/profile/delete")				
+				.content(testProfile.toJSONString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("token", getToken())
+				.accept(MediaType.APPLICATION_JSON)
+				)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("fail"))
+				.andDo(new ResultHandler(){
+					@Override
+					public void handle(MvcResult result) throws Exception {
+                        System.out.println("----"+result.getResponse().getContentAsString());
+					}
+				});
     }
     
     /**
