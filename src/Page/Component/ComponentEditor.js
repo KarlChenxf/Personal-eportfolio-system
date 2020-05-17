@@ -24,7 +24,7 @@ class ComponentEditor extends React.PureComponent {
             case Type.PERSONAL_INFO:
                 return <PersonalInfoEditor open={this.props.open} {...this.props.component.props} onSave={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.HTML:
-                return <RawHTMLEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
+                return <RawHTMLEditor open={this.props.open} {...this.props.component.props} onSave={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.TEXTAREA:
                 return <TextAreaEditor open={this.props.open} {...this.props.component.props} onSave={this.props.saveComponent} onClose={this.props.onClose} profileList={this.props.profileList}/>;
             case Type.FILE:
@@ -34,7 +34,7 @@ class ComponentEditor extends React.PureComponent {
             case Type.VIDEODISPLAY:
                 return <VideoEditor open={this.props.open} {...this.props.component.props} onSave={this.props.saveComponent} onClose={this.props.onClose}/>;
             case Type.SNSDISPLAY:
-                return <SnsEditor open={this.props.open} {...this.props.component.props} saveComponent={this.props.saveComponent} onClose={this.props.onClose}/>;
+                return <SnsEditor open={this.props.open} {...this.props.component.props} onSave={this.props.saveComponent} onClose={this.props.onClose}/>;
             default:
                 return null;
         }
