@@ -2,7 +2,7 @@
  * @Descripsion: 
  * @Author: Xuefeng Chen
  * @Date: 2020-05-07 18:24:46
- * @LastEditTime: 2020-05-17 19:29:09
+ * @LastEditTime: 2020-05-17 20:05:45
  */
 package com.softwareproject.eportfolio;
 
@@ -33,7 +33,9 @@ public class ShareControllerTest {
     @Autowired
     private MockMvc mvc;
 
-	private String token;
+    private String token;
+    
+    private String shareToken;
 
     private String userid;
 
@@ -68,7 +70,48 @@ public class ShareControllerTest {
 						System.out.println("----login-------"+getUserid());
 					}
 				});
-	}
+    }
+    
+    @Test
+    public void getSharedLink() throws Exception {
+        JSONObject testProfile = new JSONObject();
+        testProfile.put("profileid", "2");
+        		//Get by profileid
+		mvc.perform(
+			MockMvcRequestBuilders.post("/share/getlink")				
+				.content(testProfile.toJSONString())
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("token", getToken())
+				.accept(MediaType.APPLICATION_JSON)
+				)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.status").value("success"))
+				.andDo(new ResultHandler(){
+					@Override
+					public void handle(MvcResult result) throws Exception {
+                        JSONObject res = JSONObject.parseObject(result.getResponse().getContentAsString());
+                        setShareToken(res.getString("sharetoken"));
+                        System.out.println("----"+result.getResponse().getContentAsString());
+					}
+                });
+    }
+
+    @Test
+	public void testSharedLinkWithoutToken() throws Exception{
+        JSONObject testProfile = new JSONObject();
+        testProfile.put("profileid", "2");
+		//Get by profileid
+        try {
+            mvc.perform(
+                MockMvcRequestBuilders.post("/share/getlink")				
+                    .content(testProfile.toJSONString())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    ).andExpect(MockMvcResultMatchers.status().is5xxServerError())
+                    ;            
+        } catch (NestedServletException e) {
+            System.out.println(e);
+        }
+    }
 
 
     
@@ -105,5 +148,19 @@ public class ShareControllerTest {
      */
     public void setProfile(JSONObject profile) {
         this.profile = profile;
+    }
+
+    /**
+     * @param shareToken the shareToken to set
+     */
+    public void setShareToken(String shareToken) {
+        this.shareToken = shareToken;
+    }
+
+    /**
+     * @return the shareToken
+     */
+    public String getShareToken() {
+        return shareToken;
     }
 }
