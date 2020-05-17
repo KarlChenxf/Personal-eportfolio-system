@@ -5,7 +5,6 @@ import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogContent from "@material-ui/core/DialogContent";
 import MuiDialogActions from "@material-ui/core/DialogActions";
-import "rc-color-picker/assets/index.css";
 import BackgroundControl from "./BackgroundControl.js";
 
 const styles = (theme) => ({});

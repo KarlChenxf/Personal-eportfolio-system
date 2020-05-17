@@ -7,7 +7,6 @@ import IconButton from '@material-ui/core/IconButton';
 import PublishIcon from '@material-ui/icons/Publish';
 import ClearIcon from '@material-ui/icons/Clear';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-//import 'rc-color-picker/assets/index.css'; from 'rc-color-picker';
 import axios from 'axios';
 import { API_END_POINT } from '../../Config.js';
 

@@ -8,7 +8,6 @@
  */
 
 import React, { Fragment } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -28,6 +27,11 @@ const styles = (theme => ({
     },
     a: {
         textDecoration: 'none',
+    },
+    '@global': {
+        '.react-grid-layout': {
+            position: 'relative'
+        }
     }
 }));
 
@@ -40,12 +44,14 @@ function AutoLink(props) {
     return (
         to ? (
             /^https?:\/\//i.test(to) ? // is external url?
+                // eslint-disable-next-line jsx-a11y/anchor-has-content
                 <a
                     href={to}
                     target="_blank"
+                    rel="noopener noreferrer"
                     {...props}
-                />:
-                <RouteLink {...props} to={String(to)}/>
+                /> :
+                <RouteLink {...props} to={String(to)} />
         ) : props.children
     );
 }
@@ -61,6 +67,11 @@ class Viewer extends React.Component {
             components: [],
             page: {},
         };
+
+        if (this.props.match.params.token)
+            this.getSharedProfile();
+        else
+            this.getProfile();
     }
 
     /**
@@ -181,10 +192,10 @@ class Viewer extends React.Component {
      * Fetch data through different methods based on if token is presented in URL
      */
     componentDidMount() {
-        if (this.props.match.params.token)
+        /*if (this.props.match.params.token)
             this.getSharedProfile();
         else
-            this.getProfile();
+            this.getProfile();*/
     }
 
     /**
@@ -233,7 +244,6 @@ class Viewer extends React.Component {
 
         return (
             <Fragment>
-                <CssBaseline />
                 {/* Content */}
                 <main style={pageBackground}>
                     <Container maxWidth="lg" fixed className={classes.container}>

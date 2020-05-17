@@ -1,9 +1,8 @@
 import React from 'react';
 import Container from '@material-ui/core/Container';
-import {Link as RouteLink } from "react-router-dom";
+import { Link as RouteLink } from "react-router-dom";
 import { withStyles } from '@material-ui/core/styles';
 import { API_END_POINT } from '../Config.js';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -42,12 +41,6 @@ const styles = (theme) => ({
   },
   root: {
     display: 'flex',
-},
-  paper: {
-    marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
   },
   tableroot: {
     width: '100%',
@@ -77,35 +70,26 @@ const styles = (theme) => ({
     top: 20,
     width: 1,
   },
-  row:{
-    align:'center',
+  row: {
+    align: 'center',
   },
-
-toolbar: {
-    //paddingRight: 24,
-},
-appBar: {
+  appBar: {
     color: 'rgba(0, 0, 0, 0.87)',
     backgroundColor: '#FFF',
-},
-appBarSpacer: theme.mixins.toolbar,
-content: {
+  },
+  appBarSpacer: theme.mixins.toolbar,
+  content: {
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
-},
-container: {
+  },
+  container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
-},
-actions: {
-    position: "absolute",
-    top: '10px',
-    right: '10px',
-},
-margin: {
+  },
+  margin: {
     margin: theme.spacing(1),
-},
+  },
 });
 
 
@@ -115,27 +99,27 @@ const headCells = [
   //{ id: "date", label: "Date" }
 ];
 
-class EnhancedTableHead extends React.Component{
-  constructor(props){
+class EnhancedTableHead extends React.Component {
+  constructor(props) {
     super(props);
-    this.state={
-      
+    this.state = {
+
     };
   }
 
-  render(){
-  const { classes, order, orderBy, onRequestSort } = this.props;
-  const createSortHandler = property => event => {
-    onRequestSort(event, property);
-  };
-  //console.log("headcess: ",headCells)
+  render() {
+    const { classes, order, orderBy, onRequestSort } = this.props;
+    const createSortHandler = property => event => {
+      onRequestSort(event, property);
+    };
+    //console.log("headcess: ",headCells)
 
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell padding='checkbox' align='center'>
-          
-        </TableCell>
+    return (
+      <TableHead>
+        <TableRow>
+          <TableCell padding='checkbox' align='center'>
+
+          </TableCell>
 
           <TableCell
             key={headCells[0].id}
@@ -176,13 +160,13 @@ class EnhancedTableHead extends React.Component{
               ) : null}
             </TableSortLabel>
           </TableCell>
-          
-          <TableCell padding={"checkbox"} align={"center"}>Edit</TableCell>
-        <TableCell padding={"checkbox"} align={"center"}>Delete</TableCell>
-      </TableRow>
-    </TableHead>
-  );
- }
+
+          <TableCell padding={"checkbox"} align={"center"} style={{width:80}}>Edit</TableCell>
+          <TableCell padding={"checkbox"} align={"center"} style={{width:80}}>Delete</TableCell>
+        </TableRow>
+      </TableHead>
+    );
+  }
 }
 
 EnhancedTableHead.propTypes = {
@@ -207,7 +191,7 @@ class Profile extends React.Component {
       open: false,
       deleteid: null,
     };
-    console.log("profileprops: ",props);
+    console.log("profileprops: ", props);
   }
 
   componentDidMount() {
@@ -246,7 +230,7 @@ class Profile extends React.Component {
               profileList: data.profile,
               //rows: data.profile.map((row)=> [row.id,row.url]),
             });
-            console.log("Profile: ", this.state.profileList) ;
+            console.log("Profile: ", this.state.profileList);
             //console.log("ProfileRows: ", rows) ;
           });
         } else {
@@ -355,9 +339,9 @@ class Profile extends React.Component {
             console.log(data);
             if (data.status === "success") {
               //alert("delete success!");
-              this.setState({deleteid: null});
+              this.setState({ deleteid: null });
 
-            } else {alert(data.message);}
+            } else { alert(data.message); }
           });
         } else {
           //alert("Unable to Login.");
@@ -401,7 +385,7 @@ class Profile extends React.Component {
   };
 
   stableSort(array, comparator) {
-    console.log("array: ",array);
+    console.log("array: ", array);
     const stabilizedThis = array.map((el, index) => [el, index]);
     stabilizedThis.sort((a, b) => {
       const order = comparator(a[0], b[0]);
@@ -412,28 +396,28 @@ class Profile extends React.Component {
   };
 
   handleRequestSort = (event, property) => {
-      const isAsc = this.state.orderBy === property && this.state.order === 'asc';
-      this.setState({order: (isAsc?'desc' : 'asc'), orderBy: property });
-    };
+    const isAsc = this.state.orderBy === property && this.state.order === 'asc';
+    this.setState({ order: (isAsc ? 'desc' : 'asc'), orderBy: property });
+  };
 
 
   handleClick = (event, id) => {
-    if(id!=null){this.props.history.push(`/edit/${id}`);};
-    
+    if (id != null) { this.props.history.push(`/edit/${id}`); };
+
   };
 
-  handleDeleteClickOpen = (event,profileid) => {
-    this.setState({open:true,deleteid:profileid})
+  handleDeleteClickOpen = (event, profileid) => {
+    this.setState({ open: true, deleteid: profileid })
   };
 
   handleDeleteClose = () => {
-    this.setState({open:false})
+    this.setState({ open: false })
   };
 
-  handleDelete = ()=>{
+  handleDelete = () => {
     let deleteid = this.state.deleteid;
     this.setState({
-      profileList: this.state.profileList.filter(function(profile){return profile.id!==deleteid}),
+      profileList: this.state.profileList.filter(function (profile) { return profile.id !== deleteid }),
       open: false
     });
     this.deleteProfile();
@@ -444,13 +428,12 @@ class Profile extends React.Component {
   render() {
     const { classes } = this.props;
 
-    console.log("rows: ",this.state.profileList);
+    console.log("rows: ", this.state.profileList);
     return (
       <div className={classes.root}>
-        <CssBaseline />
         {/* Appbar */}
         <AppBar position="absolute" className={classes.appBar}>
-          <Toolbar className={classes.toolbar}>
+          <Toolbar>
             <Grid
               container
               direction="row"
@@ -551,22 +534,22 @@ class Profile extends React.Component {
                               {row.id}
                             </TableCell>
                             <TableCell align="left">{row.url}</TableCell>
-                            <TableCell padding="checkbox" align="right">
+                            <TableCell padding="checkbox" align="center">
                               <Tooltip title="Edit" textalign="center">
                                 <IconButton
                                   key={row.id}
-                                  onClick={(event) =>this.handleClick(event, row.id)}
+                                  onClick={(event) => this.handleClick(event, row.id)}
                                   edge={false}
                                 >
                                   <CreateIcon />
                                 </IconButton>
                               </Tooltip>
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell align="center">
                               <Tooltip title="Delete">
                                 <IconButton
                                   key={row.id}
-                                  onClick={(event) =>this.handleDeleteClickOpen(event, row.id)}
+                                  onClick={(event) => this.handleDeleteClickOpen(event, row.id)}
                                   edge={false}
                                 >
                                   <DeleteIcon />
@@ -585,9 +568,10 @@ class Profile extends React.Component {
                 onClose={this.handleDeleteClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
+                disableScrollLock
               >
                 <DialogTitle id="alert-dialog-title">
-                  {"Delete Profile?"}
+                  {"Delete this profile?"}
                 </DialogTitle>
                 <DialogContent>
                   <DialogContentText id="alert-dialog-description">
@@ -595,10 +579,10 @@ class Profile extends React.Component {
                   </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={this.handleDeleteClose} color="inherit">
+                  <Button onClick={this.handleDeleteClose} color="inherit" autoFocus>
                     Cancle
                   </Button>
-                  <Button onClick={this.handleDelete}color="secondary"autoFocus>
+                  <Button onClick={this.handleDelete} color="secondary">
                     Delete
                   </Button>
                 </DialogActions>

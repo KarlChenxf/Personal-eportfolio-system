@@ -1,5 +1,4 @@
 import React from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -29,8 +28,6 @@ import FileCopyIcon from '@material-ui/icons/FileCopy';
 import { Link as RouteLink } from "react-router-dom";
 import { withRouter } from 'react-router';
 import { WidthProvider, Responsive } from "react-grid-layout";
-import '../css/react-grid-layout.css'
-import '../css/react-resizable.css';
 import { ParsedComponent } from '../Util/JsonToReact.js'
 import ComponentEditor from './Component/ComponentEditor.js'
 import * as Type from './Component/Type.js'
@@ -38,6 +35,11 @@ import { API_END_POINT } from '../Config.js';
 import PageEditor from './Component/PageEditor';
 import SharingDialog from './Component/SharingDialog';
 import LinkEditor from './Component/LinkEditor';
+
+//import 'react-grid-layout/css/styles.css';
+import '../css/react-grid-layout.css';
+import 'react-resizable/css/styles.css';
+import 'rc-color-picker/assets/index.css';
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -97,6 +99,8 @@ class Editor extends React.Component {
         super(props);
 
         this.state = {
+            loading: true,
+
             title: "",
             layouts: { lg: [] },
             components: [],
@@ -206,6 +210,7 @@ class Editor extends React.Component {
                             // Test if components is an array
                             if (!components.map) components = [];
                             this.setState({
+                                loading: false,
                                 title: data.profile.url,
                                 layouts: data.profile.html.layouts,
                                 components: components,
@@ -330,7 +335,7 @@ class Editor extends React.Component {
             ] : [layout]
         } : { lg: [layout] };
 
-        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, componentEditorVer: this.state.componentEditorVer+1}, () => {
+        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, componentEditorVer: this.state.componentEditorVer + 1 }, () => {
             // FIXME: scroll to bottom
             this.refs.content.scrollTo(0, 99999);
         });
@@ -343,7 +348,7 @@ class Editor extends React.Component {
     }
 
     editComponent = (index) => {
-        this.setState({ edit: index, openEditor: true, componentEditorVer: this.state.componentEditorVer+1},()=>{
+        this.setState({ edit: index, openEditor: true, componentEditorVer: this.state.componentEditorVer + 1 }, () => {
             console.log(this.state.componentEditorVer)
         });
     }
@@ -363,7 +368,7 @@ class Editor extends React.Component {
 
     editLink = (event, index) => {
         console.log(event + ',' + index)
-        this.setState({ edit: index, linkAnchorEl: event.currentTarget, linkEditorVer: this.state.linkEditorVer+1 });
+        this.setState({ edit: index, linkAnchorEl: event.currentTarget, linkEditorVer: this.state.linkEditorVer + 1 });
     }
 
     saveLink = (props) => {
@@ -447,7 +452,9 @@ class Editor extends React.Component {
         this.setState({
             page: props,
             openPageEditor: false,
-        });
+        },()=>window.dispatchEvent(new Event('resize')));
+        // Manually trigger onWindowResize event after setting spacing
+        // to force react-grid-layout remeasure the width, cause we don't own the code
     }
 
     /**
@@ -488,14 +495,14 @@ class Editor extends React.Component {
         let conf = confirm("Current profile will be saved if you want to preview it.");
         if (conf) {
             this.updateProfile();
-            window.open(`/preview/${this.profileId}`,`_blank`);
-        } 
+            window.open(`/preview/${this.profileId}`, `_blank`);
+        }
     }
 
     render() {
         const { handleComponentMenuClose, removeComponent, duplicateComponent } = this;
         const { classes } = this.props;
-        const { title, page, pageEditorVer, componentMenuCloseAnchorEl } = this.state;
+        const { loading, title, page, pageEditorVer, componentMenuCloseAnchorEl } = this.state;
         //const { data } = this.props.location;
         //const {data} = this.state.name;
         //console.log("props: ",this.props);
@@ -529,7 +536,6 @@ class Editor extends React.Component {
 
         return (
             <div className={classes.root}>
-                <CssBaseline />
                 {/* Appbar */}
                 <AppBar position="absolute" className={classes.appBar}>
                     <Toolbar className={classes.toolbar}>
@@ -555,15 +561,16 @@ class Editor extends React.Component {
                                         value={title}
                                         name="title"
                                         onChange={this.handleChange}
+                                        disabled={loading}
                                     />
                                 </Tooltip>
                                 <Tooltip title="Save">
-                                    <IconButton onClick={this.save} color="primary">
+                                    <IconButton onClick={this.save} color="primary" disabled={loading}>
                                         <SaveIcon />
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title="Preview">
-                                    <IconButton onClick={this.handlePreview}>
+                                    <IconButton onClick={this.handlePreview} disabled={loading}>
                                         <VisibilityIcon />
                                     </IconButton>
 
@@ -576,6 +583,7 @@ class Editor extends React.Component {
                                     disableElevation
                                     onClick={this.handleClick}
                                     aria-label="menu"
+                                    disabled={loading}
                                 >
                                     Component
                                 </Button>
@@ -585,6 +593,7 @@ class Editor extends React.Component {
                                     startIcon={<LayersIcon />}
                                     disableElevation
                                     onClick={this.showPageEditor}
+                                    disabled={loading}
                                 >
                                     Layout/Background
                                 </Button>
@@ -609,6 +618,11 @@ class Editor extends React.Component {
                             open={Boolean(this.state.anchorEl)}
                             onClose={this.handleClose}
                             TransitionComponent={Fade}
+                            PaperProps={{
+                                style: {
+                                    minWidth: '146px',
+                                },
+                            }}
                         >
                             {/* Add TextArea */}
                             <MenuItem onClick={() => { this.newComponent(Type.TEXTAREA); this.handleClose() }}>Text</MenuItem>
@@ -617,16 +631,16 @@ class Editor extends React.Component {
                             {/* Add Videos */}
                             <MenuItem onClick={() => { this.newComponent(Type.VIDEODISPLAY); this.handleClose() }}>Video</MenuItem>
                             {/* Add Audios */}
-                            <MenuItem onClick={this.handleClose} disabled>Audio</MenuItem>
+                            {/*<MenuItem onClick={this.handleClose} disabled>Audio</MenuItem>*/}
                             {/* Add Files */}
                             <MenuItem onClick={() => { this.newComponent(Type.FILE); this.handleClose() }}>File</MenuItem>
-                            {/* Add SNS information */}
-                            <MenuItem onClick={() => { this.newComponent(Type.SNSDISPLAY); this.handleClose() }}>SNS information</MenuItem>
                             {/* Add Raw HTML */}
-                            <MenuItem title="Add Raw HTML" onClick={() => { this.newComponent(Type.HTML); this.handleClose() }}>HTML</MenuItem>
+                            <MenuItem title="Add HTML code" onClick={() => { this.newComponent(Type.HTML); this.handleClose() }}>HTML</MenuItem>
                             <Divider />
                             {/* Add Personal Info */}
-                            <MenuItem onClick={() => { this.newComponent(Type.PERSONAL_INFO); this.handleClose() }}>Personal Information</MenuItem>
+                            <MenuItem onClick={() => { this.newComponent(Type.PERSONAL_INFO); this.handleClose() }}>Avatar & Text</MenuItem>
+                            {/* Add SNS information */}
+                            <MenuItem onClick={() => { this.newComponent(Type.SNSDISPLAY); this.handleClose() }}>SNS</MenuItem>
                         </Menu>
                     </Toolbar>
                 </AppBar>
@@ -636,7 +650,9 @@ class Editor extends React.Component {
                     <Container maxWidth="lg" fixed className={classes.container}>
                         <div style={spacingLayout} spacing={page.spacing}>
                             <ResponsiveReactGridLayout
-                                key={page.spacing}
+                                //key={page.spacing}
+                                // Eliminate resizing animation on component mount.
+                                measureBeforeMount={true}
                                 //TODO: Do we need to support different resolution?
                                 breakpoints={{ lg: 0 }}
                                 cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
@@ -686,7 +702,7 @@ class Editor extends React.Component {
                     open={Boolean(componentMenuCloseAnchorEl)}
                     onClose={handleComponentMenuClose}
                     disableScrollLock
-                    transformOrigin={{ vertical: 26 }}
+                    transformOrigin={{ vertical: 26, horizontal: 0 }}
                     anchorReference='anchorPosition'
                     anchorPosition={componentMenuCloseAnchorEl ? { left: componentMenuCloseAnchorEl.getBoundingClientRect().x, top: componentMenuCloseAnchorEl.getBoundingClientRect().y + 18 } : null}
                 >
@@ -704,10 +720,10 @@ class Editor extends React.Component {
                     </MenuItem>
                 </Menu>
                 {/* Component Editor */}
-                <ComponentEditor key={"ce"+this.state.componentEditorVer} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} profileList={this.state.profileList} />
+                <ComponentEditor key={"ce" + this.state.componentEditorVer} open={this.state.openEditor} component={this.state.components[this.state.edit]} saveComponent={this.saveComponent} onClose={this.closeEditor} profileList={this.state.profileList} />
                 <PageEditor key={"p" + pageEditorVer} open={this.state.openPageEditor} onClose={this.closePageEditor} onSave={this.savePageProps} {...page} />
                 {this.state.edit >= 0 ?
-                    <LinkEditor key={'l'+this.state.linkEditorVer} open={Boolean(this.state.linkAnchorEl)}
+                    <LinkEditor key={'l' + this.state.linkEditorVer} open={Boolean(this.state.linkAnchorEl)}
                         onClose={this.handleLinkMenuClose}
                         onSave={this.saveLink}
                         linkList={this.state.profileList}
