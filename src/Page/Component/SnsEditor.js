@@ -11,7 +11,7 @@ import BackgroundControl from "./BackgroundControl.js";
 
 const styles = (theme) => ({});
 
-@@ -15,29 +16,55 @@ class SnsEditor extends React.Component {
+class SnsEditor extends React.Component {
 
     this.state = {
       urlA: props.urlA || "",
