@@ -1,25 +1,33 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
-import Login from './Page/Login.js'
-import Register from './Page/Register.js'
-import Profile from './Page/Profile.js'
-import Editor from './Page/Editor.js'
-import Viewer from './Page/Viewer.js'
+import LinearProgress from '@material-ui/core/LinearProgress';
+const Login = lazy(() => import('./Page/Login.js'));
+const Register = lazy(() => {
+  console.log('./Page/Register.js')
+  return import('./Page/Register.js')
+});
+const Profile = lazy(() => import('./Page/Profile.js'));
+const Editor = lazy(() => import('./Page/Editor.js'));
+const Viewer = lazy(() => import('./Page/Viewer.js'));
 
 
 function App() {
   return (
     <BrowserRouter>
-      <Switch>
-        <Route path="/" exact component={Login} />
-        <Route path="/register" exact component={Register} />
-        <Route path="/profile" exact component={Profile} />
-        <Route path="/edit/:id" exact component={Editor} />
-        <Route path="/preview/:id" exact component={Viewer} />
-        <Route path="/view/:token/:id" exact component={Viewer} />
-        {/*<PrivateRoute path="/dummy" component={Login} />*/}
-        <Route render={props => <Redirect to={{pathname: "/",}}/>} />
-      </Switch>
+      <CssBaseline />
+      <Suspense fallback={<LinearProgress/>}>
+        <Switch>
+          <Route path="/" exact component={Login} />
+          <Route path="/register" exact component={Register} />
+          <Route path="/profile" exact component={Profile} />
+          <Route path="/edit/:id" exact component={Editor} />
+          <Route path="/preview/:id" exact component={Viewer} />
+          <Route path="/view/:token/:id" exact component={Viewer} />
+          {/*<PrivateRoute path="/dummy" component={Login} />*/}
+          <Route render={props => <Redirect to={{ pathname: "/", }} />} />
+        </Switch>
+      </Suspense>
     </BrowserRouter>
   );
 }

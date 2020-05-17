@@ -12,7 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Route, Link as RouteLink } from "react-router-dom";
+import { Link as RouteLink } from "react-router-dom";
 import { API_END_POINT } from '../Config.js';
 
 function Copyright() {
@@ -20,7 +20,7 @@ function Copyright() {
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
       <Link color="inherit" href="#">
-      Gabriel and David
+      Team 12
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -65,12 +65,18 @@ class Login extends React.Component {
 		super(props);
 
 		this.state = {
+      loading: false,
 			email: "",
 			password: "",
 		};
   }
 
   login(event) {
+    
+    this.setState({
+      loading:true,
+    })
+
     let credentials = {
 			email: this.state.email,
 			password: this.state.password
@@ -95,21 +101,17 @@ class Login extends React.Component {
           //console.log("response: ",response);
 					if (response.ok) {
 						response.json().then(data => {
-							//console.log(data);
-              localStorage.setItem('LoginToken', data.token)// store user token
-              localStorage.setItem('email', data.user.email)// store user token
-              localStorage.setItem('user_id', data.user ? data.user.id : null)// store user name
-              localStorage.setItem('UserName', data.user ? data.user.firstName + ' ' + data.user.lastName : "")
-							//if (data.message.indexOf("Success")>=0) {
-                // Send them to the dashboard
-                /*if(data.content && data.content.Admin)
-                  this.props.history.replace("/admin/dashboard");
-                else
-                  this.props.history.replace("/client/profile");}*/
                 if(data.status === "success"){
-                  this.props.history.replace("/profile")//Jump to editor page
+                    localStorage.setItem('LoginToken', data.token)// store user token
+                    localStorage.setItem('email', data.user.email)// store user token
+                    localStorage.setItem('user_id', data.user ? data.user.id : null)// store user name
+                    localStorage.setItem('UserName', data.user ? data.user.firstName + ' ' + data.user.lastName : "")
+                    this.props.history.push("/profile")//Jump to editor page
                 }else {
-                  alert(data.message);
+                    alert(data.message);
+                    this.setState({
+                      loading:false,
+                    })
                 }
 						})
 					}
@@ -197,14 +199,15 @@ class Login extends React.Component {
               color="primary"
               className={classes.submit}
               onClick={(e) => this.login(e)}
+              disabled={this.state.loading}
             >
               Sign In
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
+                {/*<Link href="#" variant="body2">
                   Forgot password?
-                </Link>
+                </Link>*/}
               </Grid>
               <Grid item>
                 <Link variant="body2" component={RouteLink} to="/register">

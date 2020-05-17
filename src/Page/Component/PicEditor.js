@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
-import 'rc-color-picker/assets/index.css';
 import BackgroundControl from './BackgroundControl.js'
 import LayoutControl from './LayoutControl.js'
 import FormControl from '@material-ui/core/FormControl';
@@ -13,7 +12,6 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import '../../css/pic-display.css'
 import LinearProgress from '@material-ui/core/LinearProgress';
 import FileUploadControl from './FileUploadControl.js'
 
@@ -34,9 +32,9 @@ class PicEditor extends React.Component {
     super(props);
 
     this.state = {
-      picurl: props.picurl || '',
-      file: null,
-      fileName: "",
+      //picurl: props.picurl || '',
+      //file: null,
+      //fileName: "",
       fitting: props.fitting || "fill",
       submitPic: false,
       submitBackground: false,
@@ -45,25 +43,21 @@ class PicEditor extends React.Component {
       err: false,
 
     };
+    this.picurl = props.picurl;
     this.layout = props.layout || null;
     this.background = props.background || null;
-    this.fileInput=React.createRef();
+    //this.fileInput=React.createRef();
     this.i=0;
   }
 
   getProps() {
     return {
-      picurl: this.state.picurl,
-      pic: this.state.pic,
-      picName: this.state.picName,
+      picurl: this.picurl,
+      //pic: this.state.pic,
+      //picName: this.state.picName,
       layout: this.layout,
       background: this.background,
       fitting: this.state.fitting,
-      image: this.state.image,
-      target: {
-        name: this.props.name,
-        value: { padding: this.state.padding },
-      },
     };
   }
 
@@ -112,9 +106,7 @@ class PicEditor extends React.Component {
   }
 
   onSubmitPic= (imgUrl) => {
-    this.setState({
-        picurl: imgUrl,
-    });
+    this.picurl = imgUrl;
     this.i++;
     if(this.i>=2)this.props.onSave(this.getProps());
 }
@@ -137,7 +129,7 @@ class PicEditor extends React.Component {
             variant="outlined"
             style={{ height: "100%", width: "100%" }}
           >
-            <FileUploadControl id = "front-pic-upload" inputid="image-input" label="Image" accept="image/*" value={this.state.picurl} submit={this.state.submitPic} onProgress={this.onProgressPic} onSubmit={this.onSubmitPic}/>
+            <FileUploadControl id = "front-pic-upload" inputid="image-input" label="Image" accept="image/*" value={this.props.picurl} submit={this.state.submitPic} onProgress={this.onProgressPic} onSubmit={this.onSubmitPic}/>
           </FormControl>
 
 
@@ -177,7 +169,7 @@ class PicEditor extends React.Component {
                         label="Fitting"
                         name="fitting"
                       >
-                        {["fill", "contain", "cover", "none", "scale down"].map(
+                        {["fill", "contain", "cover", "none", "scale-down"].map(
                           (e) => (
                             <MenuItem key={e} value={e}>
                               {e}
