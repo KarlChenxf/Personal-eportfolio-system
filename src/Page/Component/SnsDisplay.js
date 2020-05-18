@@ -42,6 +42,10 @@ class SnsDisplay extends React.Component {
         return host[host.length-2];
     }
 
+    removeHeader = (url) => {
+        return url.replace(/^https?:\/\//,'');
+    }
+
     render() {
 
         const {classes, background} = this.props;
@@ -56,7 +60,7 @@ class SnsDisplay extends React.Component {
         let buttoncreated = (
           <IconButton
            aria-label="Findanexpert"
-           onClick={() => {window.open('https://'+this.props.urlA)}}>
+           onClick={() => {window.open('https://'+this.removeHeader(this.props.urlA))}}>
           <FindanexpertIcon />
           </IconButton>
         );
@@ -65,7 +69,7 @@ class SnsDisplay extends React.Component {
             let buttoncreated = (
                 <IconButton
                  aria-label="Linkedin"
-				 onClick={() => {window.open('https://'+this.props.urlA)}}>
+				 onClick={() => {window.open('https://'+this.removeHeader(this.props.urlA))}}>
                 <LinkedinIcon />
                 </IconButton>
               )
@@ -74,7 +78,7 @@ class SnsDisplay extends React.Component {
             let buttoncreated = (
                 <IconButton
                  aria-label="facebook"
-                 onClick={() => {window.open('https://'+this.props.urlA)}}>
+                 onClick={() => {window.open('https://'+this.removeHeader(this.props.urlA))}}>
                 <FacebookIcon />
                 </IconButton>
               )
@@ -83,7 +87,7 @@ class SnsDisplay extends React.Component {
             let buttoncreated = (
                 <IconButton
                  aria-label="twitter"
-                 onClick={() => {window.open('https://'+this.props.urlA)}}>
+                 onClick={() => {window.open('https://'+this.removeHeader(this.props.urlA))}}>
                 <TwitterIcon />
                 </IconButton>
               )
@@ -92,7 +96,7 @@ class SnsDisplay extends React.Component {
             let buttoncreated = (
                 <IconButton
                  aria-label="github"
-                 onClick={() => {window.open('https://'+this.props.urlA)}}>
+                 onClick={() => {window.open('https://'+this.removeHeader(this.props.urlA))}}>
                 <GitHubIcon />
                 </IconButton>
               )
@@ -101,7 +105,7 @@ class SnsDisplay extends React.Component {
             let buttoncreated = (
                 <IconButton
                  aria-label={this.host}
-                 onClick={() => {window.open('https://'+this.props.urlA)}}>
+                 onClick={() => {window.open('https://'+this.removeHeader(this.props.urlA))}}>
                 <OtherIcon />
                 </IconButton>
               )
