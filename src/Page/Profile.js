@@ -31,6 +31,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import {templates} from '../Template/index.js'
 
 
 const styles = (theme) => ({
@@ -43,13 +44,8 @@ const styles = (theme) => ({
     display: 'flex',
   },
   tableroot: {
+    marginTop: 32,
     width: '100%',
-  },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
   },
   tabpaper: {
     width: '100%',
@@ -89,6 +85,11 @@ const styles = (theme) => ({
   },
   margin: {
     margin: theme.spacing(1),
+  },
+  templatePreview: {
+    width: 144,
+    height: 186,
+    marginBottom: 8,
   },
 });
 
@@ -161,8 +162,8 @@ class EnhancedTableHead extends React.Component {
             </TableSortLabel>
           </TableCell>
 
-          <TableCell padding={"checkbox"} align={"center"} style={{width:80}}>Edit</TableCell>
-          <TableCell padding={"checkbox"} align={"center"} style={{width:80}}>Delete</TableCell>
+          <TableCell padding={"checkbox"} align={"center"} style={{ width: 80 }}>Edit</TableCell>
+          <TableCell padding={"checkbox"} align={"center"} style={{ width: 80 }}>Delete</TableCell>
         </TableRow>
       </TableHead>
     );
@@ -252,14 +253,14 @@ class Profile extends React.Component {
       });
   };
 
-  newProfile = () => {
+  newProfile = (index) => {
     const auth_token = localStorage.LoginToken;
     //console.log(auth_token);
 
     const content = {
       userid: localStorage.user_id,
-      html: "{}",
-      url: null, //this.state.pname,
+      html: templates[index].content,
+      url: templates[index].name, //this.state.pname,
     };
 
     // Check authentication with the server
@@ -497,6 +498,29 @@ class Profile extends React.Component {
         <main className={classes.content} ref="content">
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" fixed className={classes.container}>
+            {/* Templates */}
+            <Grid
+              container
+              direction="row"
+              justify="flex-start"
+              alignItems="flex-start"
+              spacing={2}
+            >
+              <Grid key={-1} xs={12} item>
+                <Typography variant="subtitle1">
+                  Start a new profile
+                </Typography>
+              </Grid>
+              {templates.map((item, index) => (
+                <Grid key={item.name} item onClick={()=>this.newProfile(index)}>
+                  <Paper className={classes.templatePreview} style={{backgroundImage:`url(${item.preview})`}}/>
+                  <Typography variant="subtitle2">
+                    {item.name}
+                  </Typography>
+                </Grid>
+              ))}
+            </Grid>
+            {/* Existing profiles */}
             <div className={classes.tableroot}>
               <Paper className={classes.tabpaper}>
                 <TableContainer>
