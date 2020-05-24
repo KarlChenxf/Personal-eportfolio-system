@@ -15,8 +15,8 @@ Index
 * [Features](#features)
 * [Limitations](#limitations)
 * [Acknowledgements](#acknowledgements)
-* [Front-end deployment](#Front-end deployment)
-* [Our Team](#Our Team)
+* [Front-end deployment](#Frontenddeployment)
+* [Our Team](#Ourteam)
 
 
 Availability
@@ -91,7 +91,7 @@ This project also uses some other open-source libraries such as:
     </tr>
 </table>
 
-Front-end deployment
+Frontenddeployment
 ---------------
 ## Clone
 
@@ -178,7 +178,7 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
 
-Our Team
+Ourteam
 ---------------
 + Xuefeng Chen	xuefeng@student.unimelb.edu.au	
 + Yiyang XU	yiyangx2@student.unimelb.edu.au
