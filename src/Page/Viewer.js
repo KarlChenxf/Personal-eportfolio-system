@@ -106,7 +106,7 @@ class Viewer extends React.Component {
                     //console.log("response: ",response);
                     if (response.ok) {
                         response.json().then(data => {
-                            //console.log(data);
+                            console.log("viewer: ",data);
                             this.setState({
                                 title: data.profile.url,
                                 layouts: data.profile.html.layouts,

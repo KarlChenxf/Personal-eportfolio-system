@@ -19,11 +19,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import DescriptionIcon from '@material-ui/icons/Description';
-import LibraryAddIcon from '@material-ui/icons/LibraryAdd';
 import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
 import CreateIcon from '@material-ui/icons/Create';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -121,27 +119,6 @@ class EnhancedTableHead extends React.Component {
           <TableCell padding='checkbox' align='center'>
 
           </TableCell>
-
-          <TableCell
-            key={headCells[0].id}
-            align={"left"}
-            padding={"checkbox"}
-            sortDirection={orderBy === headCells[0].id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCells[0].id}
-              direction={orderBy === headCells[0].id ? order : "asc"}
-              onClick={createSortHandler(headCells[0].id)}
-            >
-              {headCells[0].label}
-              {orderBy === headCells[0].id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </span>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-
           <TableCell
             key={headCells[1].id}
             align={"left"}
@@ -453,29 +430,6 @@ class Profile extends React.Component {
                 >
                   My Profiles
                 </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.margin}
-                  startIcon={
-                    <AddIcon aria-controls="fade-menu" aria-haspopup="true" />
-                  }
-                  disableElevation
-                  onClick={this.newProfile}
-                  aria-label="menu"
-                  style={{ marginLeft: "100px" }}
-                >
-                  empty profile
-                </Button>
-                <Button
-                  variant="outlined"
-                  className={classes.margin}
-                  startIcon={<LibraryAddIcon />}
-                  disableElevation
-                  onClick={this.showPageEditor}
-                >
-                  template profile
-                </Button>
               </Grid>
               <Grid item>
                 <Typography
@@ -513,7 +467,7 @@ class Profile extends React.Component {
               </Grid>
               {templates.map((item, index) => (
                 <Grid key={item.name} item onClick={()=>this.newProfile(index)}>
-                  <Paper className={classes.templatePreview} style={{backgroundImage:`url(${item.preview})`}}/>
+                  <Paper className={classes.templatePreview} style={{backgroundImage:`url(${item.preview})`, backgroundSize: 'cover'}}/>
                   <Typography variant="subtitle2">
                     {item.name}
                   </Typography>
@@ -549,14 +503,7 @@ class Profile extends React.Component {
                             <TableCell padding="checkbox" align="center">
                               <DescriptionIcon color="primary"></DescriptionIcon>
                             </TableCell>
-                            <TableCell
-                              component="th"
-                              id={labelId}
-                              scope="row"
-                              padding="checkbox"
-                            >
-                              {row.id}
-                            </TableCell>
+
                             <TableCell align="left">{row.url}</TableCell>
                             <TableCell padding="checkbox" align="center">
                               <Tooltip title="Edit" textalign="center">
