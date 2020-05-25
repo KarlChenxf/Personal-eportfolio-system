@@ -497,7 +497,7 @@ class Profile extends React.Component {
                         this.state.profileList,
                         this.getComparator(this.state.order, this.state.orderBy)
                       ).map((row, index) => {
-                        const labelId = `enhanced-table-checkbox-${index}`;
+                        //const labelId = `enhanced-table-checkbox-${index}`;
                         return (
                           <TableRow hover role="fileicon" tabIndex={-1} key={row.id}>
                             <TableCell padding="checkbox" align="center">
