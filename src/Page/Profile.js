@@ -19,11 +19,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import DescriptionIcon from '@material-ui/icons/Description';
-import LibraryAddIcon from '@material-ui/icons/LibraryAdd';
 import AppBar from '@material-ui/core/AppBar';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
 import CreateIcon from '@material-ui/icons/Create';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -31,6 +29,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+import {templates} from '../Template/index.js'
 
 
 const styles = (theme) => ({
@@ -43,13 +42,8 @@ const styles = (theme) => ({
     display: 'flex',
   },
   tableroot: {
+    marginTop: 32,
     width: '100%',
-  },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
   },
   tabpaper: {
     width: '100%',
@@ -90,6 +84,11 @@ const styles = (theme) => ({
   margin: {
     margin: theme.spacing(1),
   },
+  templatePreview: {
+    width: 144,
+    height: 186,
+    marginBottom: 8,
+  },
 });
 
 
@@ -120,27 +119,6 @@ class EnhancedTableHead extends React.Component {
           <TableCell padding='checkbox' align='center'>
 
           </TableCell>
-
-          <TableCell
-            key={headCells[0].id}
-            align={"left"}
-            padding={"checkbox"}
-            sortDirection={orderBy === headCells[0].id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCells[0].id}
-              direction={orderBy === headCells[0].id ? order : "asc"}
-              onClick={createSortHandler(headCells[0].id)}
-            >
-              {headCells[0].label}
-              {orderBy === headCells[0].id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                </span>
-              ) : null}
-            </TableSortLabel>
-          </TableCell>
-
           <TableCell
             key={headCells[1].id}
             align={"left"}
@@ -161,8 +139,8 @@ class EnhancedTableHead extends React.Component {
             </TableSortLabel>
           </TableCell>
 
-          <TableCell padding={"checkbox"} align={"center"} style={{width:80}}>Edit</TableCell>
-          <TableCell padding={"checkbox"} align={"center"} style={{width:80}}>Delete</TableCell>
+          <TableCell padding={"checkbox"} align={"center"} style={{ width: 80 }}>Edit</TableCell>
+          <TableCell padding={"checkbox"} align={"center"} style={{ width: 80 }}>Delete</TableCell>
         </TableRow>
       </TableHead>
     );
@@ -252,14 +230,14 @@ class Profile extends React.Component {
       });
   };
 
-  newProfile = () => {
+  newProfile = (index) => {
     const auth_token = localStorage.LoginToken;
     //console.log(auth_token);
 
     const content = {
       userid: localStorage.user_id,
-      html: "{}",
-      url: null, //this.state.pname,
+      html: templates[index].content,
+      url: templates[index].name, //this.state.pname,
     };
 
     // Check authentication with the server
@@ -452,29 +430,6 @@ class Profile extends React.Component {
                 >
                   My Profiles
                 </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className={classes.margin}
-                  startIcon={
-                    <AddIcon aria-controls="fade-menu" aria-haspopup="true" />
-                  }
-                  disableElevation
-                  onClick={this.newProfile}
-                  aria-label="menu"
-                  style={{ marginLeft: "100px" }}
-                >
-                  empty profile
-                </Button>
-                <Button
-                  variant="outlined"
-                  className={classes.margin}
-                  startIcon={<LibraryAddIcon />}
-                  disableElevation
-                  onClick={this.showPageEditor}
-                >
-                  template profile
-                </Button>
               </Grid>
               <Grid item>
                 <Typography
@@ -497,6 +452,29 @@ class Profile extends React.Component {
         <main className={classes.content} ref="content">
           <div className={classes.appBarSpacer} />
           <Container maxWidth="lg" fixed className={classes.container}>
+            {/* Templates */}
+            <Grid
+              container
+              direction="row"
+              justify="flex-start"
+              alignItems="flex-start"
+              spacing={2}
+            >
+              <Grid key={-1} xs={12} item>
+                <Typography variant="subtitle1">
+                  Start a new profile
+                </Typography>
+              </Grid>
+              {templates.map((item, index) => (
+                <Grid key={item.name} item onClick={()=>this.newProfile(index)}>
+                  <Paper className={classes.templatePreview} style={{backgroundImage:`url(${item.preview})`, backgroundSize: 'cover'}}/>
+                  <Typography variant="subtitle2">
+                    {item.name}
+                  </Typography>
+                </Grid>
+              ))}
+            </Grid>
+            {/* Existing profiles */}
             <div className={classes.tableroot}>
               <Paper className={classes.tabpaper}>
                 <TableContainer>
@@ -525,14 +503,7 @@ class Profile extends React.Component {
                             <TableCell padding="checkbox" align="center">
                               <DescriptionIcon color="primary"></DescriptionIcon>
                             </TableCell>
-                            <TableCell
-                              component="th"
-                              id={labelId}
-                              scope="row"
-                              padding="checkbox"
-                            >
-                              {row.id}
-                            </TableCell>
+
                             <TableCell align="left">{row.url}</TableCell>
                             <TableCell padding="checkbox" align="center">
                               <Tooltip title="Edit" textalign="center">

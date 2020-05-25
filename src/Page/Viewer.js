@@ -106,7 +106,7 @@ class Viewer extends React.Component {
                     //console.log("response: ",response);
                     if (response.ok) {
                         response.json().then(data => {
-                            //console.log(data);
+                            console.log("viewer: ",data);
                             this.setState({
                                 title: data.profile.url,
                                 layouts: data.profile.html.layouts,
@@ -145,15 +145,15 @@ class Viewer extends React.Component {
         // Check authentication with the server
         fetch(API_END_POINT + "/share/getprofile", {
             body: JSON.stringify(content), // must match 'Content-Type' header
-            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-            credentials: 'same-origin', // including cookie //include, same-origin, *omit
+            cache: 'no-store', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'omit', // including cookie //include, same-origin, *omit
             headers: {
                 'Accept': 'application/json',
                 'content-type': 'application/json',
             },
             method: 'POST', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow', // manual, *follow, error
+            //redirect: 'follow', // manual, *follow, error
             referrer: 'no-referrer', // *client, no-referrer
         })
             .then(
