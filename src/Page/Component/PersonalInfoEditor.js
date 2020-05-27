@@ -39,7 +39,7 @@ class PersonalInfoEditor extends React.Component {
         super(props);
 
         this.state = {
-            avatar: props.avatar || '',
+            //avatar: props.avatar || '',
             avatar_size: props.avatar_size || 160,
             name: props.name || '',
             alpha: props.color ? Math.round(parseInt(props.color.substr(7, 2), 16) / 2.55) : 100,
@@ -52,7 +52,7 @@ class PersonalInfoEditor extends React.Component {
             progress: 0,
             err: false,
         };
-
+        this.avatar=props.avatar|| ''
         this.textarea = this.props.name;
         this.textarea2 = this.props.avatar_text;
         this.layout = props.layout || null;
@@ -101,7 +101,7 @@ class PersonalInfoEditor extends React.Component {
     getProps() {
         //console.log(this.state.colorHex)
         return {
-            avatar: this.state.avatar,
+            avatar: this.avatar,
             avatar_size: this.state.avatar_size,
             avatar_text: this.textarea2,
             color: this.state.colorHex,
@@ -145,9 +145,8 @@ class PersonalInfoEditor extends React.Component {
     }
 
     onSubmitAvatar= (avatarUrl) => {
-        this.setState({
-            avatar: avatarUrl,
-        });
+        
+        this.avatar= avatarUrl;
         this.i++;
         if(this.i>=2)this.props.onSave(this.getProps());
     }
@@ -234,7 +233,7 @@ class PersonalInfoEditor extends React.Component {
                       inputid="avatar-input"
                       label="Avatar"
                       accept="image/*"
-                      value={this.state.avatar}
+                      value={this.props.avatar}
                       submit={this.state.submitAvatar}
                       onProgress={this.onProgressAvatar}
                       onSubmit={this.onSubmitAvatar}

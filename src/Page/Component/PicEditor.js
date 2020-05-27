@@ -43,7 +43,7 @@ class PicEditor extends React.Component {
       err: false,
 
     };
-    this.picurl = props.picurl;
+    this.picurl = props.picurl|| '';
     this.layout = props.layout || null;
     this.background = props.background || null;
     //this.fileInput=React.createRef();
