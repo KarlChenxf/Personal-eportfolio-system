@@ -7,7 +7,7 @@
  * based on if a token is presented in URL;
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import Container from '@material-ui/core/Container';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -79,7 +79,7 @@ class Viewer extends React.Component {
      */
     getProfile = () => {
 
-        const auth_token = localStorage.LoginToken;
+        const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
         //console.log(auth_token);
 
         const content = {
@@ -106,7 +106,7 @@ class Viewer extends React.Component {
                     //console.log("response: ",response);
                     if (response.ok) {
                         response.json().then(data => {
-                            console.log("viewer: ",data);
+                            console.log("viewer: ", data);
                             this.setState({
                                 title: data.profile.url,
                                 layouts: data.profile.html.layouts,
@@ -243,37 +243,34 @@ class Viewer extends React.Component {
         }
 
         return (
-            <Fragment>
-                {/* Content */}
-                <main style={pageBackground}>
-                    <Container maxWidth="lg" fixed className={classes.container}>
-                        <div style={spacingLayout}>
-                            <ResponsiveReactGridLayout
-                                key={page.spacing}
-                                //TODO: Do we need to support different resolution?
-                                breakpoints={{ lg: 0 }}
-                                cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
-                                rowHeight={16}
-                                margin={[0, 0]}
-                                containerPadding={[0, 0]}
-                                //onBreakpointChange={this.onBreakpointChange}
-                                layouts={this.state.layouts || {}}
-                                isDraggable={false}
-                                isResizable={false}
-                                useCSSTransforms={false}>
-                                {/* Components */}
-                                {this.state.components.map((component) =>
-                                    <div key={component.key} style={spacingItem}>
-                                        <AutoLink to={component.link} className={classes.a}>
-                                            <ParsedComponent {...component} />
-                                        </AutoLink>
-                                    </div>
-                                )}
-                            </ResponsiveReactGridLayout>
-                        </div>
-                    </Container>
-                </main>
-            </Fragment>
+            <main style={pageBackground}>
+                <Container maxWidth="lg" fixed className={classes.container}>
+                    <div style={spacingLayout}>
+                        <ResponsiveReactGridLayout
+                            key={page.spacing}
+                            //TODO: Do we need to support different resolution?
+                            breakpoints={{ lg: 0 }}
+                            cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
+                            rowHeight={16}
+                            margin={[0, 0]}
+                            containerPadding={[0, 0]}
+                            //onBreakpointChange={this.onBreakpointChange}
+                            layouts={this.state.layouts || {}}
+                            isDraggable={false}
+                            isResizable={false}
+                            useCSSTransforms={false}>
+                            {/* Components */}
+                            {this.state.components.map((component) =>
+                                <div key={component.key} style={spacingItem}>
+                                    <AutoLink to={component.link} className={classes.a}>
+                                        <ParsedComponent {...component} />
+                                    </AutoLink>
+                                </div>
+                            )}
+                        </ResponsiveReactGridLayout>
+                    </div>
+                </Container>
+            </main>
         );
     }
 }

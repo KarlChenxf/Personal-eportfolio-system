@@ -97,9 +97,8 @@ class Register extends React.Component {
 						response.json().then(data => {
 							//console.log(data);
 							if (data.status === "success") {
-                  // Send them to the profile
-                  localStorage.setItem('RegisterToken', data.token)// save token in local storage
-                  this.props.history.replace("/");
+                  // Send them to the login
+                  this.props.history.push("/");
 							}
 							else {
                   alert(data.message);
@@ -110,18 +109,24 @@ class Register extends React.Component {
 						})
 					}
 					else {
+            alert("Failed to register. ("+response.status+")");
 						response.json().then(error => {
-							alert("Unable to Register:\n" + error.message);
+							console.log(error);
 						}).catch(error => {
               console.error(error);
-              alert("Network Error.");
             });
+            this.setState({
+              loading:false,
+            })
 					}
 				}
 			)
 			.catch(error => {
-				console.error(error);
-				alert("Network Error.");
+        console.error(error);
+        alert("Failed to register. (Network Error)");
+        this.setState({
+          loading:false,
+        })
       });
       
       event.preventDefault();

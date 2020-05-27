@@ -35,6 +35,11 @@ import { API_END_POINT } from '../Config.js';
 import PageEditor from './Component/PageEditor';
 import SharingDialog from './Component/SharingDialog';
 import LinkEditor from './Component/LinkEditor';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogActions from '@material-ui/core/DialogActions';
+import Snackbar from '@material-ui/core/Snackbar';
 
 //import 'react-grid-layout/css/styles.css';
 import '../css/react-grid-layout.css';
@@ -102,7 +107,7 @@ class Editor extends React.Component {
             loading: true,
 
             title: "",
-            layouts: { lg: [] },
+            layouts: null,//{ lg: [] },
             components: [],
             page: {},
 
@@ -117,20 +122,23 @@ class Editor extends React.Component {
             profileList: null,
             linkEditorVer: 0,
             linkAnchorEl: null,
+            openPreview: false,
+            openSnackbar: false,
         };
 
 
         this.profileId = this.props.match.params.id;
         this.shareToken = null;
+        this.changedSinceLastSave = false;
     }
 
     getProfiles() {
 
-        const auth_token = localStorage.LoginToken;
+        const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
         //console.log(auth_token);
 
         const content = {
-            userid: localStorage.user_id,
+            userid: localStorage.user_id || sessionStorage.user_id,
         }
 
         // Check authentication with the server
@@ -178,7 +186,7 @@ class Editor extends React.Component {
 
     getProfile = () => {
 
-        const auth_token = localStorage.LoginToken;
+        const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
         //console.log(auth_token);
 
         const content = {
@@ -217,10 +225,12 @@ class Editor extends React.Component {
                                 page: data.profile.html.page || {},
                                 pageEditorVer: this.state.pageEditorVer + 1,
                             });
+
+                            this.changedSinceLastSave = false;
                         })
                     }
                     else {
-                        //alert("Unable to Login.");
+                        alert("Failed to load profile. (" + response.status + ")");
                         response.json().then(error => {
                             console.log(error);
                         }).catch(error => {
@@ -232,7 +242,7 @@ class Editor extends React.Component {
             )
             .catch(error => {
                 console.error(error);
-                //alert("Network Error.");
+                alert("Failed to load profile. (Network Error)");
             });
 
         //event.preventDefault();
@@ -240,7 +250,7 @@ class Editor extends React.Component {
 
     updateProfile = () => {
 
-        const auth_token = localStorage.LoginToken;
+        const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
         //console.log(auth_token);
 
         const content = {
@@ -273,11 +283,14 @@ class Editor extends React.Component {
                     //console.log("response: ",response);
                     if (response.ok) {
                         response.json().then(data => {
-                            console.log(data);
+                            this.changedSinceLastSave = false;
+                            this.setState({
+                                openSnackbar: true,
+                            })
                         })
                     }
                     else {
-                        //alert("Unable to Login.");
+                        alert("Failed to save profile. (" + response.status + ")");
                         response.json().then(error => {
                             console.log(error);
                         }).catch(error => {
@@ -289,20 +302,33 @@ class Editor extends React.Component {
             )
             .catch(error => {
                 console.error(error);
-                //alert("Network Error.");
+                alert("Failed to save profile. (Network Error)");
             });
 
         //event.preventDefault();
     }
-
-
 
     componentDidMount() {
         //this.newComponent("");
         console.log("editorcomponentMount");
         this.getProfile();
         this.getProfiles();
+
+        this.changedSinceLastSave = false;
+        //console.log("this.changedSinceLastSave="+this.changedSinceLastSave)
+        //window.addEventListener("beforeunload", this.nofityUnsavedChanges);
     }
+
+    /*componentWillUnmount() {
+        window.removeEventListener('beforeunload', this.nofityUnsavedChanges);
+    }
+
+    nofityUnsavedChanges = (event) => {
+        if (this.changedSinceLastSave) {
+            event.preventDefault();
+            return event.returnValue = 'Unasved changes';
+        }
+    }*/
 
     /**
      * Component related functions
@@ -339,12 +365,16 @@ class Editor extends React.Component {
             // FIXME: scroll to bottom
             this.refs.content.scrollTo(0, 99999);
         });
+
+        this.changedSinceLastSave = true;
     }
 
     saveComponent = (props) => {
         var newComponents = this.state.components.slice();
         newComponents[this.state.edit].props = props;
         this.setState({ components: newComponents, openEditor: false });
+
+        this.changedSinceLastSave = true;
     }
 
     editComponent = (index) => {
@@ -364,6 +394,8 @@ class Editor extends React.Component {
         newContent.splice(index, 1);
         this.setState({ components: newContent, edit: -1 });
         this.handleComponentMenuClose();
+
+        this.changedSinceLastSave = true;
     }
 
     editLink = (event, index) => {
@@ -375,6 +407,8 @@ class Editor extends React.Component {
         var newComponents = this.state.components.slice();
         newComponents[this.state.edit].link = props;
         this.setState({ components: newComponents, linkAnchorEl: null });
+
+        this.changedSinceLastSave = true;
     }
 
     handleLinkMenuClose = () => {
@@ -411,6 +445,8 @@ class Editor extends React.Component {
         this.handleComponentMenuClose();
 
         this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, });
+
+        this.changedSinceLastSave = true;
     }
 
     handleComponentMenuOpen = (event, index) => {
@@ -452,9 +488,11 @@ class Editor extends React.Component {
         this.setState({
             page: props,
             openPageEditor: false,
-        },()=>window.dispatchEvent(new Event('resize')));
+        }, () => window.dispatchEvent(new Event('resize')));
         // Manually trigger onWindowResize event after setting spacing
         // to force react-grid-layout remeasure the width, cause we don't own the code
+
+        this.changedSinceLastSave = true;
     }
 
     /**
@@ -478,25 +516,81 @@ class Editor extends React.Component {
 
     onLayoutChange = (layout, layouts) => {
         this.setState({ layouts: layouts });
+        this.changedSinceLastSave = true;
     }
 
     handleChange = event => {
         this.setState({
             [event.target.name]: event.target.value, // update the changed value
         });
+        this.changedSinceLastSave = true;
     }
 
     parseLink = link => {
         let i = this.state.profileList.find(v => v.id === link);
         return i ? i.title : "URL";
     }
+
     handlePreview = () => {
-        // eslint-disable-next-line no-restricted-globals
-        let conf = confirm("Current profile will be saved if you want to preview it.");
-        if (conf) {
-            this.updateProfile();
+        if(this.changedSinceLastSave){
+            this.setState({
+                openPreview: true,
+            })
+        }
+        else {
             window.open(`/preview/${this.profileId}`, `_blank`);
         }
+    }
+
+    handlePreviewClose = () => {
+        this.setState({
+            openPreview: false,
+        })
+    }
+
+    saveNPreview = () => {
+        this.handlePreviewClose();
+        this.updateProfile();
+        window.open(`/preview/${this.profileId}`, `_blank`);
+    }
+
+    previewWithoutSave = () => {
+        this.handlePreviewClose();
+        window.open(`/preview/${this.profileId}`, `_blank`);
+    }
+
+    handleSnackbarClose = () => {
+        this.setState({
+            openSnackbar: false,
+        })
+    }
+
+    back2Home = (event) => {
+        /*console.log(this.changedSinceLastSave)
+        if(this.changedSinceLastSave){
+            // eslint-disable-next-line no-restricted-globals
+            let r = confirm("Changes have not been saved. Do you want to leave?");
+            if (!r) {
+                event.preventDefault();
+            }
+        }*/
+    }
+
+    logout = (event) => {
+        /*if(this.changedSinceLastSave){
+            // eslint-disable-next-line no-restricted-globals
+            let r = confirm("Changes have not been saved. Do you want to logout?");
+            if (r) {
+                localStorage.clear();
+                sessionStorage.clear();
+            } else {
+                event.preventDefault();
+            }
+        } 
+        else {*/
+            localStorage.clear();
+            sessionStorage.clear();
+        //}
     }
 
     render() {
@@ -547,7 +641,7 @@ class Editor extends React.Component {
                         >
                             <Grid item>
                                 <Tooltip title="Back to Home">
-                                    <IconButton component={RouteLink} to={"/profile"} color="inherit" edge="start">
+                                    <IconButton onClick={this.back2Home} component={RouteLink} to={"/profile"} color="inherit" edge="start">
                                         <ArrowBackIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -601,11 +695,10 @@ class Editor extends React.Component {
                             <Grid item>
                                 <SharingDialog profileId={this.profileId} className={classes.margin} />
                                 <Typography variant="body1" style={{ display: 'inline-flex', verticalAlign: 'middle' }}>
-                                    {localStorage.email}
+                                    {localStorage.email || sessionStorage.email}
                                 </Typography>
-                                {/**TODO: clear localStorage when logout*/}
                                 <Tooltip title="Logout">
-                                    <IconButton component={RouteLink} to={"/"} edge="end">
+                                    <IconButton onClick={this.logout} component={RouteLink} to={"/"} edge="end">
                                         <ExitToAppIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -648,6 +741,7 @@ class Editor extends React.Component {
                 <main className={classes.content} style={pageBackground} ref="content">
                     <div className={classes.appBarSpacer} />
                     <Container maxWidth="lg" fixed className={classes.container}>
+                        {loading ? <CircularProgress style={{ position: 'absolute', left: 'calc(50% - 20px)', top: 'calc(50% - 20px)', }} /> : null}
                         <div style={spacingLayout} spacing={page.spacing}>
                             <ResponsiveReactGridLayout
                                 //key={page.spacing}
@@ -663,7 +757,7 @@ class Editor extends React.Component {
                                 onBreakpointChange={this.onBreakpointChange}
                                 layouts={this.state.layouts || {}}>
                                 {/* Components */}
-                                {this.state.components.map((component, index) =>
+                                {(this.state.components || []).map((component, index) =>
                                     <div key={component.key} style={spacingItem}>
                                         <ParsedComponent {...component} />
                                         {/* Actions: Edit//Remove */}
@@ -729,6 +823,39 @@ class Editor extends React.Component {
                         linkList={this.state.profileList}
                         value={this.state.components[this.state.edit].link}
                     /> : null}
+                {/* Dialog: Save before preview */}
+                <Dialog
+                    open={this.state.openPreview}
+                    onClose={this.handlePreviewClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    fullWidth
+                    maxWidth="xs"
+                    disableScrollLock
+                >
+                    <DialogTitle id="alert-dialog-title">
+                        {"Save before preview?"}
+                    </DialogTitle>
+                    <DialogActions>
+                        <Button onClick={this.previewWithoutSave}>
+                            Preview without saving
+                        </Button>
+                        <Button onClick={this.saveNPreview} color="primary" autoFocus>
+                            Save and preview
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                {/* Snackbar: Saved */}
+                <Snackbar
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    open={this.state.openSnackbar}
+                    autoHideDuration={3000}
+                    onClose={this.handleSnackbarClose}
+                    message="Saved success."
+                />
             </div>
         );
     }
