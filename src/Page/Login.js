@@ -19,7 +19,7 @@ function Copyright() {
     return (
         <Typography variant="body2" color="textSecondary" align="center">
             {'Copyright © '}
-            <Link color="inherit" href="#">
+            <Link color="inherit" component={RouteLink} to="/about">
                 Team 12
             </Link>{' '}
             {new Date().getFullYear()}
@@ -153,12 +153,9 @@ class Login extends React.Component {
         return <Grid container component="main" className={classes.root}>
             <CssBaseline />
             <Grid item xs={false} sm={4} md={7} className={classes.image}>
-                {/*<Typography component="h1" variant="h2">
-            Gabriel and David
-          </Typography>
-        <Typography component="h1" variant="h3">
-            Car Washing
-          </Typography>*/}
+                <Typography component="h1" variant="h2">
+                    Personal ePortfolio System
+                </Typography>
             </Grid>
             <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                 <div className={classes.paper}>

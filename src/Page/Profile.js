@@ -486,7 +486,7 @@ class Profile extends React.Component {
               </Grid>
               {templates.map((item, index) => (
                 <Grid key={item.name} item>
-                  <Paper className={classes.templatePreview} style={{ backgroundImage: `url(${item.preview})`, backgroundSize: 'cover' }}>
+                  <Paper className={classes.templatePreview} style={{ backgroundImage: item.preview ? `url(${item.preview})` : null, backgroundSize: 'cover' }}>
                     <CardActionArea disabled={creating} style={{ height: '100%' }} onClick={() => this.newProfile(index)} />
                   </Paper>
                   <Typography variant="subtitle2">

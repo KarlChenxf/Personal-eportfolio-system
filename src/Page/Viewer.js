@@ -162,13 +162,15 @@ class Viewer extends React.Component {
                     if (response.ok) {
                         response.json().then(data => {
                             //console.log(data);
-                            this.setState({
-                                title: data.profile.url,
-                                layouts: data.profile.html.layouts,
-                                components: data.profile.html.components || [],
-                                page: data.profile.html.page || {},
-                                pageEditorVer: this.state.pageEditorVer + 1,
-                            });
+                            if(data.status === "success"){
+                                this.setState({
+                                    title: data.profile.url,
+                                    layouts: data.profile.html.layouts,
+                                    components: data.profile.html.components || [],
+                                    page: data.profile.html.page || {},
+                                    pageEditorVer: this.state.pageEditorVer + 1,
+                                });
+                            }
                         })
                     }
                     else {

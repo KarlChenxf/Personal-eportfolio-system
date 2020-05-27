@@ -130,6 +130,7 @@ class Editor extends React.Component {
         this.profileId = this.props.match.params.id;
         this.shareToken = null;
         this.changedSinceLastSave = false;
+        this.toPreview = false;
     }
 
     getProfiles() {
@@ -250,6 +251,10 @@ class Editor extends React.Component {
 
     updateProfile = () => {
 
+        this.setState({
+            openSnackbar: "Saving ...",
+        })
+
         const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
         //console.log(auth_token);
 
@@ -285,8 +290,12 @@ class Editor extends React.Component {
                         response.json().then(data => {
                             this.changedSinceLastSave = false;
                             this.setState({
-                                openSnackbar: true,
+                                openSnackbar: "Saved successfully.",
                             })
+                            if(this.toPreview){
+                                this.toPreview = false;
+                                window.open(`/preview/${this.profileId}`, `_blank`);
+                            }
                         })
                     }
                     else {
@@ -551,7 +560,7 @@ class Editor extends React.Component {
     saveNPreview = () => {
         this.handlePreviewClose();
         this.updateProfile();
-        window.open(`/preview/${this.profileId}`, `_blank`);
+        this.toPreview = true;
     }
 
     previewWithoutSave = () => {
@@ -659,12 +668,12 @@ class Editor extends React.Component {
                                     />
                                 </Tooltip>
                                 <Tooltip title="Save">
-                                    <IconButton onClick={this.save} color="primary" disabled={loading}>
+                                    <IconButton onClick={this.save} color="primary" disabled={loading || this.state.openSnackbar === "Saving ..."}>
                                         <SaveIcon />
                                     </IconButton>
                                 </Tooltip>
                                 <Tooltip title="Preview">
-                                    <IconButton onClick={this.handlePreview} disabled={loading}>
+                                    <IconButton onClick={this.handlePreview} disabled={loading || this.state.openSnackbar === "Saving ..."}>
                                         <VisibilityIcon />
                                     </IconButton>
 
@@ -851,10 +860,10 @@ class Editor extends React.Component {
                         vertical: 'bottom',
                         horizontal: 'left',
                     }}
-                    open={this.state.openSnackbar}
+                    open={Boolean(this.state.openSnackbar)}
                     autoHideDuration={3000}
                     onClose={this.handleSnackbarClose}
-                    message="Saved success."
+                    message={this.state.openSnackbar}
                 />
             </div>
         );

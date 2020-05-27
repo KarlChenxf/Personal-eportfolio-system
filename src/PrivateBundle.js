@@ -5,6 +5,7 @@ import Register from './Page/Register';
 import Profile from './Page/Profile';
 import Editor from './Page/Editor';
 import Viewer from './Page/Viewer';
+import About from './Page/About'
 
 
 function PrivateBundle() {
@@ -15,6 +16,7 @@ function PrivateBundle() {
             <PrivateRoute path="/profile" exact component={Profile} />
             <PrivateRoute path="/edit/:id" exact component={Editor} />
             <PrivateRoute path="/preview/:id" exact component={Viewer} />
+            <Route path="/about" exact component={About} />
         </Fragment>
     );
 }
