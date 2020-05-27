@@ -1,3 +1,4 @@
+import template1 from "./Thumbnails/Template1.jpg";
 /**
  * The content of the template;
  * A typical content looks like:
@@ -21,6 +22,6 @@ const content =
  */
 export const Template1 = {
     name: "Template1",
-    preview: "https://i.imgur.com/Kcfnpuv.jpg",
+    preview: template1,
     content: content,
 };
