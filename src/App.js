@@ -1,72 +1,60 @@
 import React, { Suspense, lazy } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
-import LinearProgress from '@material-ui/core/LinearProgress';
-const Login = lazy(() => import('./Page/Login.js'));
-const Register = lazy(() => {
-  console.log('./Page/Register.js')
-  return import('./Page/Register.js')
+import { withStyles } from '@material-ui/core/styles';
+import { BrowserRouter, Switch, Route, } from "react-router-dom";
+import Viewer from './Page/Viewer';
+const PrivateBundle = lazy(() => import('./PrivateBundle'));
+
+
+/**
+ * Following styles are modification of CssBaseline
+ * https://github.com/mui-org/material-ui/blob/master/packages/material-ui/src/CssBaseline/CssBaseline.js
+ */
+export const html = {
+    WebkitFontSmoothing: 'antialiased', // Antialiasing.
+    MozOsxFontSmoothing: 'grayscale', // Antialiasing.
+    // Change from `box-sizing: content-box` so that `width`
+    // is not affected by `padding` or `border`.
+    boxSizing: 'border-box',
+};
+
+export const body = (theme) => ({
+    color: theme.palette.text.primary,
+    ...theme.typography.body2,
+    backgroundColor: theme.palette.background.white,
 });
-const Profile = lazy(() => import('./Page/Profile.js'));
-const Editor = lazy(() => import('./Page/Editor.js'));
-const Viewer = lazy(() => import('./Page/Viewer.js'));
 
+export const styles = (theme) => ({
+    '@global': {
+        html,
+        '*, *::before, *::after': {
+            boxSizing: 'inherit',
+        },
+        'strong, b': {
+            fontWeight: theme.typography.fontWeightBold,
+        },
+        body: {
+            margin: 0, // Remove the margin in all browsers.
+            ...body(theme),
+        },
+    },
+});
 
+/**
+ * Enrty of the app;
+ * Viewer is packaged in main bundle so visitor could load page faster;
+ * PrivateBundle including pages like Editor will only be loaded when needed.
+ */
 function App() {
-  return (
-    <BrowserRouter>
-      <CssBaseline />
-      <Suspense fallback={<LinearProgress/>}>
-        <Switch>
-          <Route path="/" exact component={Login} />
-          <Route path="/register" exact component={Register} />
-          <Route path="/profile" exact component={Profile} />
-          <Route path="/edit/:id" exact component={Editor} />
-          <Route path="/preview/:id" exact component={Viewer} />
-          <Route path="/view/:token/:id" exact component={Viewer} />
-          {/*<PrivateRoute path="/dummy" component={Login} />*/}
-          <Route render={props => <Redirect to={{ pathname: "/", }} />} />
-        </Switch>
-      </Suspense>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Switch>
+                <Route path="/view/:token/:id" exact component={Viewer} />
+                <Suspense fallback={null}>
+                    <Route component={PrivateBundle} />
+                </Suspense>
+            </Switch>
+        </BrowserRouter>
+    );
 }
 
-/*class PrivateRoute extends React.Component {
-
-  render() {
-    const { component: Component, ...rest } = this.props;
-
-    return (
-      <Route
-        {...rest}
-        render={props => {
-          let authToken = null;
-          const a = sessionStorage.a;
-          if (a) {
-            try {
-              const authData = JSON.parse(a);
-              authToken = authData.auth_token;
-            } catch (e) {
-              sessionStorage.clear();
-            }
-          }
-
-          //console.log(authToken);
-          return authToken ? (
-            <Component authToken={authToken} {...props} />
-          ) : (
-              <Redirect
-                to={{
-                  pathname: "/",
-                }}
-              />
-            )
-        }
-        }
-      />
-    );
-  }
-}*/
-
-export default App;
+export default withStyles(styles)(App);

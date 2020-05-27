@@ -88,7 +88,7 @@ class FileUploadControl extends React.PureComponent {
             }
           };*/
         axios
-            .post(API_END_POINT + "/file/upload", fd, { headers: { 'token': localStorage.LoginToken } }, null)
+            .post(API_END_POINT + "/file/upload", fd, { headers: { 'token': localStorage.LoginToken || sessionStorage.LoginToken } }, null)
             .then((res) => {
                 if (res.data.status === "success") {
                     if (onSubmit)

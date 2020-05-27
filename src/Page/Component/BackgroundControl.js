@@ -16,6 +16,7 @@ import { Panel as ColorPickerPanel } from 'rc-color-picker';
 import axios from 'axios';
 import message from "@davistran86/notification";
 import FileUploadControl from './FileUploadControl.js'
+import { API_END_POINT } from '../../Config.js';
 
 const styles = (() => ({
     formControl: {
@@ -94,7 +95,7 @@ class BackgroundControl extends React.PureComponent {
         const fd = new FormData();
         fd.append("file",  this.fileInput.current.files[0]);
         axios
-          .post("http://3.135.244.103:9090/file/upload", fd,{headers:{'token':localStorage.LoginToken}},{
+          .post(API_END_POINT + "/file/upload", fd,{headers:{'token':localStorage.LoginToken || sessionStorage.LoginToken}},{
             onUploadProgress: (ProgressEvent) => {
               console.log(
                 "Upload Progress: " +

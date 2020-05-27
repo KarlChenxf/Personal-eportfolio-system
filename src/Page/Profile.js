@@ -28,18 +28,19 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import CardActionArea from '@material-ui/core/CardActionArea';
 
-import {templates} from '../Template/index.js'
+import { templates } from '../Template/index.js'
 
 
 const styles = (theme) => ({
-  "@global": {
-    body: {
-      backgroundColor: theme.palette.common.white,
-    },
-  },
   root: {
     display: 'flex',
+  },
+  progressroot: {
+    display: 'flex',
+    justifyContent: 'center',
   },
   tableroot: {
     marginTop: 32,
@@ -47,8 +48,7 @@ const styles = (theme) => ({
   },
   tabpaper: {
     width: '100%',
-    marginBottom: theme.spacing(0),
-
+    marginTop: theme.spacing(2),
   },
   table: {
     minWidth: 550,
@@ -88,6 +88,7 @@ const styles = (theme) => ({
     width: 144,
     height: 186,
     marginBottom: 8,
+    overflow: 'hidden',
   },
 });
 
@@ -162,13 +163,15 @@ class Profile extends React.Component {
     this.handleClick = this.handleClick.bind(this);
 
     this.state = {
-      profileList: [],
-      pname: "",
+      profileList: null,
+      //pname: "",
       order: 'asc',
       orderBy: 'filename',
       open: false,
-      deleteid: null,
+      //deleteid: null,
+      creating: false,
     };
+    this.deleteid = -1;
     console.log("profileprops: ", props);
   }
 
@@ -177,11 +180,11 @@ class Profile extends React.Component {
   };
 
   getProfiles() {
-    const auth_token = localStorage.LoginToken;
+    const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
     //console.log(auth_token);
 
     const content = {
-      userid: localStorage.user_id,
+      userid: localStorage.user_id || sessionStorage.user_id,
     };
 
     // Check authentication with the server
@@ -212,7 +215,7 @@ class Profile extends React.Component {
             //console.log("ProfileRows: ", rows) ;
           });
         } else {
-          //alert("Unable to Login.");
+          alert("Failed to load profiles. (" + response.status + ")");
           response
             .json()
             .then((error) => {
@@ -226,16 +229,16 @@ class Profile extends React.Component {
       })
       .catch((error) => {
         console.error(error);
-        //alert("Network Error.");
+        alert("Failed to load profiles. (Network Error)");
       });
   };
 
   newProfile = (index) => {
-    const auth_token = localStorage.LoginToken;
+    const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
     //console.log(auth_token);
 
     const content = {
-      userid: localStorage.user_id,
+      userid: localStorage.user_id || sessionStorage.user_id,
       html: templates[index].content,
       url: templates[index].name, //this.state.pname,
     };
@@ -267,7 +270,7 @@ class Profile extends React.Component {
             }
           });
         } else {
-          //alert("Unable to Login.");
+          alert("Failed to create profile. (" + response.status + ")");
           response
             .json()
             .then((error) => {
@@ -277,23 +280,33 @@ class Profile extends React.Component {
               console.error(error);
               //alert("Network Error.");
             });
+          this.setState({
+            creating: false,
+          })
         }
       })
       .catch((error) => {
         console.error(error);
-        //alert("Network Error.");
+        alert("Failed to create profiles. (Network Error)");
+        this.setState({
+          creating: false,
+        })
       });
+
+    this.setState({
+      creating: true,
+    })
   };
 
   deleteProfile() {
-    const auth_token = localStorage.LoginToken;
+    const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
     //console.log(auth_token);
-    console.log("deletting! ", this.state.deleteid);
+    //console.log("deletting! ", this.deleteid);
 
     const content = {
-      id: this.state.deleteid,
-
+      id: this.deleteid,
     };
+    this.deleteid = -1;
 
     // Check authentication with the server
     fetch(API_END_POINT + "/profile/delete", {
@@ -317,12 +330,13 @@ class Profile extends React.Component {
             console.log(data);
             if (data.status === "success") {
               //alert("delete success!");
-              this.setState({ deleteid: null });
-
+              // Do NOT reset deleteid here.
+              //this.deleteid = -1;
+              //this.setState({ deleteid: null });
             } else { alert(data.message); }
           });
         } else {
-          //alert("Unable to Login.");
+          alert("Failed to delete profile. (" + response.status + ")");
           response
             .json()
             .then((error) => {
@@ -336,7 +350,7 @@ class Profile extends React.Component {
       })
       .catch((error) => {
         console.error(error);
-        //alert("Network Error.");
+        alert("Failed to create profile. (Network Error)");
       });
   };
 
@@ -381,11 +395,12 @@ class Profile extends React.Component {
 
   handleClick = (event, id) => {
     if (id != null) { this.props.history.push(`/edit/${id}`); };
-
   };
 
   handleDeleteClickOpen = (event, profileid) => {
-    this.setState({ open: true, deleteid: profileid })
+    console.log("profileid=" + profileid)
+    this.deleteid = profileid;
+    this.setState({ open: true, })
   };
 
   handleDeleteClose = () => {
@@ -393,18 +408,22 @@ class Profile extends React.Component {
   };
 
   handleDelete = () => {
-    let deleteid = this.state.deleteid;
+    // Assuming item will be deleted successfully for responsiveness
     this.setState({
-      profileList: this.state.profileList.filter(function (profile) { return profile.id !== deleteid }),
+      profileList: this.state.profileList.filter((profile) => { return profile.id !== this.deleteid }),
       open: false
     });
     this.deleteProfile();
-
   }
 
+  logout = () => {
+    localStorage.clear();
+    sessionStorage.clear();
+  }
 
   render() {
     const { classes } = this.props;
+    const { creating } = this.state;
 
     console.log("rows: ", this.state.profileList);
     return (
@@ -422,7 +441,7 @@ class Profile extends React.Component {
                 <DescriptionIcon
                   fontSize="large"
                   color="primary"
-                  style={{ display: "inline-flex", verticalAlign: "middle" }}
+                  style={{ display: "inline-flex", verticalAlign: "middle", marginRight: 8 }}
                 />
                 <Typography
                   variant="h6"
@@ -436,11 +455,11 @@ class Profile extends React.Component {
                   variant="body1"
                   style={{ display: "inline-flex", verticalAlign: "middle" }}
                 >
-                  {localStorage.email}
+                  {localStorage.email || sessionStorage.email}
                 </Typography>
 
                 <Tooltip title="Logout">
-                  <IconButton component={RouteLink} to={"/"} edge="end">
+                  <IconButton onClick={this.logout} component={RouteLink} to={"/"} edge="end">
                     <ExitToAppIcon />
                   </IconButton>
                 </Tooltip>
@@ -462,12 +481,14 @@ class Profile extends React.Component {
             >
               <Grid key={-1} xs={12} item>
                 <Typography variant="subtitle1">
-                  Start a new profile
+                  Start a new profile {creating ? <CircularProgress style={{ height: 16, width: 16, verticalAlign: 'text-top', }} /> : null}
                 </Typography>
               </Grid>
               {templates.map((item, index) => (
-                <Grid key={item.name} item onClick={()=>this.newProfile(index)}>
-                  <Paper className={classes.templatePreview} style={{backgroundImage:`url(${item.preview})`, backgroundSize: 'cover'}}/>
+                <Grid key={item.name} item>
+                  <Paper className={classes.templatePreview} style={{ backgroundImage: `url(${item.preview})`, backgroundSize: 'cover' }}>
+                    <CardActionArea disabled={creating} style={{ height: '100%' }} onClick={() => this.newProfile(index)} />
+                  </Paper>
                   <Typography variant="subtitle2">
                     {item.name}
                   </Typography>
@@ -475,90 +496,107 @@ class Profile extends React.Component {
               ))}
             </Grid>
             {/* Existing profiles */}
-            <div className={classes.tableroot}>
-              <Paper className={classes.tabpaper}>
-                <TableContainer>
-                  <Table
-                    className={classes.table}
-                    aria-labelledby="tableTitle"
-                    aria-label="enhanced table"
-                  >
-                    <EnhancedTableHead
-                      classes={classes}
-                      order={this.state.order}
-                      orderBy={this.state.orderBy}
-                      onRequestSort={this.handleRequestSort}
-                      rowCount={
-                        this.state.profileList === null ? 0 : this.state.profileList.length
-                      }
-                    />
-                    <TableBody>
-                      {this.stableSort(
-                        this.state.profileList,
-                        this.getComparator(this.state.order, this.state.orderBy)
-                      ).map((row, index) => {
-                        //const labelId = `enhanced-table-checkbox-${index}`;
-                        return (
-                          <TableRow hover role="fileicon" tabIndex={-1} key={row.id}>
-                            <TableCell padding="checkbox" align="center">
-                              <DescriptionIcon color="primary"></DescriptionIcon>
-                            </TableCell>
+            {// Show circular progress when loading
+              this.state.profileList === null ?
+                <div className={classes.progressroot + ' ' + classes.tableroot}>
+                  <CircularProgress />
+                </div> :
+                // Show instructions for empty profile list
+                this.state.profileList.length <= 0 ?
+                  <div className={classes.tableroot}>
+                    <Typography variant="body1" color="textSecondary">
+                      Create a new profile from templates or create an empty one.
+                    </Typography>
+                  </div> :
+                  // Show profile list
+                  <div className={classes.tableroot}>
+                    <Typography variant="subtitle1">
+                      My profiles
+                    </Typography>
+                    <Paper className={classes.tabpaper}>
+                      <TableContainer>
+                        <Table
+                          className={classes.table}
+                          aria-labelledby="tableTitle"
+                          aria-label="enhanced table"
+                        >
+                          <EnhancedTableHead
+                            classes={classes}
+                            order={this.state.order}
+                            orderBy={this.state.orderBy}
+                            onRequestSort={this.handleRequestSort}
+                            rowCount={
+                              this.state.profileList === null ? 0 : this.state.profileList.length
+                            }
+                          />
+                          <TableBody>
+                            {this.stableSort(
+                              this.state.profileList,
+                              this.getComparator(this.state.order, this.state.orderBy)
+                            ).map((row, index) => {
+                              //const labelId = `enhanced-table-checkbox-${index}`;
+                              return (
+                                <TableRow hover role="fileicon" tabIndex={-1} key={row.id}>
+                                  <TableCell padding="checkbox" align="center">
+                                    <DescriptionIcon color="primary" />
+                                  </TableCell>
 
-                            <TableCell align="left">{row.url}</TableCell>
-                            <TableCell padding="checkbox" align="center">
-                              <Tooltip title="Edit" textalign="center">
-                                <IconButton
-                                  key={row.id}
-                                  onClick={(event) => this.handleClick(event, row.id)}
-                                  edge={false}
-                                >
-                                  <CreateIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell align="center">
-                              <Tooltip title="Delete">
-                                <IconButton
-                                  key={row.id}
-                                  onClick={(event) => this.handleDeleteClickOpen(event, row.id)}
-                                  edge={false}
-                                >
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Paper>
-              <Dialog
-                open={this.state.open}
-                onClose={this.handleDeleteClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-                disableScrollLock
-              >
-                <DialogTitle id="alert-dialog-title">
-                  {"Delete this profile?"}
-                </DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    This profile will be permanently deleted.
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={this.handleDeleteClose} color="inherit" autoFocus>
-                    Cancle
-                  </Button>
-                  <Button onClick={this.handleDelete} color="secondary">
-                    Delete
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </div>
+                                  <TableCell align="left">{row.url}</TableCell>
+                                  <TableCell padding="checkbox" align="center">
+                                    <Tooltip title="Edit" textalign="center">
+                                      <IconButton
+                                        key={row.id}
+                                        onClick={(event) => this.handleClick(event, row.id)}
+                                        edge={false}
+                                      >
+                                        <CreateIcon />
+                                      </IconButton>
+                                    </Tooltip>
+                                  </TableCell>
+                                  <TableCell align="center">
+                                    <Tooltip title="Delete">
+                                      <IconButton
+                                        key={row.id}
+                                        onClick={(event) => this.handleDeleteClickOpen(event, row.id)}
+                                        edge={false}
+                                      >
+                                        <DeleteIcon />
+                                      </IconButton>
+                                    </Tooltip>
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Paper>
+                    {/* Dialog: delete profile */}
+                    <Dialog
+                      open={this.state.open}
+                      onClose={this.handleDeleteClose}
+                      aria-labelledby="alert-dialog-title"
+                      aria-describedby="alert-dialog-description"
+                      disableScrollLock
+                    >
+                      <DialogTitle id="alert-dialog-title">
+                        {"Delete this profile?"}
+                      </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                          This profile will be permanently deleted.
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={this.handleDeleteClose} color="inherit" autoFocus>
+                          Cancle
+                        </Button>
+                        <Button onClick={this.handleDelete} color="secondary">
+                          Delete
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                  </div>}
           </Container>
         </main>
       </div>

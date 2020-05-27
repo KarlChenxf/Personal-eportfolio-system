@@ -21,7 +21,7 @@ const SharingDialog = React.memo(function SharingDialog(props) {
 
     const getSharingLink = () => {
 
-        const auth_token = localStorage.LoginToken;
+        const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
         const content = {
             profileid: props.profileId,
         }
