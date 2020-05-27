@@ -49,6 +49,11 @@ import 'rc-color-picker/assets/index.css';
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 const styles = (theme => ({
+    '@global': {
+        '.react-player': {
+            pointerEvents: 'none',
+        }
+    },
     root: {
         display: 'flex',
     },
