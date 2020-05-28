@@ -3,7 +3,6 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
-import FormControl from '@material-ui/core/FormControl';
 import BackgroundControl from "./BackgroundControl.js";
 import LayoutControl from './LayoutControl.js'
 import Typography from '@material-ui/core/Typography';
@@ -22,9 +21,6 @@ const styles = (() => ({
     flexWrap:"wrap",
     alignContent:"flex-start",
   },
-  input:{
-        display: 'none',
-      }
 }));
 
 class FileEditor extends React.Component {
@@ -38,8 +34,8 @@ class FileEditor extends React.Component {
 
     this.state = {
       selectedFile: null,
-      fileName: props.fileName || "",
-      fileurl: props.fileurl || "",
+      //fileName: props.fileName || "",
+      //fileurl: props.fileurl || "",
       uploadStatus: false,
       buttonStyle: 'outlined',
       buttonText:'Upload',
@@ -51,6 +47,7 @@ class FileEditor extends React.Component {
     };
     this.layout = props.layout || null;
     this.background = props.background || null;
+    this.fileurl = props.fileurl;
     this.i=0;
     //console.log("fileName: ",props.fileName)
   }
@@ -58,8 +55,8 @@ class FileEditor extends React.Component {
   getProps() {
     return {
       selectedFile: this.state.selectedFile,
-      fileName: this.state.fileName,
-      fileurl: this.state.fileurl,
+      fileName: this.fileurl ? this.fileurl.substring(this.fileurl.lastIndexOf('/')+1) : '',
+      fileurl: this.fileurl,
       layout: this.layout,
       background: this.background,
     };
@@ -111,11 +108,10 @@ onSubmitBackground = (background) => {
   if(this.i>=2)this.props.onSave(this.getProps());
   //console.log("background: ",background)
 }
-onSubmitFile = (fileUrl,fileName) => {
-  this.setState({fileurl:fileUrl,fileName:fileName})
+onSubmitFile = (fileUrl) => {
+  this.fileurl = fileUrl;
   this.i++;
   if(this.i>=2)this.props.onSave(this.getProps());
-  //console.log("file value: ", fileName)
 }
 
 
@@ -130,12 +126,7 @@ onSubmitFile = (fileUrl,fileName) => {
         onClose={(this.state.submitBackground||this.state.submitFile) ? null : this.props.onClose} disableEnforceFocus disableScrollLock
       >
         <MuiDialogContent>
-          <FormControl
-            variant="outlined"
-            style={{ height: "100%", width: "100%" }}
-          >
-            <FileUploadControl id = "file-upload" inputid="file-input" label="File" accept="file/*" value={this.state.fileurl} submit={this.state.submitFile} onProgress={this.onProgressFile} onSubmit={this.onSubmitFile}/>
-          </FormControl>
+            <FileUploadControl fullWidth id = "file-upload" inputid="file-input" label="File" accept="file/*" value={this.props.fileurl} submit={this.state.submitFile} onProgress={this.onProgressFile} onSubmit={this.onSubmitFile}/>
             <LayoutControl {...this.props.layout} name='layout' onChange={this.handlePureChange} />
             <BackgroundControl {...this.props.background} inputid="background-input" submit={this.state.submitBackground} onProgress={this.onProgressBackground} onSubmit={this.onSubmitBackground} />
         </MuiDialogContent>

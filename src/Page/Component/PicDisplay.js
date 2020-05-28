@@ -6,7 +6,6 @@ import Paper from '@material-ui/core/Paper';
 const styles = (theme => ({
 
       paper: {
-        padding: theme.spacing(0),
         display: 'flex',
         justifyContent: 'center',
         height: '100% ',
@@ -17,10 +16,10 @@ const styles = (theme => ({
         backgroundPosition: 'center',
         overflow: 'hidden',
       },
-      padding: {
-        padding: theme.spacing(2),
+      wapper: {
         height: '100%',
         width: '100%',
+        overflow: 'hidden',
       }
 }));
 
@@ -41,17 +40,12 @@ class PicDisplay extends React.Component {
       console.log("Displayimage: ",this.props);
 
         let content = (  
-
+          <div className={classes.wapper}>
             <img src={this.props.picurl} alt="pic"  style={{height:'100%',width:'100%',pointerEvents:'none',objectFit:this.props.fitting}}/>   
-
+          </div>
         );
 
-        content =
-          layout && layout.padding ? (
-            <div className={classes.padding}>{content}</div>
-          ) : (
-            content
-          );
+        content = layout && layout.padding ? <div className={classes.wapper} style={{padding:layout.padding}}>{content}</div> : content;
 
         return (
           background ? <Paper className={classes.paper} style={{

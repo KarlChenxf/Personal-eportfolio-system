@@ -5,15 +5,18 @@ import Paper from '@material-ui/core/Paper';
 
 const styles = (theme => ({
     paper: {
-        padding: theme.spacing(0.6),
         position: "relative",
-        minHeight: '64px',
+        //minHeight: '64px',
         height: '100%',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         overflow: 'hidden',
     },
+    wapper: {
+        height: '100%',
+        width: '100%',
+    }
 }));
 
 class VideoDisplay extends React.Component {
@@ -42,12 +45,7 @@ class VideoDisplay extends React.Component {
         )
         content =
 
-        layout && layout.padding ? (
-          <div className={classes.padding}>{content}</div>
-        ) : (
-          content
-        );
-  
+        content = layout && layout.padding ? <div className={classes.wapper} style={{padding:layout.padding}}>{content}</div> : content;
 
         return (
           background ? <Paper className={classes.paper} style={{

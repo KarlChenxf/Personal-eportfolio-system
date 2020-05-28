@@ -6,13 +6,16 @@ import Paper from '@material-ui/core/Paper';
 
 const styles = (theme => ({
     paper: {
-        padding: theme.spacing(2),
         height: '100%',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         overflow: 'hidden',
     },
+    wapper: {
+      height: '100%',
+      width: '100%',
+  }
 }));
 class File extends React.Component {
 
@@ -25,8 +28,6 @@ class File extends React.Component {
 
     render() {
         const { classes,background,layout } = this.props;
-        //console.log("file: ", this.props.fileurl);
-        //console.log("file: ", this.props.fileName);
 
         let content = (
           <a  href={this.props.fileurl} rel="noopener noreferrer" target="_blank">
@@ -34,12 +35,7 @@ class File extends React.Component {
         </a>
       )
 
-      content =
-      layout && layout.padding ? (
-        <div className={classes.padding}>{content}</div>
-      ) : (
-        content
-      );
+      content = layout && layout.padding ? <div className={classes.wapper} style={{padding:layout.padding}}>{content}</div> : content;
 
       return (
         background ? <Paper className={classes.paper} style={{

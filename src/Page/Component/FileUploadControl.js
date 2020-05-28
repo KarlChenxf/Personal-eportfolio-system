@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -33,9 +33,13 @@ const styles = (() => ({
     },
     input: {
         display: 'none',
-    }
+    },
 }));
 
+/**
+ * Note: The value in props is actually a defalut value, 
+ * the content of this component will not change as the props.value changes
+ */
 class FileUploadControl extends React.PureComponent {
 
     constructor(props) {
@@ -58,13 +62,13 @@ class FileUploadControl extends React.PureComponent {
     }
 
     onFileSelected = (event) => {
-        console.log("onFileSelected: ",event.target.files)
+        console.log("onFileSelected: ", event.target.files)
         this.setState({
             value: '',
             file: event.target.files[0].name,
         });
         this.f = event.target.files[0];
-        
+
     }
 
     clearValue = () => {
@@ -92,11 +96,11 @@ class FileUploadControl extends React.PureComponent {
             .then((res) => {
                 if (res.data.status === "success") {
                     if (onSubmit)
-                        onSubmit(res.data.awsresponse,this.state.file)
+                        onSubmit(res.data.awsresponse)
                 }
                 else if (onProgress)
                     onProgress({ err: true })
-                    console.log("uploadAvatarFail")
+                console.log("uploadAvatarFail")
             })
             .catch((error) => {
                 if (onProgress)
@@ -110,62 +114,60 @@ class FileUploadControl extends React.PureComponent {
             if (this.f)
                 this.uploadFile(this.f);
             else if (onSubmit)
-                onSubmit(this.state.value,this.state.file)
+                onSubmit(this.state.value)
     }
 
     render() {
         console.log("FileUploadControl render()");
 
-        const { classes } = this.props;
+        const { classes, fullWidth } = this.props;
 
         return (
-            <Fragment>
-                <FormControl variant="outlined">
-                    <InputLabel htmlFor="standard-adornment-upload">
-                        {this.props.label}
-                      </InputLabel>
-                    <OutlinedInput
-                        id={this.props.id}
-                        //type={values.showPassword ? 'text' : 'password'}
-                        name="value"
-                        value={this.state.value || this.state.file}
-                        onChange={this.handleChange}
-                        labelWidth={44}
-                        endAdornment={
-                            this.state.value || this.state.file ?
-                                <InputAdornment position="end">
+            <FormControl variant="outlined" fullWidth={fullWidth}>
+                <InputLabel htmlFor="standard-adornment-upload">
+                    {this.props.label}
+                </InputLabel>
+                <OutlinedInput
+                    id={this.props.id}
+                    //type={values.showPassword ? 'text' : 'password'}
+                    name="value"
+                    value={this.state.value || this.state.file}
+                    onChange={this.handleChange}
+                    labelWidth={44}
+                    endAdornment={
+                        this.state.value || this.state.file ?
+                            <InputAdornment position="end">
+                                <IconButton
+                                    color="primary"
+                                    aria-label="clear"
+                                    component="span"
+                                    onClick={this.clearValue}
+                                >
+                                    <ClearIcon />
+                                </IconButton>
+                            </InputAdornment> :
+                            <InputAdornment position="end">
+                                <input
+                                    accept={this.props.accept}
+                                    className={classes.input}
+                                    id={this.props.inputid}
+                                    type="file"
+                                    //ref={this.fileInput}
+                                    onChange={this.onFileSelected}
+                                />
+                                <label htmlFor={this.props.inputid}>
                                     <IconButton
                                         color="primary"
-                                        aria-label="clear"
+                                        aria-label="upload"
                                         component="span"
-                                        onClick={this.clearValue}
                                     >
-                                        <ClearIcon />
+                                        <PublishIcon />
                                     </IconButton>
-                                </InputAdornment> :
-                                <InputAdornment position="end">
-                                    <input
-                                        accept={this.props.accept}
-                                        className={classes.input}
-                                        id={this.props.inputid}
-                                        type="file"
-                                        //ref={this.fileInput}
-                                        onChange={this.onFileSelected}
-                                    />
-                                    <label htmlFor={this.props.inputid}>
-                                        <IconButton
-                                            color="primary"
-                                            aria-label="upload"
-                                            component="span"
-                                        >
-                                            <PublishIcon />
-                                        </IconButton>
-                                    </label>
-                                </InputAdornment>
-                        }
-                    />
-                </FormControl>
-            </Fragment>
+                                </label>
+                            </InputAdornment>
+                    }
+                />
+            </FormControl>
         );
     }
 }

@@ -79,7 +79,7 @@ class SnsEditor extends React.Component {
             id="1"
             name="urlA"
             variant="outlined"
-            label="The first URL"
+            label="URL of social media"
             value={this.state.urlA}
             onChange={this.handleChange}
           />

@@ -12,6 +12,10 @@ const styles = (() => ({
         backgroundPosition: 'center',
         overflow: 'hidden',
     },
+    wapper: {
+        height: '100%',
+        width: '100%',
+    }
 }));
 
 class HTMLDisplay extends React.Component {
@@ -29,7 +33,7 @@ class HTMLDisplay extends React.Component {
 
         let content = HTMLReactParser(html || "");
 
-        content = layout && layout.padding ? <div style={{padding:layout.padding}}>{content}</div> : content;
+        content = layout && layout.padding ? <div className={classes.wapper} style={{padding:layout.padding}}>{content}</div> : content;
 
         return (
             background ? <Paper className={classes.paper} style={{

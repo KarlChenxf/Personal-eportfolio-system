@@ -10,9 +10,9 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import OtherIcon from '@material-ui/icons/ArrowForward';
 const styles = (theme => ({
     paper: {
-        padding: theme.spacing(0.6),
+        //padding: theme.spacing(0.6),
         position: "relative",
-        minHeight: '64px',
+        //minHeight: '64px',
         height: '100%',
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
@@ -48,7 +48,7 @@ class SnsDisplay extends React.Component {
 
     render() {
 
-        const {classes, background} = this.props;
+        const {classes, background, layout} = this.props;
         console.log("SNSbackground: ", background);
         
         let host = this.props.urlA ? this.getHostName(this.props.urlA):"";
@@ -111,6 +111,8 @@ class SnsDisplay extends React.Component {
               )
 		content = buttoncreated;
         }
+
+        content = layout && layout.padding ? <div style={{padding:layout.padding}}>{content}</div> : content;
 
         return (
           background ? <Paper className={classes.paper} style={{

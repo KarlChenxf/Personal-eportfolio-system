@@ -27,6 +27,8 @@ const styles = (theme => ({
     },
     a: {
         textDecoration: 'none',
+        width: '100%',
+        height: '100%',
     },
     '@global': {
         '.react-grid-layout': {
