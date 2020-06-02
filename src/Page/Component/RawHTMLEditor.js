@@ -6,6 +6,8 @@ import BackgroundControl from "./BackgroundControl.js";
 import LayoutControl from './LayoutControl.js'
 import MuiDialogContent from '@material-ui/core/DialogContent';
 import MuiDialogActions from '@material-ui/core/DialogActions';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 class RawHTMLEditor extends React.Component {
 
@@ -13,7 +15,8 @@ class RawHTMLEditor extends React.Component {
         super(props);
 
         this.state = {
-            html : props.html || '',
+            html: props.html || '',
+            checked: true,
             submit: false,
             progress: 0,
             err: false,
@@ -24,22 +27,27 @@ class RawHTMLEditor extends React.Component {
     }
 
     getProps() {
+        const reg0 = /width=".*?"/gi
+        const reg1 = /height=".*?"/gi
+        let html = this.state.html;
+        if(this.state.checked)
+            html = html.replace(reg0, "width=\"100%\"").replace(reg1, "height=\"100%\"");
         return {
             layout: this.layout,
             background: this.background,
-            html: this.state.html,
+            html: html,
         };
     }
 
     handleChange = event => {
         this.setState({
-            [event.target.name]: event.target.value, // update the changed value
+            [event.target.name]: event.target.type === 'checkbox' ? event.target.checked : event.target.value
         });
     }
 
     handlePureChange = (event) => {
         this[event.target.name] = event.target.value;
-      }
+    }
 
     save = () => {
         this.setState({
@@ -50,7 +58,7 @@ class RawHTMLEditor extends React.Component {
     }
 
     onProgress = (e) => {
-        if(e.err)
+        if (e.err)
             this.setState({
                 err: true,
                 submit: false,
@@ -65,7 +73,7 @@ class RawHTMLEditor extends React.Component {
 
     render() {
         return (
-            <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"} onClose={this.props.onClose}>
+            <Dialog open={this.props.open} fullWidth={true} maxWidth={"lg"} onClose={this.props.onClose} disableScrollLock>
                 <MuiDialogContent>
                     <TextField
                         fullWidth
@@ -78,10 +86,13 @@ class RawHTMLEditor extends React.Component {
                         value={this.state.html}
                         onChange={this.handleChange}
                     />
+                    <FormControlLabel
+                        control={<Checkbox checked={this.state.checked} onChange={this.handleChange} name="checked" />}
+                        label="Replace width and height with '100%'"
+                    />
                     <LayoutControl {...this.props.layout} name='layout' onChange={this.handlePureChange} />
                     <BackgroundControl {...this.props.background} inputid="video-background-input" submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmit} />
                 </MuiDialogContent>
-
                 <MuiDialogActions>
                     <Button autoFocus onClick={this.props.onClose}>
                         Cancel

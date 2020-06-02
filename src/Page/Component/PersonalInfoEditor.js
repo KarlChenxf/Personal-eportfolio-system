@@ -47,17 +47,16 @@ class PersonalInfoEditor extends React.Component {
             colorHex: props.color ? props.color : '#bdbdbdFF',
             openColorPanel: false,
             //background: props.background,
-            submitBackground: false,
-            submitAvatar: false,
+            submit: false,
             progress: 0,
             err: false,
         };
-        this.avatar=props.avatar|| ''
+        this.avatar = props.avatar || ''
         this.textarea = this.props.name;
         this.textarea2 = this.props.avatar_text;
         this.layout = props.layout || null;
         this.background = props.background || null;
-        this.i=0;
+        this.i = 0;
 
         console.log("PersonalInfoEditor constructor()")
     }
@@ -114,26 +113,16 @@ class PersonalInfoEditor extends React.Component {
     save = () => {
         this.setState({
             err: false,
-            submitBackground: true,
+            submit: true,
             progress: 1,
-            submitAvatar: true,
         })
     }
 
-    onProgressBackground = (e) => {
-        if(e.err)
+    onProgress = (e) => {
+        if (e.err)
             this.setState({
                 err: true,
-                submitBackground: false,
-                progress: 0,
-            })
-    }
-
-    onProgressAvatar = (e) => {
-        if(e.err)
-            this.setState({
-                err: true,
-                submitAvatar:false,
+                submit: false,
                 progress: 0,
             })
     }
@@ -141,14 +130,13 @@ class PersonalInfoEditor extends React.Component {
     onSubmitBackground = (background) => {
         this.background = background;
         this.i++;
-        if(this.i>=2)this.props.onSave(this.getProps());
+        if (this.i >= 2) this.props.onSave(this.getProps());
     }
 
-    onSubmitAvatar= (avatarUrl) => {
-        
-        this.avatar= avatarUrl;
+    onSubmitAvatar = (avatarUrl) => {
+        this.avatar = avatarUrl;
         this.i++;
-        if(this.i>=2)this.props.onSave(this.getProps());
+        if (this.i >= 2) this.props.onSave(this.getProps());
     }
 
     render() {
@@ -160,130 +148,122 @@ class PersonalInfoEditor extends React.Component {
         const { progress, err } = state;
 
         return (
-          <Dialog
-            open={this.props.open}
-            fullWidth={true}
-            maxWidth={"lg"}
-            onClose={
-              this.state.submit || this.state.submitAvatar
-                ? null
-                : this.props.onClose
-            }
-            disableEnforceFocus
-            disableScrollLock
-          >
-            <MuiDialogContent>
-              <Grid container direction="row" spacing={2}>
-                <Grid item>
-                  <Tooltip title="Color">
-                    <Button
-                      variant="contained"
-                      disableElevation
-                      className={classes.roundButton}
-                      style={{
-                        backgroundColor: this.state.colorHex,
-                      }}
-                      onClick={this.handleClose}
-                    >
-                      {" "}
-                      {/* Space here to prevent warning */}
-                    </Button>
-                  </Tooltip>
-                </Grid>
-                <Dialog
-                  onClose={this.handleClose}
-                  aria-labelledby="customized-dialog-title"
-                  open={this.state.openColorPanel}
-                >
-                  <ColorPickerPanel
-                    color={this.state.color}
-                    alpha={this.state.alpha}
-                    onChange={this.handleColor}
-                    mode="RGB"
-                  />
-                </Dialog>
-                <Grid item xs>
-                  <FormControl
-                    variant="outlined"
-                    className={classes.formControl}
-                  >
-                    <InputLabel id="size-label">Size</InputLabel>
-                    <Select
-                      labelId="size-label"
-                      value={this.state.avatar_size}
-                      onChange={this.handleChange}
-                      label="Size"
-                      name="avatar_size"
-                    >
-                      {[...Array(24).keys()].map((e) => (
-                        <MenuItem key={e} value={(e + 1) * 8}>
-                          {(e + 1) * 8}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControl
-                    variant="outlined"
-                    style={{ height: "100%", width: "100%" }}
-                  >
-                    <FileUploadControl
-                      id="avatar-upload"
-                      inputid="avatar-input"
-                      label="Avatar"
-                      accept="image/*"
-                      value={this.props.avatar}
-                      submit={this.state.submitAvatar}
-                      onProgress={this.onProgressAvatar}
-                      onSubmit={this.onSubmitAvatar}
+            <Dialog
+                open={this.props.open}
+                fullWidth={true}
+                maxWidth={"lg"}
+                onClose={this.state.submit ? null : this.props.onClose}
+                disableEnforceFocus
+                disableScrollLock
+            >
+                <MuiDialogContent>
+                    <Grid container direction="row" spacing={2}>
+                        <Grid item>
+                            <Tooltip title="Color">
+                                <Button
+                                    variant="contained"
+                                    disableElevation
+                                    className={classes.roundButton}
+                                    style={{
+                                        backgroundColor: this.state.colorHex,
+                                    }}
+                                    onClick={this.handleClose}
+                                >
+                                    {" "}
+                                    {/* Space here to prevent warning */}
+                                </Button>
+                            </Tooltip>
+                        </Grid>
+                        <Dialog
+                            onClose={this.handleClose}
+                            aria-labelledby="customized-dialog-title"
+                            open={this.state.openColorPanel}
+                        >
+                            <ColorPickerPanel
+                                color={this.state.color}
+                                alpha={this.state.alpha}
+                                onChange={this.handleColor}
+                                mode="RGB"
+                            />
+                        </Dialog>
+                        <Grid item xs>
+                            <FormControl
+                                variant="outlined"
+                                className={classes.formControl}
+                            >
+                                <InputLabel id="size-label">Size</InputLabel>
+                                <Select
+                                    labelId="size-label"
+                                    value={this.state.avatar_size}
+                                    onChange={this.handleChange}
+                                    label="Size"
+                                    name="avatar_size"
+                                >
+                                    {[...Array(24).keys()].map((e) => (
+                                        <MenuItem key={e} value={(e + 1) * 8}>
+                                            {(e + 1) * 8}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FileUploadControl
+                                fullWidth
+                                id="avatar-upload"
+                                inputid="avatar-input"
+                                label="Avatar"
+                                accept="image/*"
+                                value={this.props.avatar}
+                                submit={this.state.submit}
+                                onProgress={this.onProgress}
+                                onSubmit={this.onSubmitAvatar}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TinyMCEWapper defaultValue={this.props.avatar_text} height={180} onEditorChange={handleEditorChange2} />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TinyMCEWapper defaultValue={this.props.name} height={240} onEditorChange={handleEditorChange} />
+                        </Grid>
+                    </Grid>
+                    <LayoutControl
+                        {...this.props.layout}
+                        name="layout"
+                        onChange={this.handlePureChange}
                     />
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <TinyMCEWapper defaultValue={this.props.avatar_text} height={180} onEditorChange={handleEditorChange2}/>
-                </Grid>
-                <Grid item xs={12}>
-                  <TinyMCEWapper defaultValue={this.props.name} height={240} onEditorChange={handleEditorChange}/>
-                </Grid>
-              </Grid>
-              <LayoutControl
-                {...this.props.layout}
-                name="layout"
-                onChange={this.handlePureChange}
-              />
-              <BackgroundControl
-                {...this.props.background}
-                inputid="personalifo-background-input"
-                submit={this.state.submitBackground}
-                onProgress={this.onProgressBackground}
-                onSubmit={this.onSubmitBackground}
-              />
-            </MuiDialogContent>
-            <MuiDialogActions>
-              {err ? (
-                <Typography color="error">
-                  Upload failed. Click 'SAVE' to try again.
-                </Typography>
-              ) : null}
-              <Button
-                autoFocus
-                onClick={this.props.onClose}
-                disabled={this.state.submit || this.state.submitAvatar}
-              >
-                Cancel
+                    <BackgroundControl
+                        {...this.props.background}
+                        inputid="personalifo-background-input"
+                        submit={this.state.submit}
+                        onProgress={this.onProgress}
+                        onSubmit={this.onSubmitBackground}
+                    />
+                </MuiDialogContent>
+                <MuiDialogActions>
+                    {err ? (
+                        <Typography color="error">
+                            Upload failed. Click 'SAVE' to try again.
+                        </Typography>
+                    ) : null}
+                    <Button
+                        autoFocus
+                        onClick={this.props.onClose}
+                        disabled={this.state.submit}
+                    >
+                        Cancel
               </Button>
-              <Button
-                autoFocus
-                onClick={this.save}
-                color="primary"
-                disabled={this.state.submit || this.state.submitAvatar}
-              >
-                Save
+                    <Button
+                        autoFocus
+                        onClick={this.save}
+                        color="primary"
+                        disabled={this.state.submit}
+                    >
+                        Save
               </Button>
-            </MuiDialogActions>
-            {progress > 0 ? <LinearProgress /> : null}
-          </Dialog>
+                </MuiDialogActions>
+                {progress > 0 ? <LinearProgress /> : null}
+            </Dialog>
         );
     }
 }
