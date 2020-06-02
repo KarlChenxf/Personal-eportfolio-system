@@ -236,7 +236,7 @@ class Editor extends React.Component {
                                 components: components,
                                 page: data.profile.html.page || {},
                                 pageEditorVer: this.state.pageEditorVer + 1,
-                            });
+                            }, () => window.dispatchEvent(new Event('resize')));
 
                             this.changedSinceLastSave = false;
                         })
