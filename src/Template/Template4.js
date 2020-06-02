@@ -21,7 +21,7 @@ const content =
  * a preview (image) and its content.
  */
 export const Template4 = {
-    name: "Template4",
+    name: "Medical",
     preview: template4,
     content: content,
 };
