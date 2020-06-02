@@ -117,7 +117,7 @@ class Viewer extends React.Component {
                                 layouts: data.profile.html.layouts,
                                 components: data.profile.html.components || [],
                                 page: data.profile.html.page || {},
-                            });
+                            }, () => window.dispatchEvent(new Event('resize')));
                         })
                     }
                     else {
