@@ -52,6 +52,10 @@ const styles = (theme => ({
     '@global': {
         '.react-player': {
             pointerEvents: 'none',
+        },
+        // Used to disable draging inner content when edit
+        '.disablePointerEvent': {
+            pointerEvents:'none',
         }
     },
     root: {
@@ -136,6 +140,8 @@ class Editor extends React.Component {
         this.shareToken = null;
         this.changedSinceLastSave = false;
         this.toPreview = false;
+        this.mainRef = React.createRef();
+        this.rowHeight = 16;
     }
 
     getProfiles() {
@@ -355,7 +361,7 @@ class Editor extends React.Component {
         let layout = {
             i: component.key,
             x: 0, //(this.state.content.length * 2) % (this.state.cols || 12),
-            y: Infinity, // puts it at the bottom
+            y: Math.round(this.mainRef.current.scrollTop / this.rowHeight), // try tp put it at current position
             w: Infinity,
             h: 12,
             //minH: 2,
@@ -375,10 +381,7 @@ class Editor extends React.Component {
             ] : [layout]
         } : { lg: [layout] };
 
-        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, componentEditorVer: this.state.componentEditorVer + 1 }, () => {
-            // FIXME: scroll to bottom
-            this.refs.content.scrollTo(0, 99999);
-        });
+        this.setState({ components: newComponents, edit: newComponents.length - 1, layouts: newLayouts, openEditor: true, componentEditorVer: this.state.componentEditorVer + 1 });
 
         this.changedSinceLastSave = true;
     }
@@ -579,32 +582,9 @@ class Editor extends React.Component {
         })
     }
 
-    back2Home = (event) => {
-        /*console.log(this.changedSinceLastSave)
-        if(this.changedSinceLastSave){
-            // eslint-disable-next-line no-restricted-globals
-            let r = confirm("Changes have not been saved. Do you want to leave?");
-            if (!r) {
-                event.preventDefault();
-            }
-        }*/
-    }
-
     logout = (event) => {
-        /*if(this.changedSinceLastSave){
-            // eslint-disable-next-line no-restricted-globals
-            let r = confirm("Changes have not been saved. Do you want to logout?");
-            if (r) {
-                localStorage.clear();
-                sessionStorage.clear();
-            } else {
-                event.preventDefault();
-            }
-        } 
-        else {*/
-            localStorage.clear();
-            sessionStorage.clear();
-        //}
+        localStorage.clear();
+        sessionStorage.clear();
     }
 
     render() {
@@ -655,7 +635,7 @@ class Editor extends React.Component {
                         >
                             <Grid item>
                                 <Tooltip title="Back to Home">
-                                    <IconButton onClick={this.back2Home} component={RouteLink} to={"/profile"} color="inherit" edge="start">
+                                    <IconButton component={RouteLink} to={"/profile"} color="inherit" edge="start">
                                         <ArrowBackIcon />
                                     </IconButton>
                                 </Tooltip>
@@ -752,7 +732,7 @@ class Editor extends React.Component {
                     </Toolbar>
                 </AppBar>
                 {/* Content */}
-                <main className={classes.content} style={pageBackground} ref="content">
+                <main className={classes.content} style={pageBackground} ref={this.mainRef}>
                     <div className={classes.appBarSpacer} />
                     <Container maxWidth="lg" fixed className={classes.container}>
                         {loading ? <CircularProgress style={{ position: 'absolute', left: 'calc(50% - 20px)', top: 'calc(50% - 20px)', }} /> : null}
@@ -764,7 +744,7 @@ class Editor extends React.Component {
                                 //TODO: Do we need to support different resolution?
                                 breakpoints={{ lg: 0 }}
                                 cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}
-                                rowHeight={16}
+                                rowHeight={this.rowHeight}
                                 margin={[0, 0]}
                                 containerPadding={[0, 0]}
                                 onLayoutChange={this.onLayoutChange}

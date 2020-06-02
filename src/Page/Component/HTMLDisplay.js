@@ -31,7 +31,7 @@ class HTMLDisplay extends React.Component {
     render() {
         const { classes, html, layout, background } = this.props;
 
-        let content = HTMLReactParser(html || "");
+        let content = <span className="disablePointerEvent">{HTMLReactParser(html || "")}</span>;
 
         content = layout && layout.padding ? <div className={classes.wapper} style={{padding:layout.padding}}>{content}</div> : content;
 

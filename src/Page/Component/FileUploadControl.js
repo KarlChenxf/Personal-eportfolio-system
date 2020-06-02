@@ -37,8 +37,10 @@ const styles = (() => ({
 }));
 
 /**
- * Note: The value in props is actually a defalut value, 
- * the content of this component will not change as the props.value changes
+ * An uncontrol componnt allow user select a local file or input text.
+ * @param onProgress only returns errors no progress
+ * @param value a DEFAULT value
+ * @param onSubmit called after upload succeed (file selected) or immediatelly (text inputed)
  */
 class FileUploadControl extends React.PureComponent {
 
@@ -56,9 +58,14 @@ class FileUploadControl extends React.PureComponent {
     }
 
     handleChange = event => {
+        // Prevent input from changing when if a file has been selected
+        // User can only edit the input after clicking 'X' (clear)
+        if(this.f) return;
         this.setState({
-            [event.target.name]: event.target.value, // update the changed value
+            value: event.target.value,
+            file: '',
         });
+        this.f = null;
     }
 
     onFileSelected = (event) => {
@@ -68,7 +75,6 @@ class FileUploadControl extends React.PureComponent {
             file: event.target.files[0].name,
         });
         this.f = event.target.files[0];
-
     }
 
     clearValue = () => {
@@ -130,7 +136,8 @@ class FileUploadControl extends React.PureComponent {
                 <OutlinedInput
                     id={this.props.id}
                     //type={values.showPassword ? 'text' : 'password'}
-                    name="value"
+                    autoComplete = {this.state.file ? "off" : null}
+                    name={this.props.label || "value"}
                     value={this.state.value || this.state.file}
                     onChange={this.handleChange}
                     labelWidth={44}

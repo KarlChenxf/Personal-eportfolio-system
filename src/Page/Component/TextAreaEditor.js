@@ -90,7 +90,6 @@ class TextAreaEditor extends React.Component {
                     <TinyMCEWapper defaultValue={textarea} height={450} onEditorChange={handleEditorChange} profileList={linkList}/>    
                     <Typography variant="body1" color="textSecondary">"SHIFT + ENTER" to break line; "ENTER" to start a new paragraph.</Typography>
                     {profileList ? null : "Failed to load existing profile list, function 'Link to internal page' may not work properly. 'Link to external site' will still work."}
-                    <div style={{ height: 8 }} />
                     <LayoutControl {...layout} name='layout' onChange={handlePureChange} />
                     <BackgroundControl {...background} inputid="text-background-input" submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmit} />
                 </MuiDialogContent>

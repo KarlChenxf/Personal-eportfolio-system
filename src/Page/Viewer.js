@@ -70,6 +70,9 @@ class Viewer extends React.Component {
             page: {},
         };
 
+        /**
+        * Fetch data through different methods based on if token is presented in URL
+        */
         if (this.props.match.params.token)
             this.getSharedProfile();
         else
@@ -164,7 +167,7 @@ class Viewer extends React.Component {
                     if (response.ok) {
                         response.json().then(data => {
                             //console.log(data);
-                            if(data.status === "success"){
+                            if (data.status === "success") {
                                 this.setState({
                                     title: data.profile.url,
                                     layouts: data.profile.html.layouts,
@@ -192,15 +195,12 @@ class Viewer extends React.Component {
             });
     }
 
-    /**
-     * Fetch data through different methods based on if token is presented in URL
-     */
-    componentDidMount() {
-        /*if (this.props.match.params.token)
+    /*componentDidMount() {
+        if (this.props.match.params.token)
             this.getSharedProfile();
         else
-            this.getProfile();*/
-    }
+            this.getProfile();
+    }*/
 
     /**
      * Refresh page when URL changed
@@ -251,7 +251,7 @@ class Viewer extends React.Component {
                 <Container maxWidth="lg" fixed className={classes.container}>
                     <div style={spacingLayout}>
                         <ResponsiveReactGridLayout
-                            key={page.spacing}
+                            //key={page.spacing}
                             //TODO: Do we need to support different resolution?
                             breakpoints={{ lg: 0 }}
                             cols={{ lg: 12, md: 12, sm: 12, xs: 12, xxs: 12 }}

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -12,6 +12,9 @@ const styles = (() => ({
     formControl: {
         minWidth: 150,
     },
+    marginTop: {
+        marginTop: 8,
+    }
 }));
 
 class LayoutControl extends React.PureComponent {
@@ -39,7 +42,7 @@ class LayoutControl extends React.PureComponent {
         return {
             target: {
                 name: this.props.name,
-                value: {padding: this.state.padding,}
+                value: { padding: this.state.padding, }
             }
         };
     }
@@ -50,27 +53,25 @@ class LayoutControl extends React.PureComponent {
         const { classes } = this.props;
 
         return (
-            <Fragment>
-                <Grid container direction="row" spacing={2}>
-                    <Grid item xs={12}>
-                        <Typography variant="h6" component="h3">Layout</Typography>
-                    </Grid>
-                    <Grid item xs>
-                        <FormControl variant="outlined" className={classes.formControl}>
-                            <InputLabel id="padding-label">Padding</InputLabel>
-                            <Select
-                                labelId="padding-label"
-                                value={this.state.padding}
-                                onChange={this.handleChange}
-                                label="Padding"
-                                name="padding"
-                            >
-                                {[...Array(17).keys()].map((e) => <MenuItem key={e} value={e*8}>{e*8}</MenuItem>)}
-                            </Select>
-                        </FormControl>
-                    </Grid>
+            <Grid container direction="row" spacing={2} className={classes.marginTop}>
+                <Grid item xs={12}>
+                    <Typography variant="h6" component="h3">Layout</Typography>
                 </Grid>
-            </Fragment>
+                <Grid item xs>
+                    <FormControl variant="outlined" className={classes.formControl}>
+                        <InputLabel id="padding-label">Padding</InputLabel>
+                        <Select
+                            labelId="padding-label"
+                            value={this.state.padding}
+                            onChange={this.handleChange}
+                            label="Padding"
+                            name="padding"
+                        >
+                            {[...Array(17).keys()].map((e) => <MenuItem key={e} value={e * 8}>{e * 8}</MenuItem>)}
+                        </Select>
+                    </FormControl>
+                </Grid>
+            </Grid>
         )
     }
 }

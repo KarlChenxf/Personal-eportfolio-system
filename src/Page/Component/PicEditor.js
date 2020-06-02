@@ -16,187 +16,175 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import FileUploadControl from './FileUploadControl.js'
 
 const styles = (theme) => ({
-  formControl: {
-    minWidth: 150,
-  },
-  root: {
-    //flexGrow: 1,
-  },
-  input:{
-    display: 'none',
-  }
+    formControl: {
+        minWidth: 150,
+    },
+    marginTop: {
+        marginTop: 8,
+    },
+    input: {
+        display: 'none',
+    }
 });
 
 class PicEditor extends React.Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      //picurl: props.picurl || '',
-      //file: null,
-      //fileName: "",
-      fitting: props.fitting || "fill",
-      submitPic: false,
-      submitBackground: false,
-      progressPic: 0,
-      progressBackground: 0,
-      err: false,
+        this.state = {
+            //picurl: props.picurl || '',
+            //file: null,
+            //fileName: "",
+            fitting: props.fitting || "fill",
+            submit: false,
+            progress: 0,
+            err: false,
 
-    };
-    this.picurl = props.picurl|| '';
-    this.layout = props.layout || null;
-    this.background = props.background || null;
-    //this.fileInput=React.createRef();
-    this.i=0;
-  }
+        };
+        this.picurl = props.picurl || '';
+        this.layout = props.layout || null;
+        this.background = props.background || null;
+        //this.fileInput=React.createRef();
+        this.i = 0;
+    }
 
-  getProps() {
-    return {
-      picurl: this.picurl,
-      //pic: this.state.pic,
-      //picName: this.state.picName,
-      layout: this.layout,
-      background: this.background,
-      fitting: this.state.fitting,
-    };
-  }
+    getProps() {
+        return {
+            picurl: this.picurl,
+            //pic: this.state.pic,
+            //picName: this.state.picName,
+            layout: this.layout,
+            background: this.background,
+            fitting: this.state.fitting,
+        };
+    }
 
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value, // update the changed value
-    });
-  };
-
-  handlePureChange = (event) => {
-    this[event.target.name] = event.target.value;
-  };
-
-  save = () => {
-    this.setState({
-        err: false,
-        submitPic: true,
-        submitBackground:true,
-        progressPic: 1,
-        progressBackground: 1,
-    });
-  }
-
-  onProgressPic = (e) => {
-      if(e.err)
-          this.setState({
-              err: true,
-              submitPic: false,
-              progressPic: 0,
-          })
-  }
-
-  onProgressBackground = (e) => {
-    if(e.err)
+    handleChange = (event) => {
         this.setState({
-            err: true,
-            submitBackground: false,
-            progressBackground: 0,
-        })
-}
+            [event.target.name]: event.target.value, // update the changed value
+        });
+    };
 
-  onSubmitBackground = (background) => {
-      this.background = background;
-      this.i++;
-      if(this.i>=2)this.props.onSave(this.getProps());
-  }
+    handlePureChange = (event) => {
+        this[event.target.name] = event.target.value;
+    };
 
-  onSubmitPic= (imgUrl) => {
-    this.picurl = imgUrl;
-    this.i++;
-    if(this.i>=2)this.props.onSave(this.getProps());
-}
+    save = () => {
+        this.setState({
+            err: false,
+            submit: true,
+            progress: 1,
+        });
+    }
 
-  render() {
-    const { props, state, } = this;
-    const { classes, open, onClose,  background } = props;
-    const { err } = state;
-    console.log(" picEditor render: ")
+    onProgress = (e) => {
+        if (e.err)
+            this.setState({
+                err: true,
+                submit: false,
+                progress: 0,
+            })
+    }
 
-    return (
-      <Dialog
-        open={open}
-        fullWidth={true}
-        maxWidth={"lg"}
-        onClose={(this.state.submitBackground||this.state.submitPic) ? null : onClose} disableEnforceFocus disableScrollLock
-      >
-        <MuiDialogContent>
-          <FormControl
-            variant="outlined"
-            style={{ height: "100%", width: "100%" }}
-          >
-            <FileUploadControl id = "front-pic-upload" inputid="image-input" label="Image" accept="image/*" value={this.props.picurl} submit={this.state.submitPic} onProgress={this.onProgressPic} onSubmit={this.onSubmitPic}/>
-          </FormControl>
+    onSubmitBackground = (background) => {
+        this.background = background;
+        this.i++;
+        if (this.i >= 2) this.props.onSave(this.getProps());
+    }
 
+    onSubmitPic = (imgUrl) => {
+        this.picurl = imgUrl;
+        this.i++;
+        if (this.i >= 2) this.props.onSave(this.getProps());
+    }
 
-            <Grid
-              container
-              //className={classes.root}
-              direction="row"
-              justify="flex-start"
-              alignItems="center"
-              spacing={2}
+    render() {
+        const { props, state, } = this;
+        const { classes, open, onClose, background } = props;
+        const { err } = state;
+        console.log(" picEditor render: ")
+
+        return (
+            <Dialog
+                open={open}
+                fullWidth={true}
+                maxWidth={"lg"}
+                onClose={this.state.submit ? null : onClose} disableEnforceFocus disableScrollLock
             >
-              <Grid item>
-                <LayoutControl
-                  {...this.props.layout}
-                  name="layout"
-                  onChange={this.handlePureChange}
-                />
-              </Grid>
-              <Grid item>
-                <Grid container display="flex" direction="row" spacing={2}>
-                  <Grid item xs={12}>
-                    <Typography variant="h6" component="h3">
-                      Fit
-                    </Typography>
-                  </Grid>
-                  <Grid item xs>
-                    <FormControl
-                      variant="outlined"
-                      minwidth = {150}
-                      className={classes.formControl}
+                <MuiDialogContent>
+                    <FileUploadControl
+                        fullWidth
+                        id="front-pic-upload"
+                        inputid="image-input"
+                        label="Image"
+                        accept="image/*"
+                        value={this.props.picurl}
+                        submit={this.state.submit}
+                        onProgress={this.onProgress}
+                        onSubmit={this.onSubmitPic} />
+
+                    <Grid
+                        container
+                        //className={classes.root}
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="center"
+                        spacing={2}
                     >
-                      <InputLabel id="fitting-label">Fitting</InputLabel>
-                      <Select
-                        labelId="fitting-label"
-                        value={this.state.fitting}
-                        onChange={this.handleChange}
-                        label="Fitting"
-                        name="fitting"
-                      >
-                        {["fill", "contain", "cover", "none", "scale-down"].map(
-                          (e) => (
-                            <MenuItem key={e} value={e}>
-                              {e}
-                            </MenuItem>
-                          )
-                        )}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-            <BackgroundControl {...background} inputid="pic-background-input"submit={this.state.submitBackground} onProgress={this.onProgressBackground} onSubmit={this.onSubmitBackground} />
-        </MuiDialogContent>
-        <MuiDialogActions>
-                    {err? <Typography color="error">Upload failed. Click 'SAVE' to try again.</Typography> : null}
-                    <Button autoFocus onClick={onClose}  disabled={this.state.submitBackground||this.state.submitFile}>
+                        <Grid item>
+                            <LayoutControl
+                                {...this.props.layout}
+                                name="layout"
+                                onChange={this.handlePureChange}
+                            />
+                        </Grid>
+                        <Grid item xs container direction="row" spacing={2} className={classes.marginTop}>
+                            <Grid item xs={12}>
+                                <Typography variant="h6" component="h3">
+                                    Fit
+                                </Typography>
+                            </Grid>
+                            <Grid item xs>
+                                <FormControl
+                                    variant="outlined"
+                                    minwidth={150}
+                                    className={classes.formControl}
+                                >
+                                    <InputLabel id="fitting-label">Fitting</InputLabel>
+                                    <Select
+                                        labelId="fitting-label"
+                                        value={this.state.fitting}
+                                        onChange={this.handleChange}
+                                        label="Fitting"
+                                        name="fitting"
+                                    >
+                                        {["fill", "contain", "cover", "none", "scale-down"].map(
+                                            (e) => (
+                                                <MenuItem key={e} value={e}>
+                                                    {e}
+                                                </MenuItem>
+                                            )
+                                        )}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <BackgroundControl {...background} inputid="pic-background-input" submit={this.state.submit} onProgress={this.onProgress} onSubmit={this.onSubmitBackground} />
+                </MuiDialogContent>
+                <MuiDialogActions>
+                    {err ? <Typography color="error">Upload failed. Click 'SAVE' to try again.</Typography> : null}
+                    <Button autoFocus onClick={onClose} disabled={this.state.submit}>
                         Cancel
                     </Button>
-                    <Button autoFocus onClick={this.save} color="primary" disabled={this.state.submitBackground||this.state.submitFile}>
+                    <Button autoFocus onClick={this.save} color="primary" disabled={this.state.submit}>
                         Save
                     </Button>
                 </MuiDialogActions>
-                {(this.state.progressBackground + this.state.progressPic)>0 ? <LinearProgress/> : null}
-      </Dialog>
-    );
-  }
+                {this.state.progress > 0 ? <LinearProgress /> : null}
+            </Dialog>
+        );
+    }
 }
 
 export default withStyles(styles)(PicEditor);

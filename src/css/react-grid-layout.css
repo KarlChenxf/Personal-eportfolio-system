@@ -2,9 +2,12 @@
   position: relative;
   transition: height 200ms ease;
 }
+/* Fixed the bug where user can't scroll page on mobie view
+*/
 .react-grid-item {
   transition: all 200ms ease;
   transition-property: left, top;
+  touch-action: auto !important;
 }
 .react-grid-item.cssTransforms {
   transition-property: transform;
