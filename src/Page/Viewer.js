@@ -207,7 +207,7 @@ class Viewer extends React.Component {
      **/
     componentDidUpdate(prevProps) {
         if (this.props.match.params.token !== prevProps.match.params.token || this.props.match.params.id !== prevProps.match.params.id) {
-            this.token ? this.getSharedProfile() : this.getProfile();
+            this.props.match.params.token ? this.getSharedProfile() : this.getProfile();
         }
     }
 
