@@ -99,7 +99,6 @@ class Login extends React.Component {
         })
             .then(
                 (response) => {
-                    //console.log("response: ",response);
                     if (response.ok) {
                         response.json().then(data => {
                             if (data.status === "success") {

@@ -102,7 +102,6 @@ class PicEditor extends React.Component {
         const { props, state, } = this;
         const { classes, open, onClose, background } = props;
         const { err } = state;
-        console.log(" picEditor render: ")
 
         return (
             <Dialog

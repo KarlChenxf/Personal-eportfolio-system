@@ -33,8 +33,6 @@ class LinkEditor extends React.PureComponent {
             url: type==='2' ? props.value : '',
             type: type,
         };
-
-        console.log("LinkEditor constructor()")
     }
 
     handleChange = event => {
@@ -55,7 +53,6 @@ class LinkEditor extends React.PureComponent {
     }
 
     render() {
-        console.log("LinkEditor render()");
 
         const { classes, open, onClose, onSave, linkList } = this.props;
         const { type, page, url } = this.state;

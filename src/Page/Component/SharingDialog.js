@@ -45,7 +45,6 @@ const SharingDialog = React.memo(function SharingDialog(props) {
         })
             .then(
                 (response) => {
-                    //console.log("response: ",response);
                     if (response.ok) {
                         response.json().then(data => {
                             const sharedUrl = window.location.origin + '/view/' + data.sharetoken + '/' + props.profileId;

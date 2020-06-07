@@ -25,8 +25,6 @@ class LayoutControl extends React.PureComponent {
         this.state = {
             padding: props.padding || 0,
         };
-
-        console.log("LayoutControl constructor()")
     }
 
     handleChange = event => {
@@ -48,7 +46,6 @@ class LayoutControl extends React.PureComponent {
     }
 
     render() {
-        console.log("LayoutControl render()");
 
         const { classes } = this.props;
 

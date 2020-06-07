@@ -54,7 +54,6 @@ class FileUploadControl extends React.PureComponent {
 
         this.f = null;
 
-        console.log("FileUploadControl constructor(): ")
     }
 
     handleChange = event => {
@@ -69,7 +68,6 @@ class FileUploadControl extends React.PureComponent {
     }
 
     onFileSelected = (event) => {
-        console.log("onFileSelected: ", event.target.files)
         this.setState({
             value: '',
             file: event.target.files[0].name,
@@ -124,7 +122,6 @@ class FileUploadControl extends React.PureComponent {
     }
 
     render() {
-        console.log("FileUploadControl render()");
 
         const { classes, fullWidth } = this.props;
 

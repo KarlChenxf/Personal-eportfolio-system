@@ -47,7 +47,6 @@ class FileEditor extends React.Component {
         this.background = props.background || null;
         this.fileurl = props.fileurl;
         this.i = 0;
-        //console.log("fileName: ",props.fileName)
     }
 
     getProps() {
@@ -85,14 +84,12 @@ class FileEditor extends React.Component {
                 submit: false,
                 progress: 0,
             })
-        //console.log("onProgress: ",this.state.submitBackground)
     }
 
     onSubmitBackground = (background) => {
         this.background = background;
         this.i++;
         if (this.i >= 2) this.props.onSave(this.getProps());
-        //console.log("background: ",background)
     }
     onSubmitFile = (fileUrl) => {
         this.fileurl = fileUrl;
@@ -102,7 +99,6 @@ class FileEditor extends React.Component {
 
 
     render() {
-        console.log("fileEditor render: ")
 
         return (
             <Dialog

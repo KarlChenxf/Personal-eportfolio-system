@@ -49,10 +49,8 @@ class SnsDisplay extends React.Component {
     render() {
 
         const {classes, background, layout} = this.props;
-        console.log("SNSbackground: ", background);
         
         let host = this.props.urlA ? this.getHostName(this.props.urlA):"";
-        console.log(host);
         
 		var content;
 		

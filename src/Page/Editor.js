@@ -147,7 +147,6 @@ class Editor extends React.Component {
     getProfiles() {
 
         const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
-        //console.log(auth_token);
 
         const content = {
             userid: localStorage.user_id || sessionStorage.user_id,
@@ -170,10 +169,8 @@ class Editor extends React.Component {
         })
             .then(
                 (response) => {
-                    //console.log("response: ",response);
                     if (response.ok) {
                         response.json().then(data => {
-                            //console.log(data);
                             this.setState({
                                 profileList: data.profile.map((v) => { return { id: v.id, title: v.url || "(Untitled)" } }),
                             })
@@ -199,7 +196,6 @@ class Editor extends React.Component {
     getProfile = () => {
 
         const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
-        //console.log(auth_token);
 
         const content = {
             profileid: this.profileId,
@@ -222,10 +218,8 @@ class Editor extends React.Component {
         })
             .then(
                 (response) => {
-                    //console.log("response: ",response);
                     if (response.ok) {
                         response.json().then(data => {
-                            //console.log(data);
                             let components = data.profile.html.components || [];
                             // Test if components is an array
                             if (!components.map) components = [];
@@ -296,7 +290,6 @@ class Editor extends React.Component {
         })
             .then(
                 (response) => {
-                    //console.log("response: ",response);
                     if (response.ok) {
                         response.json().then(data => {
                             this.changedSinceLastSave = false;
@@ -329,14 +322,9 @@ class Editor extends React.Component {
     }
 
     componentDidMount() {
-        //this.newComponent("");
-        console.log("editorcomponentMount");
         this.getProfile();
         this.getProfiles();
-
         this.changedSinceLastSave = false;
-        //console.log("this.changedSinceLastSave="+this.changedSinceLastSave)
-        //window.addEventListener("beforeunload", this.nofityUnsavedChanges);
     }
 
     /*componentWillUnmount() {
@@ -591,11 +579,6 @@ class Editor extends React.Component {
         const { handleComponentMenuClose, removeComponent, duplicateComponent } = this;
         const { classes } = this.props;
         const { loading, title, page, pageEditorVer, componentMenuCloseAnchorEl } = this.state;
-        //const { data } = this.props.location;
-        //const {data} = this.state.name;
-        //console.log("props: ",this.props);
-        //console.log("data: ",data);
-        //console.log("classes: ",classes);
 
         const pageBackground = {
             backgroundImage: page.image ? `url(${page.image})` : null,

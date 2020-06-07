@@ -32,7 +32,6 @@ class TextAreaEditor extends React.Component {
         this.linkList = props.profileList ?
             props.profileList.map(v => { return { title: v.title + ' (ID:' + v.id + ')', value: String(v.id) } }) : [];
 
-        console.log("TextAreaEditor constructor()")
     }
 
     /**
@@ -77,7 +76,6 @@ class TextAreaEditor extends React.Component {
     }
 
     render() {
-        console.log("TextAreaEditor render()");
 
         const { props, state, textarea, linkList, handleEditorChange, handlePureChange } = this;
         const { open, onClose, profileList, layout, background } = props;

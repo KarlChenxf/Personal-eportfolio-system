@@ -95,7 +95,6 @@ class Register extends React.Component {
                 (response) => {
                     if (response.ok) {
                         response.json().then(data => {
-                            //console.log(data);
                             if (data.status === "success") {
                                 // Send them to the login
                                 this.props.history.push("/");

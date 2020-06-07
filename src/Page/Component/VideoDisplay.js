@@ -32,7 +32,6 @@ class VideoDisplay extends React.Component {
     render() {
 
         const {classes, background,layout} = this.props;
-        console.log("videobackground: ", background);
 
         let content = (
             <ReactPlayer

@@ -55,7 +55,6 @@ class PageEditor extends React.PureComponent {
 
         this.image = props.image;
 
-        console.log("PageEditor constructor()")
     }
 
     handleClose = () => {
@@ -112,7 +111,6 @@ class PageEditor extends React.PureComponent {
     }
 
     render() {
-        console.log("PageEditor render()");
         const { props, state, } = this;
         const { classes, open, onClose, } = props;
         const { progress, err } = state;

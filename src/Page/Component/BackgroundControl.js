@@ -63,8 +63,6 @@ class BackgroundControl extends React.PureComponent {
             uploadStatus: false,
         };
         this.fileInput = React.createRef();
-
-        console.log("BackgroundControl constructor()")
     }
 
     handleClose = () => {
@@ -87,7 +85,6 @@ class BackgroundControl extends React.PureComponent {
             if (this.props.onChange)
                 this.props.onChange(this.getProps());
         });
-        //console.log("handlechange: ",this.state);
     }
 
 
@@ -106,7 +103,6 @@ class BackgroundControl extends React.PureComponent {
             .then((res) => {
 
                 this.setState({ image: res.data.awsresponse, uploadStatus: res.data.status });
-                //console.log("uploadrespnse image: ",this.state.image);
                 if (this.state.uploadStatus === "success") {
                     //alert("Upload success!");
                     message.success("Image upload success!", { duration: 3000, position: "bottom-left", });
@@ -131,7 +127,6 @@ class BackgroundControl extends React.PureComponent {
     }
 
     getProps = () => {
-        //console.log("background getProps： ",this.state.image);
         const value = this.state.background ? {
             color: this.state.colorHex,
             elevation: this.state.elevation,
@@ -170,7 +165,6 @@ class BackgroundControl extends React.PureComponent {
     }
 
     render() {
-        console.log("BackgroundContrdol render()");
 
         const { classes } = this.props;
 

@@ -85,7 +85,6 @@ class Viewer extends React.Component {
     getProfile = () => {
 
         const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
-        //console.log(auth_token);
 
         const content = {
             profileid: this.props.match.params.id,
@@ -108,10 +107,8 @@ class Viewer extends React.Component {
         })
             .then(
                 (response) => {
-                    //console.log("response: ",response);
                     if (response.ok) {
                         response.json().then(data => {
-                            console.log("viewer: ", data);
                             this.setState({
                                 title: data.profile.url,
                                 layouts: data.profile.html.layouts,
@@ -163,10 +160,8 @@ class Viewer extends React.Component {
         })
             .then(
                 (response) => {
-                    //console.log("response: ",response);
                     if (response.ok) {
                         response.json().then(data => {
-                            //console.log(data);
                             if (data.status === "success") {
                                 this.setState({
                                     title: data.profile.url,

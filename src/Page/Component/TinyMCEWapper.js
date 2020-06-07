@@ -31,7 +31,6 @@ class TinyMCEWapper extends React.Component {
     constructor(props) {
         super(props);
 
-        console.log("TinyMCEWapper constructor()")
 
         this.linkList = props.profileList ?
             props.profileList.map(v => { return { title: v.title + ' (ID:' + v.id + ')', value: String(v.id) } }) : [];
@@ -138,7 +137,6 @@ class TinyMCEWapper extends React.Component {
     }
 
     render() {
-        console.log("TextAreaEditor render()");
 
         const { props, linkList, } = this;
         const { defaultValue, height, onEditorChange, } = props;

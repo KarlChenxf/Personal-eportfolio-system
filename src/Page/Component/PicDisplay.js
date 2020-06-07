@@ -36,8 +36,6 @@ class PicDisplay extends React.Component {
     render() {
 
         const { classes, background, layout } = this.props;
-        console.log("Displayfitting: ", this.props.fitting);
-        console.log("Displayimage: ", this.props);
 
         let content = (
             <div className={classes.wapper}>

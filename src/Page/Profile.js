@@ -109,7 +109,6 @@ class EnhancedTableHead extends React.Component {
         const createSortHandler = property => event => {
             onRequestSort(event, property);
         };
-        //console.log("headcess: ",headCells)
 
         return (
             <TableHead>
@@ -169,7 +168,6 @@ class Profile extends React.Component {
             creating: false,
         };
         this.deleteid = -1;
-        console.log("profileprops: ", props);
     }
 
     componentDidMount() {
@@ -178,7 +176,6 @@ class Profile extends React.Component {
 
     getProfiles() {
         const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
-        //console.log(auth_token);
 
         const content = {
             userid: localStorage.user_id || sessionStorage.user_id,
@@ -200,16 +197,11 @@ class Profile extends React.Component {
             referrer: "no-referrer", // *client, no-referrer
         })
             .then((response) => {
-                //console.log("response: ",response);
                 if (response.ok) {
                     response.json().then((data) => {
-                        console.log(data);
                         this.setState({
                             profileList: data.profile,
-                            //rows: data.profile.map((row)=> [row.id,row.url]),
                         });
-                        console.log("Profile: ", this.state.profileList);
-                        //console.log("ProfileRows: ", rows) ;
                     });
                 } else {
                     alert("Failed to load profiles. (" + response.status + ")");
@@ -232,7 +224,6 @@ class Profile extends React.Component {
 
     newProfile = (index) => {
         const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
-        //console.log(auth_token);
 
         const content = {
             userid: localStorage.user_id || sessionStorage.user_id,
@@ -256,10 +247,8 @@ class Profile extends React.Component {
             referrer: "no-referrer", // *client, no-referrer
         })
             .then((response) => {
-                //console.log("response: ",response);
                 if (response.ok) {
                     response.json().then((data) => {
-                        console.log(data);
                         if (data.status === "success") {
                             this.props.history.push(`/edit/${data.profile.id}`); //Jump to editor page
                         } else {
@@ -297,8 +286,6 @@ class Profile extends React.Component {
 
     deleteProfile() {
         const auth_token = localStorage.LoginToken || sessionStorage.LoginToken;
-        //console.log(auth_token);
-        //console.log("deletting! ", this.deleteid);
 
         const content = {
             id: this.deleteid,
@@ -321,15 +308,9 @@ class Profile extends React.Component {
             referrer: "no-referrer", // *client, no-referrer
         })
             .then((response) => {
-                //console.log("response: ",response);
                 if (response.ok) {
                     response.json().then((data) => {
-                        console.log(data);
                         if (data.status === "success") {
-                            //alert("delete success!");
-                            // Do NOT reset deleteid here.
-                            //this.deleteid = -1;
-                            //this.setState({ deleteid: null });
                         } else { alert(data.message); }
                     });
                 } else {
@@ -374,7 +355,6 @@ class Profile extends React.Component {
     };
 
     stableSort(array, comparator) {
-        console.log("array: ", array);
         const stabilizedThis = array.map((el, index) => [el, index]);
         stabilizedThis.sort((a, b) => {
             const order = comparator(a[0], b[0]);
@@ -395,7 +375,6 @@ class Profile extends React.Component {
     };
 
     handleDeleteClickOpen = (event, profileid) => {
-        console.log("profileid=" + profileid)
         this.deleteid = profileid;
         this.setState({ open: true, })
     };
@@ -422,7 +401,6 @@ class Profile extends React.Component {
         const { classes } = this.props;
         const { creating } = this.state;
 
-        console.log("rows: ", this.state.profileList);
         return (
             <div className={classes.root}>
                 {/* Appbar */}

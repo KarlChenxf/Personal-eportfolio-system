@@ -15,8 +15,6 @@ import TextArea from '../Page/Component/TextArea.js';
  */
 
 const ParsedComponent = React.memo(function parse(json) {
-  console.log("ParsedComponent render()");
-  console.log(json);
 
   if (json.type) {
     switch (json.type.toLowerCase()) {

@@ -12,12 +12,9 @@ class ComponentEditor extends React.PureComponent {
 
     constructor(props) {
         super(props);
-
-        console.log("ComponentEditor constructor()")
     }
 
     render() {
-        console.log("ComponentEditor render()")
         if(!this.props.component) return null;
         // Return different editor based on type
         switch(this.props.component.type){

@@ -58,7 +58,6 @@ class PersonalInfoEditor extends React.Component {
         this.background = props.background || null;
         this.i = 0;
 
-        console.log("PersonalInfoEditor constructor()")
     }
 
     handleChange = event => {
@@ -98,7 +97,6 @@ class PersonalInfoEditor extends React.Component {
     }
 
     getProps() {
-        //console.log(this.state.colorHex)
         return {
             avatar: this.avatar,
             avatar_size: this.state.avatar_size,
@@ -140,8 +138,6 @@ class PersonalInfoEditor extends React.Component {
     }
 
     render() {
-
-        console.log("PersonalInfoEditor render()")
 
         const { props, state, handleEditorChange, handleEditorChange2 } = this;
         const { classes } = props;
