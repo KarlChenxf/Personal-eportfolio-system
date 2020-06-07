@@ -58,6 +58,7 @@ Limitations
 Structure
 ---------------
 `master` branch contains our documents;<br/>
+Nginx configuration is available under [nginx](nginx) folder for reference;<br/>
 Code for front end is available in `frontend` branch;<br/>
 Code for back end is available in `backend` branch.
 
