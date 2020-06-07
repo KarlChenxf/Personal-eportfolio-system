@@ -12,6 +12,8 @@ class ComponentEditor extends React.PureComponent {
 
     constructor(props) {
         super(props);
+
+        console.log("ComponentEditor constructor()")
     }
 
     render() {
