@@ -11,7 +11,7 @@ Index
 * [Limitations](#limitations)
 * [Structure](#structure)
 * [Deployment](#deployment)
-* [Our Team](#softwareprojectteam12)
+* [Our Team](##software-project-team-12)
 * [Acknowledgements](#acknowledgements)
 
 Availability
@@ -80,5 +80,5 @@ Acknowledgements
 
 Java Springboot (backend)<br />
 [ReactJS](https://github.com/facebook/react) (frontend)<br />
-For ther libraries please refer to README.md in corresoinding branch.
+For other libraries please refer to README.md in corresponding branch.
 
