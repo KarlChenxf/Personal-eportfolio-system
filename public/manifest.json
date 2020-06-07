@@ -3,7 +3,7 @@
   "name": "An individualised Personal ePortfolio System",
   "icons": [
     {
-      "src": "book.png",
+      "src": "icon.png",
       "type": "image/png",
       "sizes": "192x192"
     }
