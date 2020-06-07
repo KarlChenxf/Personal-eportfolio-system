@@ -11,7 +11,7 @@ Index
 * [Limitations](#limitations)
 * [Structure](#structure)
 * [Deployment](#deployment)
-* [Our Team](##software-project-team-12)
+* [Our Team](#software-project-team-12)
 * [Acknowledgements](#acknowledgements)
 
 Availability
@@ -35,23 +35,21 @@ Highlights
 
 Features
 --------
-* List all the profiles created by users.
+* A user can have multiple profiles.
 * Create new profile from template or plain page.
-* Remove profile no longer needed.
-* Edit any module by user-friendly dialog.
-* Layout by simply dragging.
-* Text module for showing formated paragraph.
-* Picture module for size, border, nesting setting of any picture.
-* Video module to convert video URL to video player.
-* Social Network to convert SNS URL to specific button to access external Social Network Link.
-* RAW HTML module for advanced user to implement component by raw html code.
-* Personal information module which includes a text editor and avaster editor to easily combine them together.
-* Layout and backgournd module for global/inner-component layout/background editing.
-* Sharing module to create unique security link for third-party to access the profile.
+* Edit any components by user-friendly dialog.
+* Arrange layout by simply dragging.
+* Text component for showing formated paragraph.
+* Picture component for showing images.
+* Video component for showing videos given a link to Youtube.
+* Avator&Text component allowing you to have an avaster on the left and details on its right.
+* SNS component for showing an icon to a Social Media that will automatically change based on the URL given.
+* HTML component for advanced user to implement component by raw html code.
+* Layout and backgournd is editable for each component or the whole page.
+* Share your profile through a secure link.
 
 Limitations
 -----------
-
 * All components in a profile scroll with the page. No static component (position: sticky) similar to Findanexpert is supported.
 * We are working based on client's requirement and supervisor's advice. Other function are not implemented, for example:<br />
 	Limited user management support. Our system is focus on portfolio itself.<br />
